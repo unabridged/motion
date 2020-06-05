@@ -76,7 +76,7 @@ module Motion
     end
 
     def renderer
-      @renderer ||= ApplicationController.renderer.with_defaults(renderer_env)
+      @renderer ||= Motion.renderer.with_defaults(renderer_env)
     end
 
     def renderer_env

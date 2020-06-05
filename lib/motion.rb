@@ -32,6 +32,14 @@ module Motion
       @revision ||= revision_from_git_fallback
     end
 
+    def renderer
+      @renderer ||= ApplicationController.renderer
+    end
+
+    def renderer=(renderer)
+      @renderer = renderer
+    end
+
     private
 
     def assert_uninitialized!(option)
