@@ -1,22 +1,38 @@
+# frozen_string_literal: true
+
 require_relative 'lib/motion/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "motion"
-  spec.version       = Motion::VERSION
-  spec.authors       = ["Alec Larsen"]
-  spec.email         = ["alec@unabridgedsoftware.com"]
+  spec.name             = 'motion'
+  spec.version          = Motion::VERSION
+  spec.authors          = ['Alec Larsen']
+  spec.email            = ['alec@unabridgedsoftware.com']
 
-  spec.summary       = %q{Squatting}
-  spec.license       = "MIT"
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
+  spec.summary          = 'Reactive view components written in Ruby for Rails'
+  spec.description      = <<~TEXT
+    Motion extends Github's `view_component` gem with reactivity to interactions
+    from the user and broadcasts on the server.
+  TEXT
 
+  spec.license          = 'MIT'
+  spec.homepage         = 'https://github.com/unabridged/motion'
 
-  # Specify which files should be added to the gem when it is released.
-  # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
-  spec.files         = Dir.chdir(File.expand_path('..', __FILE__)) do
-    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  end
-  spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
+  spec.metadata = {
+    'bug_tracker_uri' => spec.homepage,
+    'source_code_uri' => spec.homepage
+  }
+
+  spec.files            = Dir[File.expand_path('lib/**/*', __dir__)]
+  spec.require_paths    = ['lib']
+
+  # Required for the squiggly HEREDOC
+  spec.required_ruby_version = Gem::Requirement.new('>= 2.3.0')
+
+  spec.add_dependency 'nokogiri'
+  spec.add_dependency 'rails', '>= 5.2'
+
+  spec.post_install_message = <<~MSG
+    Friendly reminder: When updating the motion gem, don't forget to update the
+    NPM package as well (`bin/yarn add '@unabridged/motion@#{spec.version}'`).
+  MSG
 end

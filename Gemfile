@@ -1,7 +1,10 @@
-source "https://rubygems.org"
+# frozen_string_literal: true
 
-# Specify your gem's dependencies in motion.gemspec
+source 'https://rubygems.org'
+
 gemspec
 
-gem "rake", "~> 12.0"
-gem "rspec", "~> 3.0"
+gem 'pry'
+gem 'rake', '~> 12.0'
+gem 'rspec', '~> 3.0'
+gem 'rubocop', '~> 0.85.0', require: false
