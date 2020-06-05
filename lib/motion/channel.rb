@@ -13,7 +13,17 @@ module Motion
     end
 
     def subscribed
+      synchronize do
+        component.connected
+      end
+
       setup_broadcasts
+    end
+
+    def unsubscribed
+      synchronize do
+        component.disconnected
+      end
     end
 
     def process_action(data)
