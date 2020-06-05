@@ -30,7 +30,10 @@ module Motion
       end
 
       def process_action(action, event = nil)
-        return unless (handler = _action_handlers[action])
+        unless (handler = _action_handlers[action])
+          Rails.logger.debug("WARNING: No component action handler mapped for action '#{action}'")
+          return
+        end
 
         if method(handler).arity.zero?
           send(handler)
