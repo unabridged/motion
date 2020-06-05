@@ -32,12 +32,10 @@ module Motion
       @revision ||= revision_from_git_fallback
     end
 
+    attr_writer :renderer
+
     def renderer
       @renderer ||= ApplicationController.renderer
-    end
-
-    def renderer=(renderer)
-      @renderer = renderer
     end
 
     private

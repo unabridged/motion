@@ -15,9 +15,7 @@ module Motion
 
       private
 
-      # TODO: Remove exactly the ivars added by ActionView (eg @view_context and friends)
-      # and warn if we find any before rendering (ivars from the user which may clash with
-      # ActionView)
+      # TODO: Remove exactly the ivars added by ActionView
       def without_new_instance_variables
         existing_instance_variables = instance_variables
 

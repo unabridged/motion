@@ -18,10 +18,10 @@ module Motion
     end
 
     def serialize(component)
-      assert_no_nested_components_in_state!(component)
-
       state = dump(component)
       state_with_revision = "#{revision},#{state}"
+
+      assert_no_nested_components_in_state!(component, state)
 
       [
         salted_digest(state_with_revision),
@@ -33,17 +33,30 @@ module Motion
       state_with_revision = decrypt_and_verify(serialized_component)
       actual_revision, state = state_with_revision.split(',', 2)
 
-      raise IncorrectRevisionError.new(revision, actual_revision) unless actual_revision == revision
+      assert_correct_revision!(actual_revision)
 
       load(state)
     end
 
     private
 
-    def assert_no_nested_components_in_state!(component)
-      return unless nested_components_in_state?(component)
+    def assert_no_nested_components_in_state!(component, state)
+      seen_component = false
 
-      raise NestedComponentInStateError, component
+      load(state, proc { |object|
+        next unless object.is_a?(Component)
+        raise NestedComponentInStateError, component if seen_component
+
+        seen_component = true
+      })
+
+      nil
+    end
+
+    def assert_correct_revision!(actual_revision)
+      return if actual_revision == revision
+
+      raise IncorrectRevisionError.new(revision, actual_revision)
     end
 
     def dump(component)
@@ -52,8 +65,8 @@ module Motion
       raise UnrepresentableStateError.new(component, e.message)
     end
 
-    def load(state)
-      Marshal.load(state)
+    def load(state, *args)
+      Marshal.load(state, *args)
     end
 
     def encrypt_and_sign(cleartext)
@@ -64,15 +77,6 @@ module Motion
       encryptor.decrypt_and_verify(cypertext)
     rescue ActiveSupport::MessageEncryptor::InvalidMessage
       raise InvalidSerializedStateError
-    end
-
-    # TODO: This is just a heuristic. We could do this perfectly though by overriding #_dump_state
-    # and "passing an implicit argument" via a thread global that we set to the root while marshaling.
-    # Maybe the additional complexity it isn't worth it.
-    def nested_components_in_state?(component)
-      component.instance_variables.any? do |ivar|
-        component.instance_variable_get(ivar).is_a?(Motion::Component)
-      end
     end
 
     def salted_digest(input)
