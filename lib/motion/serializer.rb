@@ -44,10 +44,12 @@ module Motion
       seen_component = false
 
       load(state, proc { |object|
-        next unless object.is_a?(Component)
-        raise NestedComponentInStateError, component if seen_component
+        object.tap do
+          next unless object.is_a?(Component)
+          raise NestedComponentInStateError, component if seen_component
 
-        seen_component = true
+          seen_component = true
+        end
       })
 
       nil
