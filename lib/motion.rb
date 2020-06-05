@@ -1,23 +1,13 @@
 # frozen_string_literal: true
 
 require 'motion/version'
+require 'motion/errors'
 
 module Motion
-  class Error < StandardError; end
-
   autoload :Channel, 'motion/channel'
   autoload :Component, 'motion/component'
+  autoload :RenderContext, 'motion/render_context'
   autoload :Serializer, 'motion/serializer'
-
-  class AlreadyInitializedError < Error
-    def initialize(option)
-      super(<<~MSG) # TODO: Better message (Focus on "How do I fix this?")
-        Cannot set #{option} because Motion has already been used.
-        This doesn't really make any sense.
-        Make sure you are setting these values in an initializer.
-      MSG
-    end
-  end
 
   class << self
     def serializer
@@ -47,7 +37,7 @@ module Motion
     def assert_uninitialized!(option)
       return unless defined?(@serializer)
 
-      raise AlreadyInitializedError, option
+      raise Errors::AlreadyInitializedError, option
     end
 
     def derive_secret_from_application

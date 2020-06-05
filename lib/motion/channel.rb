@@ -62,7 +62,7 @@ module Motion
     end
 
     def component
-      @component ||= Component.rehydrate(params.fetch(:state))
+      @component ||= Motion.serializer.deserialize(params.fetch(:state))
     end
 
     def renderer

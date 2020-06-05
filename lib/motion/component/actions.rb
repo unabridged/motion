@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'active_support/concern'
+require 'active_support/core_ext/class/attribute'
 
 require 'motion'
-require 'motion/component'
 
 module Motion
   module Component

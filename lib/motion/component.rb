@@ -14,13 +14,5 @@ module Motion
     include Actions
     include Broadcasts
     include Rendering
-
-    def self.dehydrate(component)
-      Motion.serializer.serialize(component)
-    end
-
-    def self.rehydrate(state)
-      Motion.serializer.deserialize(state)
-    end
   end
 end
