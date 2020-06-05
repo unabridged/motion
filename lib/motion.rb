@@ -8,6 +8,7 @@ module Motion
   autoload :Component, 'motion/component'
   autoload :RenderContext, 'motion/render_context'
   autoload :Serializer, 'motion/serializer'
+  autoload :TestHelpers, 'motion/test_helpers'
 
   class << self
     def serializer
