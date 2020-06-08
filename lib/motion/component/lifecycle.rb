@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
-require 'motion'
+require "motion"
 
 module Motion
   module Component
     module Lifecycle
-      def connected; end
+      def connected
+      end
 
-      def disconnected; end
+      def disconnected
+      end
     end
   end
 end

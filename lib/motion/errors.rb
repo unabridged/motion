@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'motion'
+require "motion"
 
 module Motion
   class Error < StandardError; end
@@ -83,7 +83,7 @@ module Motion
 
   class IncorrectRevisionError < SerializedComponentError
     attr_reader :expected_revision,
-                :actual_revision
+      :actual_revision
 
     def initialize(expected_revision, actual_revision)
       super(<<~MSG) # TODO: Better message (Focus on "How do I fix this?")

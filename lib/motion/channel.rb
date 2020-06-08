@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'action_cable/channel'
+require "action_cable/channel"
 
-require 'motion'
+require "motion"
 
 module Motion
   class Channel < ApplicationCable::Channel
@@ -27,8 +27,8 @@ module Motion
     end
 
     def process_action(data)
-      action = data.fetch('name')
-      event = data['event']
+      action = data.fetch("name")
+      event = data["event"]
 
       synchronize do
         component.process_action(action, event)
@@ -51,9 +51,9 @@ module Motion
 
     def render_component
       transmit(
-        synchronize do
+        synchronize {
           renderer.render(component)
-        end
+        }
       )
     end
 

@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'digest'
-require 'active_support/message_encryptor'
+require "digest"
+require "active_support/message_encryptor"
 
-require 'motion'
+require "motion"
 
 module Motion
   class Serializer
-    HASH_PEPPER = 'Motion'
+    HASH_PEPPER = "Motion"
     private_constant :HASH_PEPPER
 
     attr_reader :secret, :revision
@@ -31,7 +31,7 @@ module Motion
 
     def deserialize(serialized_component)
       state_with_revision = decrypt_and_verify(serialized_component)
-      actual_revision, state = state_with_revision.split(',', 2)
+      actual_revision, state = state_with_revision.split(",", 2)
 
       assert_correct_revision!(actual_revision)
 

@@ -111,7 +111,7 @@ GEM
       thor (>= 0.19.0, < 2.0)
     rainbow (3.0.0)
     rake (12.3.3)
-    regexp_parser (1.7.0)
+    regexp_parser (1.7.1)
     rexml (3.2.4)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
@@ -126,7 +126,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.9.0)
     rspec-support (3.9.3)
-    rubocop (0.85.0)
+    rubocop (0.85.1)
       parallel (~> 1.10)
       parser (>= 2.7.0.1)
       rainbow (>= 2.2.2, < 4.0)
@@ -137,6 +137,8 @@ GEM
       unicode-display_width (>= 1.4.0, < 2.0)
     rubocop-ast (0.0.3)
       parser (>= 2.7.0.1)
+    rubocop-performance (1.6.1)
+      rubocop (>= 0.71.0)
     ruby-progressbar (1.10.1)
     sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
@@ -145,6 +147,9 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    standard (0.4.7)
+      rubocop (~> 0.85.0)
+      rubocop-performance (~> 1.6.0)
     thor (1.0.1)
     thread_safe (0.3.6)
     tzinfo (1.2.7)
@@ -162,7 +167,7 @@ DEPENDENCIES
   pry
   rake (~> 12.0)
   rspec (~> 3.0)
-  rubocop (~> 0.85.0)
+  standard
 
 BUNDLED WITH
    2.1.2

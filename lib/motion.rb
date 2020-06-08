@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'motion/version'
-require 'motion/errors'
+require "motion/version"
+require "motion/errors"
 
 module Motion
-  autoload :Channel, 'motion/channel'
-  autoload :Component, 'motion/component'
-  autoload :RenderContext, 'motion/render_context'
-  autoload :Serializer, 'motion/serializer'
-  autoload :TestHelpers, 'motion/test_helpers'
+  autoload :Channel, "motion/channel"
+  autoload :Component, "motion/component"
+  autoload :RenderContext, "motion/render_context"
+  autoload :Serializer, "motion/serializer"
+  autoload :TestHelpers, "motion/test_helpers"
 
   class << self
     def serializer
@@ -48,8 +48,8 @@ module Motion
     end
 
     def derive_secret_from_application
-      require 'rails/application'
-      Rails.application.key_generator.generate_key('motion:secret')
+      require "rails/application"
+      Rails.application.key_generator.generate_key("motion:secret")
     end
 
     def revision_from_git_fallback
