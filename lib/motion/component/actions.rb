@@ -31,7 +31,7 @@ module Motion
 
       def process_action(action, event = nil)
         unless (handler = _action_handlers[action])
-          raise ActionNotNapped.new(self, action)
+          raise ActionNotMapped.new(self, action)
         end
 
         if method(handler).arity.zero?
