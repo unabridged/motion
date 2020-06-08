@@ -16,6 +16,18 @@ module Motion
 
   class ComponentRenderingError < ComponentError; end
 
+  class ActionNotMapped < ComponentError
+    attr_reader :action
+
+    def initialize(component, action)
+      super(<<~MSG)
+        No component action handler mapped for action '#{action}' in component #{component.class}.
+      MSG
+
+      @action = action
+    end
+  end
+
   class BlockNotAllowedError < ComponentRenderingError
     def initialize(component)
       super(component, <<~MSG) # TODO: Better message (Focus on "How do I fix this?")
@@ -104,14 +116,6 @@ module Motion
         Cannot set #{option} because Motion has already been used.
         This doesn't really make any sense.
         Make sure you are setting these values in an initializer.
-      MSG
-    end
-  end
-
-  class ActionNotNapped < Error
-    def initialize(action)
-      super(<<~MSG)
-        No component action handler mapped for action '#{action}'").
       MSG
     end
   end
