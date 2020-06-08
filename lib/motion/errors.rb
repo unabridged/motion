@@ -16,6 +16,18 @@ module Motion
 
   class ComponentRenderingError < ComponentError; end
 
+  class ActionNotMapped < ComponentError
+    attr_reader :action
+
+    def initialize(component, action)
+      super(<<~MSG)
+        No component action handler mapped for action '#{action}' in component #{component.class}.
+      MSG
+
+      @action = action
+    end
+  end
+
   class BlockNotAllowedError < ComponentRenderingError
     def initialize(component)
       super(component, <<~MSG) # TODO: Better message (Focus on "How do I fix this?")

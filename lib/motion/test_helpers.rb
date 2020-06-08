@@ -17,10 +17,6 @@ module Motion
     end
 
     def run_motion(component, action_name)
-      unless motion_action?(component, action_name)
-        raise NotImplementedError, "The motion action ##{action_name} is not mapped on #{component.class}."
-      end
-
       if block_given?
         c = component.dup
         c.process_action(action_name.to_s)

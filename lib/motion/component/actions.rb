@@ -30,7 +30,9 @@ module Motion
       end
 
       def process_action(action, event = nil)
-        return unless (handler = _action_handlers[action])
+        unless (handler = _action_handlers[action])
+          raise ActionNotMapped.new(self, action)
+        end
 
         if method(handler).arity.zero?
           send(handler)
