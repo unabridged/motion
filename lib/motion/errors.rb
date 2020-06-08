@@ -61,9 +61,14 @@ module Motion
   class UnrepresentableStateError < InvalidComponentStateError
     def initialize(component, cause)
       super(component, <<~MSG)
-        Some state prevented #{component_class} from being serialized into a string. Motion components must be serializable using Marshal.dump. Many types of objects are not serializable including procs, references to anonymous classes, and more. See the documentation for Marshal.dump for more information.
+        Some state prevented #{component_class} from being serialized into a
+        string. Motion components must be serializable using Marshal.dump. Many
+        types of objects are not serializable including procs, references to
+        anonymous classes, and more. See the documentation for Marshal.dump for
+        more information.
 
-        Fix: Ensure that any exotic state variables in #{component_class} are removed or replaced.
+        Fix: Ensure that any exotic state variables in #{component_class} are
+        removed or replaced.
 
         The specific (but probably useless) error from Marshal was: #{cause}
       MSG
@@ -73,11 +78,16 @@ module Motion
   class NestedComponentInStateError < InvalidComponentStateError
     def initialize(component)
       super(component, <<~MSG)
-        Detected nested component in state. Motion does not allow storing Component objects in the state of your Components. To learn more about this, see https://github.com/unabridged/motion/wiki/Using-Nested-Components
+        Detected nested component in state. Motion does not allow storing
+        Component objects in the state of your Components. To learn more about
+        this, see
+        https://github.com/unabridged/motion/wiki/Using-Nested-Components
 
         Fix:
-          * To communicate from parent to child, instantiate child components in the view, instead of in #{component_class}.
-          * To communicate from child to parent, use global state (i.e. a database) or broadcasts.
+          * To communicate from parent to child, instantiate child components
+          in the view, instead of in #{component_class}.
+          * To communicate from child to parent, use global state (i.e. a
+          database) or broadcasts.
       MSG
     end
   end
