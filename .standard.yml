@@ -1,0 +1,3 @@
+fix: true
+parallel: true 
+format: progress

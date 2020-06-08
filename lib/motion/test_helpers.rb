@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'motion'
+require "motion"
 
 module Motion
   module TestHelpers

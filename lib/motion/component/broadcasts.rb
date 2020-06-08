@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'active_support/concern'
-require 'active_support/core_ext/class/attribute'
+require "active_support/concern"
+require "active_support/core_ext/class/attribute"
 
-require 'motion'
+require "motion"
 
 module Motion
   module Component
@@ -12,10 +12,10 @@ module Motion
 
       included do
         class_attribute :_broadcast_handlers,
-                        instance_reader: false,
-                        instance_writer: false,
-                        instance_predicate: false,
-                        default: {}.freeze
+          instance_reader: false,
+          instance_writer: false,
+          instance_predicate: false,
+          default: {}.freeze
       end
 
       class_methods do

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'nokogiri'
+require "nokogiri"
 
-require 'motion'
+require "motion"
 
 module Motion
   class RenderContext
@@ -42,10 +42,10 @@ module Motion
       @view_context = view_context
     end
 
-    CONTROLLER_ATTRIBUTE = 'data-controller'
-    CONTROLLER_VALUE = 'motion'
-    KEY_ATTRIBUTE = 'data-motion-key'
-    STATE_ATTRIBUTE = 'data-motion-state'
+    CONTROLLER_ATTRIBUTE = "data-controller"
+    CONTROLLER_VALUE = "motion"
+    KEY_ATTRIBUTE = "data-motion-key"
+    STATE_ATTRIBUTE = "data-motion-state"
 
     def render
       html = view_context.capture { yield }
@@ -82,7 +82,7 @@ module Motion
       fragment.to_html.html_safe
     end
 
-    def values(*values, delimiter: ' ')
+    def values(*values, delimiter: " ")
       values
         .compact
         .flat_map { |value| value.split(delimiter) }

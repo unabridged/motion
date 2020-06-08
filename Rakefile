@@ -1,16 +1,17 @@
 # frozen_string_literal: true
 
-require 'bundler/gem_tasks'
-require 'rspec/core/rake_task'
-require 'json'
+require "bundler/gem_tasks"
+require "rspec/core/rake_task"
+require "standard/rake"
+require "json"
 
 RSpec::Core::RakeTask.new(:spec)
 
 namespace :release do
   task :guard_version do
-    next if Motion::VERSION == JSON.load(File.read('./package.json')).fetch('version')
+    next if Motion::VERSION == JSON.parse(File.read("./package.json")).fetch("version")
 
-    raise 'The NPM package version does not match the gem version.'
+    raise "The NPM package version does not match the gem version."
   end
 
   task :npm_publish do
