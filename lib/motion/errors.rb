@@ -107,4 +107,12 @@ module Motion
       MSG
     end
   end
+
+  class ActionNotNapped < Error
+    def initialize(action)
+      super(<<~MSG)
+        No component action handler mapped for action '#{action}'").
+      MSG
+    end
+  end
 end

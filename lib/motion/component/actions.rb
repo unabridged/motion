@@ -31,8 +31,7 @@ module Motion
 
       def process_action(action, event = nil)
         unless (handler = _action_handlers[action])
-          Rails.logger.debug("WARNING: No component action handler mapped for action '#{action}'")
-          return
+          raise ActionNotNapped.new(action)
         end
 
         if method(handler).arity.zero?
