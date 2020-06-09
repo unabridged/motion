@@ -79,9 +79,9 @@ module Motion
     def initialize(component)
       super(component, <<~MSG)
         Detected nested component in state. Motion does not allow storing
-        Component objects in the state of your Components. To learn more about
-        this, see
-        https://github.com/unabridged/motion/wiki/Using-Nested-Components
+        Component objects in the state of your Components.
+
+        Read more: https://github.com/unabridged/motion/wiki/Using-Nested-Components
 
         Fix:
           * To communicate from parent to child, instantiate child components
@@ -115,7 +115,11 @@ module Motion
         Expected revision `#{expected_revision}`;
         Got `#{actual_revision}`
 
-        Fix: Refresh your browser.
+        Read more: https://github.com/unabridged/motion/wiki/IncorrectRevisionError
+
+        Fix:
+          * Avoid tampering with Motion DOM elements and data attributes (e.g. data-motion-state).
+          * In production, enforce a page refresh for pages with Motion components on deploy.
       MSG
 
       @expected_revision = expected_revision
