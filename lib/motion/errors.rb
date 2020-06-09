@@ -12,6 +12,10 @@ module Motion
       super(message)
       @component = component
     end
+
+    def component_class
+      component.class.to_s
+    end
   end
 
   class ComponentRenderingError < ComponentError; end
@@ -21,7 +25,11 @@ module Motion
 
     def initialize(component, action)
       super(<<~MSG)
-        No component action handler mapped for action '#{action}' in component #{component.class}.
+        No component action handler mapped for action '#{action}' in component #{component_class}.
+
+        Fix: Add the following to #{component_class}:
+
+        map_action :#{action}
       MSG
 
       @action = action
@@ -30,18 +38,20 @@ module Motion
 
   class BlockNotAllowedError < ComponentRenderingError
     def initialize(component)
-      super(component, <<~MSG) # TODO: Better message (Focus on "How do I fix this?")
-        Rendering with a block is not supported with motion.
+      super(component, <<~MSG)
+        Motion does not support rendering with a block.
 
-        Hint: Use a plain component instead and wrap with a motion component.
+        Fix: Use a plain component and wrap with a motion component.
       MSG
     end
   end
 
   class MultipleRootsError < ComponentRenderingError
     def initialize(component)
-      super(component, <<~MSG) # TODO: Better message (Focus on "How do I fix this?")
-        You can only have one root element in your component.
+      super(component, <<~MSG)
+        The template for #{component_class} can only have one root element.
+
+        Fix: Wrap all elements in a single element, such as <div> or <section>.
       MSG
     end
   end
@@ -50,9 +60,15 @@ module Motion
 
   class UnrepresentableStateError < InvalidComponentStateError
     def initialize(component, cause)
-      super(component, <<~MSG) # TODO: Better message (Focus on "How do I fix this?")
-        Something about your component cannot be serialized into a string. Make sure it doesn't
-        have anything exotic in its state (i.e. a proc, a reference to an anonymous class, etc).
+      super(component, <<~MSG)
+        Some state prevented #{component_class} from being serialized into a
+        string. Motion components must be serializable using Marshal.dump. Many
+        types of objects are not serializable including procs, references to
+        anonymous classes, and more. See the documentation for Marshal.dump for
+        more information.
+
+        Fix: Ensure that any exotic state variables in #{component_class} are
+        removed or replaced.
 
         The specific (but probably useless) error from Marshal was: #{cause}
       MSG
@@ -61,24 +77,17 @@ module Motion
 
   class NestedComponentInStateError < InvalidComponentStateError
     def initialize(component)
-      super(component, <<~MSG) # TODO: Better message (Focus on "How do I fix this?")
-        Detected nested component in state.
+      super(component, <<~MSG)
+        Detected nested component in state. Motion does not allow storing
+        Component objects in the state of your Components.
 
-        Fundamentally, components live in the DOM. The component instance that you have is
-        a template for what to render, **NOT** a handle to the actual rendered component
-        (To get an intuition for why it works this way, consider what would happen if
-        you rendered a component in a broadcast and sent the resulting markup to many clients.
-        Which of those clients instances should this handle refer to? What if no one ever
-        renders the markup?).
+        Read more: https://github.com/unabridged/motion/wiki/NestedComponentInStateError
 
-        In theory, it is technically fine to build up these templates over time and store
-        them in your state, but that is almost certainly not what you are expecting here.
-        Chances are, you have already rendered this template once and now you are want
-        this instance to allow you to access that rendered component. This won't work.
-
-        Alternatives:
-          * To communicate from parent to child, pass information into the component before rendering.
-          * To communicate from child to parent, use global mutable state (your database) or broadcasts.
+        Fix:
+          * To communicate from parent to child, instantiate child components
+          in the view, instead of in #{component_class}.
+          * To communicate from child to parent, use global state (i.e. a
+          database) or broadcasts.
       MSG
     end
   end
@@ -87,8 +96,10 @@ module Motion
 
   class InvalidSerializedStateError < SerializedComponentError
     def initialize
-      super(<<~MSG) # TODO: Better message (Focus on "How do I fix this?")
-        The serialized state of your component is not valid. Did someone tamper with it in the DOM?
+      super(<<~MSG)
+        The serialized state of your component is not valid.
+
+        Fix: Ensure that you have not tampered with the DOM.
       MSG
     end
   end
@@ -98,11 +109,17 @@ module Motion
       :actual_revision
 
     def initialize(expected_revision, actual_revision)
-      super(<<~MSG) # TODO: Better message (Focus on "How do I fix this?")
+      super(<<~MSG)
         Cannot mount a component from another version of the application.
 
         Expected revision `#{expected_revision}`;
         Got `#{actual_revision}`
+
+        Read more: https://github.com/unabridged/motion/wiki/IncorrectRevisionError
+
+        Fix:
+          * Avoid tampering with Motion DOM elements and data attributes (e.g. data-motion-state).
+          * In production, enforce a page refresh for pages with Motion components on deploy.
       MSG
 
       @expected_revision = expected_revision
@@ -112,10 +129,10 @@ module Motion
 
   class AlreadyInitializedError < Error
     def initialize(option)
-      super(<<~MSG) # TODO: Better message (Focus on "How do I fix this?")
-        Cannot set #{option} because Motion has already been used.
-        This doesn't really make any sense.
-        Make sure you are setting these values in an initializer.
+      super(<<~MSG)
+        Cannot set #{option} because Motion is already initialized.
+
+        Fix: Move all Motion config to config/initializers/motion.rb.
       MSG
     end
   end
