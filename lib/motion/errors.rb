@@ -81,7 +81,7 @@ module Motion
         Detected nested component in state. Motion does not allow storing
         Component objects in the state of your Components.
 
-        Read more: https://github.com/unabridged/motion/wiki/Using-Nested-Components
+        Read more: https://github.com/unabridged/motion/wiki/NestedComponentInStateError
 
         Fix:
           * To communicate from parent to child, instantiate child components
