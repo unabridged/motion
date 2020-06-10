@@ -21,8 +21,6 @@ module Motion
       state = dump(component)
       state_with_revision = "#{revision},#{state}"
 
-      assert_no_nested_components_in_state!(component, state)
-
       [
         salted_digest(state_with_revision),
         encryptor.encrypt_and_sign(state_with_revision)
@@ -39,21 +37,6 @@ module Motion
     end
 
     private
-
-    def assert_no_nested_components_in_state!(component, state)
-      seen_component = false
-
-      load(state, proc { |object|
-        object.tap do
-          next unless object.is_a?(Component)
-          raise NestedComponentInStateError, component if seen_component
-
-          seen_component = true
-        end
-      })
-
-      nil
-    end
 
     def assert_correct_revision!(actual_revision)
       return if actual_revision == revision

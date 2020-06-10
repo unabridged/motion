@@ -75,23 +75,6 @@ module Motion
     end
   end
 
-  class NestedComponentInStateError < InvalidComponentStateError
-    def initialize(component)
-      super(component, <<~MSG)
-        Detected nested component in state. Motion does not allow storing
-        Component objects in the state of your Components.
-
-        Read more: https://github.com/unabridged/motion/wiki/NestedComponentInStateError
-
-        Fix:
-          * To communicate from parent to child, instantiate child components
-          in the view, instead of in #{component_class}.
-          * To communicate from child to parent, use global state (i.e. a
-          database) or broadcasts.
-      MSG
-    end
-  end
-
   class SerializedComponentError < Error; end
 
   class InvalidSerializedStateError < SerializedComponentError
