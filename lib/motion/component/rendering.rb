@@ -8,9 +8,9 @@ module Motion
       def render_in(view_context)
         raise BlockNotAllowedError, self if block_given?
 
-        RenderContext.render_in(self, view_context) do
-          without_new_instance_variables { super }
-        end
+        html = view_context.capture { without_new_instance_variables { super } }
+
+        Motion.markup_transformer.add_state_to_html(self, html)
       end
 
       private

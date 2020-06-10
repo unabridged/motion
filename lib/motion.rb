@@ -6,11 +6,15 @@ require "motion/errors"
 module Motion
   autoload :Channel, "motion/channel"
   autoload :Component, "motion/component"
-  autoload :RenderContext, "motion/render_context"
+  autoload :MarkupTransformer, "motion/markup_transformer"
   autoload :Serializer, "motion/serializer"
   autoload :TestHelpers, "motion/test_helpers"
 
   class << self
+    def markup_transformer
+      @markup_transformer ||= MarkupTransformer.new(serializer: serializer)
+    end
+
     def serializer
       @serializer ||= Serializer.new(secret: secret, revision: revision)
     end
