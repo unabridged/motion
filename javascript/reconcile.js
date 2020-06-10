@@ -2,7 +2,11 @@ import morphdom from 'morphdom';
 
 const keyAttr = 'data-motion-key';
 
-export default (rootElement, newHTML) => {
+export default (rootElement, newState) => {
+  if (typeof(newState) !== 'string') {
+    throw new TypeError("Expected raw HTML for reconcile newState");
+  }
+
   const rootKey = rootElement.getAttribute(keyAttr);
 
   if (!rootKey) {
@@ -22,11 +26,12 @@ export default (rootElement, newHTML) => {
       return false;
     }
 
-    // Fast path:
-    //  Never replace if nodes are the same according to the DOM (since we start with
-    //  HTML anyway, none of the "minor concerns" with this apply).
+    // When two nodes have deep DOM equality, don't replace. This is correct because
+    // we checked above that we are reconsiling against an HTML string (which *cannot
+    // possibly have JavaScript state outside of the DOM because no handles have been
+    // allowed to leave this function since parsing).
     //
-    //  See https://github.com/patrick-steele-idem/morphdom#can-i-make-morphdom-blaze-through-the-dom-tree-even-faster-yes
+    // See: https://github.com/patrick-steele-idem/morphdom#can-i-make-morphdom-blaze-through-the-dom-tree-even-faster-yes
     if (fromElement.isEqualNode(toElement)) {
       return false;
     }
@@ -37,7 +42,7 @@ export default (rootElement, newHTML) => {
 
   return morphdom(
     rootElement,
-    newHTML,
+    newState,
     {
       onBeforeElUpdated,
     }
