@@ -6,89 +6,78 @@ require "motion"
 
 module Motion
   class Channel < ApplicationCable::Channel
-    def initialize(*)
-      @mutex = Mutex.new
-
-      super
-    end
-
     def subscribed
-      synchronize do
+      return reject unless initialize_component
+
+      with_component do |component|
         component.connected
       end
-
-      setup_broadcasts
     end
 
     def unsubscribed
-      synchronize do
+      with_component do |component|
         component.disconnected
       end
     end
 
     def process_action(data)
-      action = data.fetch("name")
-      event = data["event"]
+      with_component do |component|
+        action = data.fetch("name")
+        event = data["event"]
 
-      synchronize do
         component.process_action(action, event)
       end
+    end
 
-      render_component
-      setup_broadcasts
+    def process_broadcast(broadcast, message)
+      with_component do |component|
+        component.process_broadcast(broadcast, message)
+      end
     end
 
     private
 
-    def process_broadcast(broadcast, message)
-      synchronize do
-        component.process_broadcast(broadcast, message)
+    def initialize_component
+      @manager = ComponentStateManager.new(state: params.fetch(:state))
+
+      @manager.flush do |component|
+        streaming_from component.broadcasts
       end
 
-      render_component
-      setup_broadcasts
+      true
+    rescue => error
+      Motion.handle_error(error)
+
+      false
     end
 
-    def render_component
-      transmit(
-        synchronize {
-          renderer.render(component)
-        }
-      )
+    def with_component(&block)
+      return unless defined?(@manager)
+
+      @manager.use(&block)
+
+      html_to_flush = nil
+
+      @manager.flush do |component|
+        html_to_flush = Motion.renderer_for(connection).render(component)
+        streaming_from component.broadcasts
+      end
+
+      transmit(html_to_flush) if html_to_flush
+    rescue => error
+      Motion.handle_error(error)
     end
 
-    def setup_broadcasts
-      synchronize do
-        (component.broadcasts - broadcasts).each do |broadcast|
-          stream_from(broadcast) do |message|
-            process_broadcast(broadcast, message)
-          end
+    # TODO: Handle unsubscribing
+    def streaming_from(target_broadcasts)
+      (target_broadcasts - current_broadcasts).each do |broadcast|
+        stream_from(broadcast) do |message|
+          process_broadcast(broadcast, message)
         end
       end
     end
 
-    def synchronize(&block)
-      @mutex.synchronize(&block)
-    end
-
-    def component
-      @component ||= Motion.serializer.deserialize(params.fetch(:state))
-    end
-
-    def renderer
-      @renderer ||= Motion.renderer.with_defaults(renderer_env)
-    end
-
-    def renderer_env
-      connection.env.slice(
-        Rack::HTTP_COOKIE,
-        Rack::RACK_SESSION,
-        Rack::RACK_SESSION_OPTIONS,
-        Rack::RACK_SESSION_UNPACKED_COOKIE_DATA
-      )
-    end
-
-    def broadcasts
+    def current_broadcasts
       streams.map { |broadcast, _handler| broadcast }
     end
   end
