@@ -3,93 +3,70 @@
 require "action_cable/channel"
 
 require "motion"
+require "motion/channel/declarative_streams"
 
 module Motion
   class Channel < ApplicationCable::Channel
-    def initialize(*)
-      @mutex = Mutex.new
-
-      super
-    end
+    include DeclarativeStreams
 
     def subscribed
-      synchronize do
-        component.connected
-      end
+      initialize_component
 
-      setup_broadcasts
+      component.connected
+      flush_component
     end
 
     def unsubscribed
-      synchronize do
-        component.disconnected
-      end
+      component.disconnected
+      flush_component
     end
 
     def process_action(data)
       action = data.fetch("name")
       event = data["event"]
 
-      synchronize do
-        component.process_action(action, event)
-      end
-
-      render_component
-      setup_broadcasts
+      component.process_action(action, event)
+      flush_component
     end
 
     private
 
     def process_broadcast(broadcast, message)
-      synchronize do
-        component.process_broadcast(broadcast, message)
-      end
+      component.process_broadcast(broadcast, message)
+      flush_component
+    end
+
+    attr_reader :component
+
+    def initialize_component
+      @component = Motion.serializer.deserialize(params.fetch(:state))
+
+      # Intentionally don't `render_component` here because the client's markup
+      # matches their state.
+      setup_broadcasts
+
+      @render_hash = calculate_render_hash
+    end
+
+    def flush_component
+      return if @render_hash == (next_render_hash = calculate_render_hash)
 
       render_component
       setup_broadcasts
-    end
 
-    def render_component
-      transmit(
-        synchronize {
-          renderer.render(component)
-        }
-      )
+      @render_hash = next_render_hash
     end
 
     def setup_broadcasts
-      synchronize do
-        (component.broadcasts - broadcasts).each do |broadcast|
-          stream_from(broadcast) do |message|
-            process_broadcast(broadcast, message)
-          end
-        end
-      end
+      streaming_from(component.broadcasts)
     end
 
-    def synchronize(&block)
-      @mutex.synchronize(&block)
+    def render_component
+      transmit(Motion.renderer_for(connection).render(component))
     end
 
-    def component
-      @component ||= Motion.serializer.deserialize(params.fetch(:state))
-    end
-
-    def renderer
-      @renderer ||= Motion.renderer.with_defaults(renderer_env)
-    end
-
-    def renderer_env
-      connection.env.slice(
-        Rack::HTTP_COOKIE,
-        Rack::RACK_SESSION,
-        Rack::RACK_SESSION_OPTIONS,
-        Rack::RACK_SESSION_UNPACKED_COOKIE_DATA
-      )
-    end
-
-    def broadcasts
-      streams.map { |broadcast, _handler| broadcast }
+    def calculate_render_hash
+      Motion.serializer.digest(component)
     end
   end
 end

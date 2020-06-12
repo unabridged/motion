@@ -10,6 +10,8 @@ module Motion
   autoload :Serializer, "motion/serializer"
   autoload :TestHelpers, "motion/test_helpers"
 
+  # TODO: Move configuration options into configuration class
+  # TODO: Move renderer stuff elsewhere
   class << self
     def markup_transformer
       @markup_transformer ||= MarkupTransformer.new(serializer: serializer)
@@ -41,6 +43,23 @@ module Motion
 
     def renderer
       @renderer ||= ApplicationController.renderer
+    end
+
+    def renderer_for(connection)
+      connection.instance_exec do
+        @_motion_renderer ||= Motion.build_renderer_for(connection)
+      end
+    end
+
+    def build_renderer_for(connection)
+      renderer.new(
+        connection.env.slice(
+          Rack::HTTP_COOKIE,
+          Rack::RACK_SESSION,
+          Rack::RACK_SESSION_OPTIONS,
+          Rack::RACK_SESSION_UNPACKED_COOKIE_DATA
+        )
+      )
     end
 
     private
