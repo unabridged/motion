@@ -8,6 +8,7 @@ module Motion
   autoload :Component, "motion/component"
   autoload :Configuration, "motion/configuration"
   autoload :MarkupTransformer, "motion/markup_transformer"
+  autoload :Railtie, "motion/railtie"
   autoload :Serializer, "motion/serializer"
   autoload :TestHelpers, "motion/test_helpers"
 
@@ -45,3 +46,5 @@ module Motion
     config.renderer_for_connection_proc.call(websocket_connection)
   end
 end
+
+require "motion/railtie" if defined?(Rails)

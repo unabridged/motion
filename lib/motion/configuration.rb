@@ -77,21 +77,11 @@ module Motion
       `git rev-parse HEAD`.chomp
     end
 
-    option :renderer do
-      require "rails"
-
-      begin
-        ApplicationController.renderer
-      rescue NameError
-        ActionController::Base.renderer
-      end
-    end
-
     option :renderer_for_connection_proc do
       require "rack"
 
       ->(connection) do
-        renderer.new(
+        ApplicationController.renderer.new(
           connection.env.slice(
             Rack::HTTP_COOKIE,
             Rack::RACK_SESSION,
