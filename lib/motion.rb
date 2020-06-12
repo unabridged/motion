@@ -12,7 +12,7 @@ module Motion
   autoload :TestHelpers, "motion/test_helpers"
 
   def self.configure(&block)
-    raise AlreadyInitializedError, :configure if @config
+    raise AlreadyConfiguredError if @config
 
     @config = Configuration.new(&block)
   end

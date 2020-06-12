@@ -12,10 +12,6 @@ module Motion
       super(message)
       @component = component
     end
-
-    def component_class
-      component.class.to_s
-    end
   end
 
   class ComponentRenderingError < ComponentError; end
@@ -24,10 +20,10 @@ module Motion
     attr_reader :action
 
     def initialize(component, action)
-      super(<<~MSG)
-        No component action handler mapped for action '#{action}' in component #{component_class}.
+      super(component, <<~MSG)
+        No component action handler mapped for action '#{action}' in component #{component.class}.
 
-        Fix: Add the following to #{component_class}:
+        Fix: Add the following to #{component.class}:
 
         map_action :#{action}
       MSG
@@ -49,7 +45,7 @@ module Motion
   class MultipleRootsError < ComponentRenderingError
     def initialize(component)
       super(component, <<~MSG)
-        The template for #{component_class} can only have one root element.
+        The template for #{component.class} can only have one root element.
 
         Fix: Wrap all elements in a single element, such as <div> or <section>.
       MSG
@@ -61,13 +57,13 @@ module Motion
   class UnrepresentableStateError < InvalidComponentStateError
     def initialize(component, cause)
       super(component, <<~MSG)
-        Some state prevented #{component_class} from being serialized into a
+        Some state prevented #{component.class} from being serialized into a
         string. Motion components must be serializable using Marshal.dump. Many
         types of objects are not serializable including procs, references to
         anonymous classes, and more. See the documentation for Marshal.dump for
         more information.
 
-        Fix: Ensure that any exotic state variables in #{component_class} are
+        Fix: Ensure that any exotic state variables in #{component.class} are
         removed or replaced.
 
         The specific (but probably useless) error from Marshal was: #{cause}
@@ -110,10 +106,10 @@ module Motion
     end
   end
 
-  class AlreadyInitializedError < Error
+  class AlreadyConfiguredError < Error
     def initialize(option)
       super(<<~MSG)
-        Cannot set #{option} because Motion is already initialized.
+        Motion is already configured.
 
         Fix: Move all Motion config to config/initializers/motion.rb.
       MSG
