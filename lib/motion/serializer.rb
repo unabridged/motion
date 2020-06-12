@@ -17,12 +17,9 @@ module Motion
       @revision = revision
     end
 
-    def digest(component)
-      salted_digest(dump_state_with_revision(component))
-    end
-
     def serialize(component)
-      state_with_revision = dump_state_with_revision(component)
+      state = dump(component)
+      state_with_revision = "#{revision},#{state}"
 
       [
         salted_digest(state_with_revision),
@@ -43,11 +40,6 @@ module Motion
     end
 
     private
-
-    def dump_state_with_revision(component)
-      state = dump(component)
-      "#{revision},#{state}"
-    end
 
     def dump(component)
       Marshal.dump(component)

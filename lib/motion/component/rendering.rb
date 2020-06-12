@@ -24,7 +24,16 @@ module Motion
       # * If it doesn't change every time the component's state changes,
       #   things may fall out of sync unless you also call `#rerender!`
       def render_hash
-        Motion.serializer.digest(self)
+        # TODO: This implementation is trivially correct, but very wasteful.
+        #
+        # Is something with Ruby's built-in `hash` Good Enough(TM)?
+        #
+        #  instance_variables
+        #    .map { |ivar| instance_variable_get(ivar).hash }
+        #    .reduce(0, &:^)
+
+        key, _state = Motion.serializer.serialize(self)
+        key
       end
 
       def render_in(view_context)
