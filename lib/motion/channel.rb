@@ -3,82 +3,70 @@
 require "action_cable/channel"
 
 require "motion"
+require "motion/channel/declarative_streams"
 
 module Motion
   class Channel < ApplicationCable::Channel
-    def subscribed
-      return reject unless initialize_component
+    include DeclarativeStreams
 
-      with_component do |component|
-        component.connected
-      end
+    def subscribed
+      initialize_component
+
+      component.connected
+      flush_component
     end
 
     def unsubscribed
-      with_component do |component|
-        component.disconnected
-      end
+      component.disconnected
+      flush_component
     end
 
     def process_action(data)
-      with_component do |component|
-        action = data.fetch("name")
-        event = data["event"]
+      action = data.fetch("name")
+      event = data["event"]
 
-        component.process_action(action, event)
-      end
-    end
-
-    def process_broadcast(broadcast, message)
-      with_component do |component|
-        component.process_broadcast(broadcast, message)
-      end
+      component.process_action(action, event)
+      flush_component
     end
 
     private
 
+    def process_broadcast(broadcast, message)
+      component.process_broadcast(broadcast, message)
+      flush_component
+    end
+
+    attr_reader :component
+
     def initialize_component
-      @manager = ComponentStateManager.new(state: params.fetch(:state))
+      @component = Motion.serializer.deserialize(params.fetch(:state))
 
-      @manager.flush do |component|
-        streaming_from component.broadcasts
-      end
+      # Intentionally don't `render_component` here because the client's markup
+      # matches their state.
+      setup_broadcasts
 
-      true
-    rescue => error
-      Motion.handle_error(error)
-
-      false
+      @render_hash = calculate_render_hash
     end
 
-    def with_component(&block)
-      return unless defined?(@manager)
+    def flush_component
+      return if @render_hash == (next_render_hash = calculate_render_hash)
 
-      @manager.use(&block)
+      render_component
+      setup_broadcasts
 
-      html_to_flush = nil
-
-      @manager.flush do |component|
-        html_to_flush = Motion.renderer_for(connection).render(component)
-        streaming_from component.broadcasts
-      end
-
-      transmit(html_to_flush) if html_to_flush
-    rescue => error
-      Motion.handle_error(error)
+      @render_hash = next_render_hash
     end
 
-    # TODO: Handle unsubscribing
-    def streaming_from(target_broadcasts)
-      (target_broadcasts - current_broadcasts).each do |broadcast|
-        stream_from(broadcast) do |message|
-          process_broadcast(broadcast, message)
-        end
-      end
+    def setup_broadcasts
+      streaming_from(component.broadcasts)
     end
 
-    def current_broadcasts
-      streams.map { |broadcast, _handler| broadcast }
+    def render_component
+      transmit(Motion.renderer_for(connection).render(component))
+    end
+
+    def calculate_render_hash
+      Motion.serializer.digest(component)
     end
   end
 end

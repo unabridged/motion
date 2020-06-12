@@ -5,30 +5,14 @@ require "motion/errors"
 
 module Motion
   autoload :Channel, "motion/channel"
-  autoload :ComponentStateManager, "motion/component_state_manager"
   autoload :Component, "motion/component"
   autoload :MarkupTransformer, "motion/markup_transformer"
   autoload :Serializer, "motion/serializer"
   autoload :TestHelpers, "motion/test_helpers"
 
   # TODO: Move configuration options into configuration class
+  # TODO: Move renderer stuff elsewhere
   class << self
-    # TODO: Support hooks
-    def handle_error(error)
-      Rails.logger.error [error.message, *error.backtrace].join("\n")
-    end
-
-    def renderer_for(websocket_connection)
-      renderer.new(
-        websocket_connection.env.slice(
-          Rack::HTTP_COOKIE,
-          Rack::RACK_SESSION,
-          Rack::RACK_SESSION_OPTIONS,
-          Rack::RACK_SESSION_UNPACKED_COOKIE_DATA
-        )
-      )
-    end
-
     def markup_transformer
       @markup_transformer ||= MarkupTransformer.new(serializer: serializer)
     end
@@ -59,6 +43,23 @@ module Motion
 
     def renderer
       @renderer ||= ApplicationController.renderer
+    end
+
+    def renderer_for(connection)
+      connection.instance_exec do
+        @_motion_renderer ||= Motion.build_renderer_for(connection)
+      end
+    end
+
+    def build_renderer_for(connection)
+      renderer.new(
+        connection.env.slice(
+          Rack::HTTP_COOKIE,
+          Rack::RACK_SESSION,
+          Rack::RACK_SESSION_OPTIONS,
+          Rack::RACK_SESSION_UNPACKED_COOKIE_DATA
+        )
+      )
     end
 
     private

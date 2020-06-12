@@ -21,7 +21,9 @@ class MarkupTransformer
     key, state = serializer.serialize(component)
 
     transform_root(component, html) do |root|
-      root[CONTROLLER_ATTRIBUTE] = values(CONTROLLER_VALUE, root[CONTROLLER_ATTRIBUTE])
+      root[CONTROLLER_ATTRIBUTE] =
+        values(CONTROLLER_VALUE, root[CONTROLLER_ATTRIBUTE])
+
       root[KEY_ATTRIBUTE] = key
       root[STATE_ATTRIBUTE] = state
     end
