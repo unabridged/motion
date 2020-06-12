@@ -46,11 +46,11 @@ module Motion
       # matches the state they just provided (that's where they got it!).
       setup_broadcasts
 
-      @render_hash = calculate_render_hash
+      @render_hash = component.render_hash
     end
 
     def flush_component
-      next_render_hash = calculate_render_hash
+      next_render_hash = component.render_hash
 
       return if !component.awaiting_forced_rerender? &&
         @render_hash == next_render_hash
@@ -59,10 +59,6 @@ module Motion
       setup_broadcasts
 
       @render_hash = next_render_hash
-    end
-
-    def calculate_render_hash
-      Motion.serializer.digest(component)
     end
 
     def setup_broadcasts

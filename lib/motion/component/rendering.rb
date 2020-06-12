@@ -19,6 +19,14 @@ module Motion
         instance_variable_defined?(RERENDER_MARKER_IVAR)
       end
 
+      # * This can be overwritten.
+      # * It will _not_ be sent to the client.
+      # * If it doesn't change every time the component's state changes,
+      #   things may fall out of sync unless you also call `#rerender!`
+      def render_hash
+        Motion.serializer.digest(self)
+      end
+
       def render_in(view_context)
         raise BlockNotAllowedError, self if block_given?
         clear_awaiting_forced_rerender!
