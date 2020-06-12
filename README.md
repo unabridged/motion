@@ -1,34 +1,70 @@
 # Motion
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/motion`. To experiment with that code, run `bin/console` for an interactive prompt.
+Motion allows you to build reactive frontend UI components in pure Ruby.
 
-TODO: Delete this and the text above, and describe your gem
+* Plays nicely with the monolith you have.
+* Leans on Stimulus, ActionCable, and ViewComponent for the heavy lifting.
+* Real-time updates to your pages with no JavaScript required.
+
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'motion'
+gem "motion"
 ```
 
-And then execute:
+Motion also relies on but does not currently enforce the following libraries:
 
-    $ bundle install
+```sh
+bundle add view_component
+yarn add stimulus
+```
 
-Or install it yourself as:
+Motion communicates over and therefore requires ActionCable. AnyCable support coming soon!
 
-    $ gem install motion
+Github's [ViewComponent](https://github.com/github/view_component) is currently the de-facto standard for component/presenter-style libraries for use with Rails and likely will make it into Rails eventually. Until then, we plan to not enforce this dependency and are open to supporting other, similar libraries.
+
+After installing all libraries, run the install script:
+
+```sh
+bin/rails motion:install
+```
+
+This will install 2 files, both of which you are free to leave alone. If you already have Stimulus set up and working, no more work is required.
+
 
 ## Usage
 
-TODO: Write usage instructions here
+Using Motion with your existing ViewComponents couldn't be easier. There are 2 new API methods to know about inside your component class. Both of these methods will cause your component to re-render its template, and replace itself in-place on the frontend for all users are listening. If a user is viewing a page with a Motion component and they are listening, their component will be updated.
 
-## Development
+- `map_action` - Handle frontend events in the specified method inside your component class.
+- `stream_from` - Listen to an ActionCable channel for updates. Can apply frontend changes for any number of users.
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+```ruby
+class IncrementComponent < ViewComponent::Base
+  include Motion::Component
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+  def initialize(total: 0)
+    @total = 0
+  end
+
+  map_action :add
+
+  def add
+    @total += 1
+  end
+
+  stream_from "counter:cleared", :clear
+
+  def clear
+    @total = 0
+  end
+end
+```
+
+Methods that are mapped using `map_action` or `stream_from` accept an event parameter which is a `Motion::Event`. This object can be used to extract data attribute, values, selected, checked, form state, and more from the frontend state.
 
 ## Contributing
 
