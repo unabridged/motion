@@ -2,14 +2,11 @@
   "name": "@unabridged/motion",
   "version": "0.0.1",
   "description": "Reactive view components written in Ruby for Rails",
-  "main": "javascript/index.js",
+  "main": "index.js",
   "dependencies": {
     "@rails/actioncable": ">= 6.0",
     "stimulus": ">= 1.1",
     "morphdom": "^2.6.1"
-  },
-  "directories": {
-    "lib": "javascript"
   },
   "scripts": {
     "postinstall": "echo \"Friendly reminder: When updating the @unabridged/motion NPM package, don't forget to update the Ruby gem as well.\"; exit 0"

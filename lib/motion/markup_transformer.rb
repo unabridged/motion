@@ -4,49 +4,61 @@ require "nokogiri"
 
 require "motion"
 
-class MarkupTransformer
-  # TODO: Make these state on the instance and allow for configuration
-  CONTROLLER_ATTRIBUTE = "data-controller"
-  CONTROLLER_VALUE = "motion"
-  KEY_ATTRIBUTE = "data-motion-key"
-  STATE_ATTRIBUTE = "data-motion-state"
+module Motion
+  class MarkupTransformer
+    STIMULUS_CONTROLLER_ATTRIBUTE = "data-controller"
 
-  attr_reader :serializer
+    attr_reader :serializer,
+      :stimulus_controller_identifier,
+      :key_attribute,
+      :state_attribute
 
-  def initialize(serializer:)
-    @serializer = serializer
-  end
-
-  def add_state_to_html(component, html)
-    key, state = serializer.serialize(component)
-
-    transform_root(component, html) do |root|
-      root[CONTROLLER_ATTRIBUTE] =
-        values(CONTROLLER_VALUE, root[CONTROLLER_ATTRIBUTE])
-
-      root[KEY_ATTRIBUTE] = key
-      root[STATE_ATTRIBUTE] = state
+    def initialize(
+      serializer:,
+      stimulus_controller_identifier:,
+      key_attribute:,
+      state_attribute:
+    )
+      @serializer = serializer
+      @stimulus_controller_identifier = stimulus_controller_identifier
+      @key_attribute = key_attribute
+      @state_attribute = state_attribute
     end
-  end
 
-  private
+    def add_state_to_html(component, html)
+      key, state = serializer.serialize(component)
 
-  def transform_root(component, html)
-    fragment = Nokogiri::HTML::DocumentFragment.parse(html)
-    root, *unexpected_others = fragment.children
+      transform_root(component, html) do |root|
+        root[STIMULUS_CONTROLLER_ATTRIBUTE] =
+          values(
+            stimulus_controller_identifier,
+            root[STIMULUS_CONTROLLER_ATTRIBUTE]
+          )
 
-    raise MultipleRootsError, component if unexpected_others.any?(&:present?)
+        root[key_attribute] = key
+        root[state_attribute] = state
+      end
+    end
 
-    yield root
+    private
 
-    fragment.to_html.html_safe
-  end
+    def transform_root(component, html)
+      fragment = Nokogiri::HTML::DocumentFragment.parse(html)
+      root, *unexpected_others = fragment.children
 
-  def values(*values, delimiter: " ")
-    values
-      .compact
-      .flat_map { |value| value.split(delimiter) }
-      .uniq
-      .join(delimiter)
+      raise MultipleRootsError, component if unexpected_others.any?(&:present?)
+
+      yield root
+
+      fragment.to_html.html_safe
+    end
+
+    def values(*values, delimiter: " ")
+      values
+        .compact
+        .flat_map { |value| value.split(delimiter) }
+        .uniq
+        .join(delimiter)
+    end
   end
 end

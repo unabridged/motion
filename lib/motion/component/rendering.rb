@@ -53,7 +53,6 @@ module Motion
         remove_instance_variable(RERENDER_MARKER_IVAR)
       end
 
-      # TODO: Remove exactly the ivars added by ActionView
       def without_new_instance_variables
         existing_instance_variables = instance_variables
 

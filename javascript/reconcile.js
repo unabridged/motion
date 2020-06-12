@@ -1,8 +1,6 @@
 import morphdom from 'morphdom';
 
-const keyAttr = 'data-motion-key';
-
-export default (rootElement, newState) => {
+export default (rootElement, newState, keyAttr) => {
   if (typeof(newState) !== 'string') {
     throw new TypeError("Expected raw HTML for reconcile newState");
   }

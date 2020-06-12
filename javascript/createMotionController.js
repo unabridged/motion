@@ -1,6 +1,8 @@
 import { Controller } from 'stimulus';
 import { createConsumer } from '@rails/actioncable';
 
+import constants from './constants.json';
+
 import reconcile from './reconcile';
 import serializeEvent from './serializeEvent';
 import addStimulusAction from './addStimulusAction';
@@ -8,21 +10,22 @@ import parseActions from './parseActions';
 
 const channel = 'Motion::Channel';
 const processActionCommand = 'process_action';
-const motionStateAttr = 'data-motion-state';
-const motionActionAttr = 'data-motion';
-const motionComponentAttr = 'data-motion-component';
-const motionDisconnectedAttr = 'data-motion-disconnected';
-
-const motionActionSelector = `[${motionActionAttr}]`;
-const motionComponentSelector = `[${motionComponentAttr}]`;
 
 export default (consumer = createConsumer()) => {
   return class extends Controller {
+    // Define these values here so they can be overwritten in a subclass
+    keyAttr = constants.keyAttr;
+    stateAttr = constants.stateAttr;
+    actionAttr = constants.actionAttr;
+    markerAttr = constants.markerAttr;
+    disconnectedAttr = constants.disconnectedAttr;
+
     connect() {
-      const state = this.element.getAttribute(motionStateAttr);
+      const state = this.element.getAttribute(this.stateAttr);
 
       if (!state) {
-        throw new Error('Motion: Cannot use MotionController without ' + motionStateAttr);
+        console.warn(`Motion: Missing state ${this.stateAttr}`, this.element);
+        return;
       }
 
       this.subscription = consumer.subscriptions.create(
@@ -42,24 +45,28 @@ export default (consumer = createConsumer()) => {
     }
 
     disconnect() {
+      if (!this.subscription) {
+        return;
+      }
+
       this.subscription.unsubscribe();
     }
 
     serverConnected() {
-      this.element.removeAttribute(motionDisconnectedAttr);
+      this.element.removeAttribute(this.disconnectedAttr);
     }
 
     serverDisconnected() {
-      this.element.setAttribute(motionDisconnectedAttr, '');
+      this.element.setAttribute(this.disconnectedAttr, '');
     }
 
     serverRejected() {
-      console.warn('Motion: Failed to mount component on server.');
-      this.element.setAttribute(motionDisconnectedAttr, '');
+      console.warn('Motion: Failed to mount component on server.', this.element);
+      this.element.serverDisconnected();
     }
 
     receive(newState) {
-      reconcile(this.element, newState);
+      reconcile(this.element, newState, this.keyAttr);
       this.setupActions();
     }
 
@@ -78,11 +85,11 @@ export default (consumer = createConsumer()) => {
     }
 
     setupActions() {
-      this.element.setAttribute(motionComponentAttr, '');
+      this.element.setAttribute(this.markerAttr, '');
 
-      for(const element of this.element.querySelectorAll(motionActionSelector)) {
-        if (element.closest(motionComponentSelector) === this.element) {
-          for (const { event, action } of parseActions(element.getAttribute(motionActionAttr))) {
+      for(const element of this.element.querySelectorAll(`[${this.actionAttr}]`)) {
+        if (element.closest(`[${this.markerAttr}]`) === this.element) {
+          for (const { event, action } of parseActions(element.getAttribute(this.actionAttr))) {
             this.setupAction(element, action, event)
           }
         }

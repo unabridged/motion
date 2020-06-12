@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
     "source_code_uri" => spec.homepage
   }
 
-  spec.files = Dir[File.expand_path("lib/**/*", __dir__)]
+  spec.files = Dir[File.expand_path("{lib,javascript}/**/*", __dir__)]
   spec.require_paths = ["lib"]
 
   # Required for the squiggly HEREDOC
