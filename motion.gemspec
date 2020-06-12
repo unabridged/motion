@@ -5,8 +5,8 @@ require_relative "lib/motion/version"
 Gem::Specification.new do |spec|
   spec.name = "motion"
   spec.version = Motion::VERSION
-  spec.authors = ["Alec Larsen"]
-  spec.email = ["alec@unabridgedsoftware.com"]
+  spec.authors = ["Alec Larsen", "Drew Ulmer"]
+  spec.email = ["alec@unabridgedsoftware.com", "drew@unabridgedsoftware.com"]
 
   spec.summary = "Reactive view components written in Ruby for Rails"
   spec.description = <<~TEXT
