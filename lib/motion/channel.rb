@@ -50,7 +50,10 @@ module Motion
     end
 
     def flush_component
-      return if @render_hash == (next_render_hash = calculate_render_hash)
+      next_render_hash = calculate_render_hash
+
+      return if !component.awaiting_forced_rerender? &&
+        @render_hash == next_render_hash
 
       render_component
       setup_broadcasts

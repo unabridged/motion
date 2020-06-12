@@ -5,8 +5,23 @@ require "motion"
 module Motion
   module Component
     module Rendering
+      # Use the presence/absence of the ivar instead of true/false to avoid
+      # extra serialized state (Note that in this scheme, the presence of
+      # the ivar will never be serialized).
+      RERENDER_MARKER_IVAR = :@__awaiting_forced_rerender__
+      private_constant :RERENDER_MARKER_IVAR
+
+      def rerender!
+        instance_variable_set(RERENDER_MARKER_IVAR, true)
+      end
+
+      def awaiting_forced_rerender?
+        instance_variable_defined?(RERENDER_MARKER_IVAR)
+      end
+
       def render_in(view_context)
         raise BlockNotAllowedError, self if block_given?
+        clear_awaiting_forced_rerender!
 
         html = view_context.capture { without_new_instance_variables { super } }
 
@@ -14,6 +29,12 @@ module Motion
       end
 
       private
+
+      def clear_awaiting_forced_rerender!
+        return unless awaiting_forced_rerender?
+
+        remove_instance_variable(RERENDER_MARKER_IVAR)
+      end
 
       # TODO: Remove exactly the ivars added by ActionView
       def without_new_instance_variables
