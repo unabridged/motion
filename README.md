@@ -4,7 +4,8 @@ Motion allows you to build reactive frontend UI components in pure Ruby.
 
 * Plays nicely with the monolith you have.
 * Leans on Stimulus, ActionCable, and ViewComponent for the heavy lifting.
-* Real-time updates to your pages with no JavaScript required.
+* Real-time frontend updates in response to frontend user interaction AND to server-side updates.
+* No JavaScript required!
 
 
 ## Installation
@@ -64,7 +65,37 @@ class IncrementComponent < ViewComponent::Base
 end
 ```
 
+To hook up your mapped actions in your view, you use `data-motion`:
+
+```erb
+<div>
+  <span><%= @total %></span>
+  <%= button_to "Increment", data: { motion: "add" } %>
+</div>
+```
+
+You can trigger action cable broadcasts to channels in the way that you're used to, and wheels will be set in motion:
+
+```ruby
+# rails console, controller, model callback, background job, rake task, etc
+ActionCable.server.broadcast("counter:cleared")
+```
+
 Methods that are mapped using `map_action` or `stream_from` accept an event parameter which is a `Motion::Event`. This object can be used to extract data attribute, values, selected, checked, form state, and more from the frontend state.
+
+```ruby
+  map_action :add_amount
+
+  def add_amount(event)
+    @total += event.dig("target", "value").to_i
+  end
+```
+
+
+## Limitations
+
+* Due to the way that your components are replaced on the page, Motion ViewComponents are limited to a single top-level DOM element. If you have multiple DOM elements in your template at the top level, you must wrap them in a single element.
+
 
 ## Contributing
 
