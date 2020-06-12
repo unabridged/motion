@@ -32,11 +32,14 @@ module Motion
 
     def deserialize(serialized_component)
       state_with_revision = decrypt_and_verify(serialized_component)
-      actual_revision, state = state_with_revision.split(",", 2)
+      serialized_revision, state = state_with_revision.split(",", 2)
+      component = load(state)
 
-      assert_correct_revision!(actual_revision)
-
-      load(state)
+      if revision == serialized_revision
+        component
+      else
+        component.class.upgrade_from(serialized_revision, component)
+      end
     end
 
     private
@@ -44,12 +47,6 @@ module Motion
     def dump_state_with_revision(component)
       state = dump(component)
       "#{revision},#{state}"
-    end
-
-    def assert_correct_revision!(actual_revision)
-      return if actual_revision == revision
-
-      raise IncorrectRevisionError.new(revision, actual_revision)
     end
 
     def dump(component)
