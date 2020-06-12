@@ -18,7 +18,8 @@ module Motion
 
     def unsubscribed
       component.disconnected
-      flush_component
+      # Intentionally don't `flush_component` here because there is nowhere to
+      # send it. The channel is closed.
     end
 
     def process_action(data)
@@ -42,7 +43,7 @@ module Motion
       @component = Motion.serializer.deserialize(params.fetch(:state))
 
       # Intentionally don't `render_component` here because the client's markup
-      # matches their state.
+      # matches the state they just provided (that's where they got it!).
       setup_broadcasts
 
       @render_hash = calculate_render_hash
@@ -57,16 +58,25 @@ module Motion
       @render_hash = next_render_hash
     end
 
+    def calculate_render_hash
+      Motion.serializer.digest(component)
+    end
+
     def setup_broadcasts
       streaming_from(component.broadcasts)
     end
 
     def render_component
-      transmit(Motion.renderer_for(connection).render(component))
+      transmit(renderer.render(component))
     end
 
-    def calculate_render_hash
-      Motion.serializer.digest(component)
+    # Memoize the renderer on the connection so that it can be shared accross
+    # all components. `ActionController::Renderer` is already thread-safe and
+    # designed to be reused.
+    def renderer
+      connection.instance_eval do
+        @_motion_renderer ||= Motion.build_renderer_for(self)
+      end
     end
   end
 end

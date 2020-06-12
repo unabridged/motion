@@ -10,8 +10,7 @@ module Motion
   autoload :Serializer, "motion/serializer"
   autoload :TestHelpers, "motion/test_helpers"
 
-  # TODO: Move configuration options into configuration class
-  # TODO: Move renderer stuff elsewhere
+  # TODO: Move configuration options into configuration class.
   class << self
     def markup_transformer
       @markup_transformer ||= MarkupTransformer.new(serializer: serializer)
@@ -45,15 +44,10 @@ module Motion
       @renderer ||= ApplicationController.renderer
     end
 
-    def renderer_for(connection)
-      connection.instance_exec do
-        @_motion_renderer ||= Motion.build_renderer_for(connection)
-      end
-    end
-
-    def build_renderer_for(connection)
+    # TODO: Where does this go?
+    def build_renderer_for(websocket_connection)
       renderer.new(
-        connection.env.slice(
+        websocket_connection.env.slice(
           Rack::HTTP_COOKIE,
           Rack::RACK_SESSION,
           Rack::RACK_SESSION_OPTIONS,
