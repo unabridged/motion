@@ -28,7 +28,7 @@ module Motion
       raw.fetch("details", {})
     end
 
-    def []=(key)
+    def [](key)
       key = key.to_s
 
       details[key] || details[key.camelize]
