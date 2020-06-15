@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "action_cable/channel"
+require "action_cable"
 
 require "motion"
 require "motion/channel/declarative_streams"
@@ -14,6 +14,8 @@ module Motion
 
       component.connected
       flush_component
+
+      log_info "Connected"
     rescue => error
       reject
 
@@ -23,21 +25,31 @@ module Motion
     def unsubscribed
       component.disconnected
       # no `flush_component` here because the channel is closed
+
+      log_info "Disconnected"
     rescue => error
       log_error(error, "An error occurred while disconnecting the component")
     end
 
     def process_motion(data)
-      component.process_motion data.fetch("name"), Event.from_raw(data["event"])
+      name = data.fetch("name")
+
+      log_timing "Proccessed motion #{name}" do
+        component.process_motion name, Event.from_raw(data["event"])
+      end
+
       flush_component
     rescue => error
-      log_processing_error(error, "the #{data["name"]} motion")
+      log_processing_error(error, "the #{name} motion")
     end
 
     private
 
     def process_broadcast(broadcast, message)
-      component.process_broadcast broadcast, message
+      log_timing "Proccessed broadcast to #{broadcast}" do
+        component.process_broadcast broadcast, message
+      end
+
       flush_component
     rescue => error
       log_processing_error(error, "a broadcast to #{broadcast}")
@@ -73,7 +85,7 @@ module Motion
     end
 
     def render_component
-      transmit(renderer.render(component))
+      transmit(log_timing("Rendered") { renderer.render(component) })
     end
 
     # Memoize the renderer on the connection so that it can be shared accross
@@ -91,21 +103,60 @@ module Motion
       raise IncompatibleClientError.new(Motion::VERSION, client_version)
     end
 
+    # TODO: Move this elsewhere
+    def log_timing(action)
+      start = Time.now
+
+      yield
+    ensure
+      duration_ms = (Time.now - start) * 1000
+      duration_human =
+        if duration_ms < 0.1
+          "less than 0.1ms"
+        else
+          "#{duration_ms.round(1)}ms"
+        end
+
+      log_info("#{action} (in #{duration_human})")
+    end
+
+    # TODO: Move this elsewhere
+    def log_info(message)
+      Rails.logger.info("[#{log_tag}] #{message}")
+    end
+
+    # TODO: Move this elsewhere
     def log_processing_error(error, target)
       log_error(error, "An error occurred while processing #{target}")
     end
 
     # TODO: Move this elsewhere
     def log_error(error, message)
-      tag = component ? component.class.name : "Motion"
-
-      logger.error(
+      Rails.logger.error(
         [
-          "[#{tag}] #{message}:",
+          "[#{log_tag}] #{message}:",
           "  #{error.class}: #{error.message}",
           *error.backtrace.first(5).map { |line| "    #{line}" }
         ].join("\n")
       )
+    end
+
+    # TODO: Move this elsewhere
+    def log_tag
+      component ? "#{component.class}:#{component.object_id}" : "Motion"
+    end
+
+    # TODO: Make this less hacky
+    class Suppressor < SimpleDelegator
+      def info(*)
+      end
+
+      def debug(*)
+      end
+    end
+
+    def logger
+      @logger ||= Suppressor.new(super)
     end
   end
 end
