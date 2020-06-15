@@ -16,10 +16,12 @@ module Motion
 
       component.connected
       flush_component
+    ensure
+      reject unless component
     end
 
     def unsubscribed
-      component&.disconnected
+      component.disconnected
 
       # Intentionally don't `flush_component` here because there is nowhere to
       # send it. The channel is closed.
