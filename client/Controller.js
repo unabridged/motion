@@ -53,7 +53,7 @@ export default class extends Controller {
       'process_motion',
       {
         name,
-        event: serializeEvent(event, extraDataForEvent),
+        event: event && serializeEvent(event, extraDataForEvent),
       },
     );
   }

@@ -19,17 +19,17 @@ module Motion
     end
 
     def unsubscribed
-      component.disconnected
+      component&.disconnected
 
       # Intentionally don't `flush_component` here because there is nowhere to
       # send it. The channel is closed.
     end
 
     def process_motion(data)
-      motion = data.fetch("name")
-      event = data["event"]
+      name = data.fetch("name")
+      event = Event.from_raw(data["event"])
 
-      component.process_motion(motion, event)
+      component.process_motion(name, event)
       flush_component
     end
 

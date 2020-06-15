@@ -7,6 +7,8 @@ module Motion
   autoload :Channel, "motion/channel"
   autoload :Component, "motion/component"
   autoload :Configuration, "motion/configuration"
+  autoload :Element, "motion/element"
+  autoload :Event, "motion/event"
   autoload :MarkupTransformer, "motion/markup_transformer"
   autoload :Railtie, "motion/railtie"
   autoload :Serializer, "motion/serializer"
