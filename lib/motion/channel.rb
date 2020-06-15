@@ -62,7 +62,7 @@ module Motion
     end
 
     def setup_broadcasts
-      streaming_from(component.broadcasts)
+      streaming_from(component.broadcasts, to: :process_broadcast)
     end
 
     def render_component

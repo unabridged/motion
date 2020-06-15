@@ -5,16 +5,6 @@ require "motion"
 module Motion
   class Channel < ApplicationCable::Channel
     module DeclarativeStreams
-      # This is a list of all of the ways that ActionCable might call into the
-      # channel *after* initialization.
-      ACTION_CABLE_ENTRYPOINTS = %i[
-        subscribe_to_channel
-        unsubscribe_from_channel
-        perform_action
-      ].freeze
-
-      private_constant :ACTION_CABLE_ENTRYPOINTS
-
       def initialize(*)
         super
 
@@ -27,30 +17,44 @@ module Motion
         # Streams that we are currently interested in
         @_declarative_streams = Set.new
 
+        # The method we are currently routing those streams to
+        @_declarative_stream_target = nil
+
         # Streams that we are setup to listen to. Sadly, there is no public API
         # to stop streaming so this will only grow.
         @_declarative_stream_proxies = Set.new
       end
 
-      # Guard the ActionCable entry points
-      ACTION_CABLE_ENTRYPOINTS.each do |method|
-        module_eval <<~RUBY, __FILE__, __LINE__ + 1
-          def #{method}(*)
-            @_declarative_stream_mutex.synchronize { super }
-          end
-        RUBY
+      # Synchronize all ActionCable entry points (after initialization).
+      def subscribe_to_channel
+        @_declarative_stream_mutex.synchronize { super }
+      end
+
+      def unsubscribe_from_channel
+        @_declarative_stream_mutex.synchronize { super }
+      end
+
+      def perform_action(_data)
+        @_declarative_stream_mutex.synchronize { super }
       end
 
       private
 
-      # Routes provided broadcasts to `#process_broadcast`
-      def streaming_from(broadcasts)
+      # Declaratively routes provided broadcasts to the provided method.
+      def streaming_from(broadcasts, to:)
         @_declarative_streams.replace(broadcasts)
+        @_declarative_stream_target = to
+
         @_declarative_streams.each(&method(:_ensure_declarative_stream_proxy))
       end
 
-      # Override in subclass
-      def process_broadcast(_broadcast, _message)
+      def stop_all_streams
+        super
+
+        @_declarative_streams.clear
+        @_declarative_stream_target = nil
+
+        @_declarative_stream_proxies.clear
       end
 
       def _ensure_declarative_stream_proxy(broadcast)
@@ -60,7 +64,7 @@ module Motion
           next unless @_declarative_streams.include?(broadcast)
 
           @_declarative_stream_mutex.synchronize do
-            process_broadcast(broadcast, message)
+            send(@_declarative_stream_target, broadcast, message)
           end
         end
       end
