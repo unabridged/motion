@@ -14,8 +14,10 @@ module Motion
 
       component.connected
       flush_component
-    ensure
-      reject unless component
+    rescue
+      reject
+
+      raise
     end
 
     def unsubscribed
