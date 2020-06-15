@@ -34,10 +34,10 @@ export default class extends Controller {
   getExtraDataForEvent(_event) {}
 
   // Lifecycle callbacks (dispatch DOM events by default)
-  beforeConnect()   { dispatchEvent(this.element, 'motion:before-connected'); }
+  beforeConnect()   { dispatchEvent(this.element, 'motion:before-connect'); }
   connected()       { dispatchEvent(this.element, 'motion:connected'); }
   connectFailed()   { dispatchEvent(this.element, 'motion:connect-failed'); }
-  disconnected()    { dispatchEvent(this.element, 'motion:disconneced'); }
+  disconnected()    { dispatchEvent(this.element, 'motion:disconnected'); }
   beforeRender()    { dispatchEvent(this.element, 'motion:before-render'); }
   rendered()        { dispatchEvent(this.element, 'motion:rendered'); }
 
