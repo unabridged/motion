@@ -3,6 +3,7 @@ import { Controller } from 'stimulus';
 import { version } from './package.json';
 
 import createActionManager from './createActionManager';
+import createNavigationGuard from './createNavigationGuard';
 import dispatchEvent from './dispatchEvent';
 import getFallbackConsumer from './getFallbackConsumer';
 import reconcile from './reconcile';
@@ -13,11 +14,13 @@ export default class extends Controller {
   connect() {
     this._setupActionManager();
     this._setupSubscription();
+    this._setupNavigationGuard();
   }
 
   disconnect() {
     this._teardownActionManager();
     this._teardownSubscription();
+    this._teardownNavigationGuard();
   }
 
   // == OVERRIDE FREELY IN SUBCLASSES ==========================================
@@ -56,6 +59,10 @@ export default class extends Controller {
         event: event && serializeEvent(event, extraDataForEvent),
       },
     );
+
+    if (event) {
+      event.preventDefault();
+    }
   }
 
   // == PRIVATE ================================================================
@@ -117,6 +124,29 @@ export default class extends Controller {
 
     this._subscription.unsubscribe();
     this._subscription = null;
+  }
+
+  _setupNavigationGuard() {
+    if (this._navigationGuard) {
+      return;
+    }
+
+    // Disconncting the component when the browser starts to navigate away works
+    // around changes flashing just before the page disappears because the
+    // controller action that they are navigating to has some effect on the
+    // component.
+    this._navigationGuard = createNavigationGuard(() => {
+      this._teardownSubscription();
+    });
+  }
+
+  _teardownNavigationGuard() {
+    if (!this._navigationGuard) {
+      return;
+    }
+
+    this._navigationGuard.stop();
+    this._navigationGuard = null;
   }
 
   _render(newState) {
