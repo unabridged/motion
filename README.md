@@ -1,19 +1,21 @@
 # Motion
 
-Motion allows you to build reactive frontend UI components in pure Ruby.
+Motion allows you to build reactive frontend UI components in your Rails application using pure Ruby.
 
-* Plays nicely with the monolith you have.
+* Plays nicely with the Rails monolith you have.
 * Leans on Stimulus, ActionCable, and ViewComponent for the heavy lifting.
+* Supports graceful degradation when JavaScript is turned off.
 * Real-time frontend updates in response to frontend user interaction AND to server-side updates.
 * No JavaScript required!
 
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Motion has ruby and javascript parts, execute both of these commands:
 
-```ruby
-gem "motion"
+```sh
+bundle add motion
+yarn add motion
 ```
 
 Motion also relies on but does not currently enforce the following libraries:
