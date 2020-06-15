@@ -68,8 +68,11 @@ module Motion
       return @form_data if defined?(@form_data)
 
       @form_data =
-        (from_data = raw["formData"]) &&
-        ActionController::Parameters.new(from_data)
+        ActionController::Parameters.new(
+          Rack::Utils.parse_nested_query(
+            raw.fetch("formData", "")
+          )
+        )
     end
   end
 end
