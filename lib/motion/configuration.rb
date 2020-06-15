@@ -4,12 +4,6 @@ require "motion"
 
 module Motion
   class Configuration
-    JS_CONSTANTS = JSON.parse(File.read(File.expand_path(
-      "../../javascript/constants.json", __dir__
-    ))).freeze
-
-    private_constant :JS_CONSTANTS
-
     class << self
       attr_reader :options
 
@@ -69,9 +63,9 @@ module Motion
       warn <<~MSG # TODO: Better message (Focus on "How do I fix this?")
         Motion is automatically inferring the application's revision from git.
         Depending on your deployment, this may not work for you in production.
-        If it does, put "Motion.revision = `git rev-parse HEAD`.chomp" in your
-        initializer. If it does not, do something else (probably read an env
-        var or something).
+        If it does, add "config.revision = `git rev-parse HEAD`.chomp" to your
+        Motion initializer. If it does not, do something else (probably read an
+        env var or something).
       MSG
 
       `git rev-parse HEAD`.chomp
@@ -80,20 +74,22 @@ module Motion
     option :renderer_for_connection_proc do
       require "rack"
 
-      ->(connection) do
+      ->(websocket_connection) do
         ApplicationController.renderer.new(
-          connection.env.slice(
+          websocket_connection.env.slice(
             Rack::HTTP_COOKIE,
-            Rack::RACK_SESSION,
-            Rack::RACK_SESSION_OPTIONS,
-            Rack::RACK_SESSION_UNPACKED_COOKIE_DATA
+            Rack::RACK_SESSION
           )
         )
       end
     end
 
     option(:stimulus_controller_identifier) { "motion" }
-    option(:key_attribute) { JS_CONSTANTS.fetch("keyAttr") }
-    option(:state_attribute) { JS_CONSTANTS.fetch("stateAttr") }
+    option(:key_attribute) { "data-motion-key" }
+    option(:state_attribute) { "data-motion-state" }
+
+    # This is included for completeness. It is not currently used internally by
+    # Motion, but it might be required for building view helpers in the future.
+    option(:action_attribute) { "data-motion" }
   end
 end

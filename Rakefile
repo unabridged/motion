@@ -15,7 +15,11 @@ namespace :release do
   end
 
   task :npm_publish do
-    sh "bin/yarn publish --new-version '#{Motion::VERSION}' --access public"
+    sh "bin/yarn " \
+      "publish " \
+      "--cwd ./client " \
+      "--new-version '#{Motion::VERSION}' " \
+      "--access public"
   end
 end
 

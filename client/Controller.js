@@ -1,0 +1,129 @@
+import { Controller } from 'stimulus';
+
+import { version } from './package.json';
+
+import createActionManager from './createActionManager';
+import dispatchEvent from './dispatchEvent';
+import getFallbackConsumer from './getFallbackConsumer';
+import reconcile from './reconcile';
+import serializeEvent from './serializeEvent';
+
+export default class extends Controller {
+  // == STIMULUS CALLBACKS =====================================================
+  connect() {
+    this._setupActionManager();
+    this._setupSubscription();
+  }
+
+  disconnect() {
+    this._teardownActionManager();
+    this._teardownSubscription();
+  }
+
+  // == OVERRIDE FREELY IN SUBCLASSES ==========================================
+  keyAttribute = "data-motion-key";     // <--> `Motion.config.key_attribute`
+  stateAttribute = "data-motion-state"; // <--> `Motion.config.state_attribute`
+  actionAttribute = "data-motion";      // <--> `Motion.config.action_attribute`
+
+  // Override with the application's consumer to avoid an extra websocket
+  getConsumer() {
+    return getFallbackConsumer();
+  }
+
+  // Available at `Motion::Event#extra_data`
+  getExtraDataForEvent(_event) {}
+
+  // Lifecycle callbacks (dispatch DOM events by default)
+  beforeConnect()   { dispatchEvent(this.element, 'motion:before-connected'); }
+  connected()       { dispatchEvent(this.element, 'motion:connected'); }
+  connectFailed()   { dispatchEvent(this.element, 'motion:connect-failed'); }
+  disconnected()    { dispatchEvent(this.element, 'motion:disconneced'); }
+  beforeRender()    { dispatchEvent(this.element, 'motion:before-render'); }
+  rendered()        { dispatchEvent(this.element, 'motion:rendered'); }
+
+  // == USE FREELY IN SUBCLASSES ===============================================
+  performMotion(name, event = null) {
+    if (!this._subscription) {
+      return;
+    }
+
+    const extraDataForEvent = event && this.getExtraDataForEvent(event);
+
+    this._subscription.perform(
+      'process_action',
+      {
+        name,
+        event: serializeEvent(event, extraDataForEvent),
+      },
+    );
+  }
+
+  // == PRIVATE ================================================================
+  _setupActionManager() {
+    if (this._actionManager) {
+      return;
+    }
+
+    this._actionManager = createActionManager(
+      this,
+      {
+        target: 'performMotion',
+        attribute: this.actionAttribute
+      },
+    );
+  }
+
+  _teardownActionManager() {
+    if (!this._actionManager) {
+      return;
+    }
+
+    this._actionManager.stop();
+    this._actionManager = null;
+  }
+
+  _setupSubscription() {
+    if (this._subscription) {
+      return;
+    }
+
+    this.beforeConnect();
+
+    const state = this.element.getAttribute(this.stateAttribute);
+
+    if (!state) {
+      return this.connectFailed();
+    }
+
+    this._subscription = this.getConsumer().subscriptions.create(
+      {
+        channel: 'Motion::Channel',
+        version,
+        state,
+      },
+      {
+        connected: () => this.connected(),
+        rejected: () => this.connectFailed(),
+        disconnected: () => this.disconnected(),
+        received: newState => this._render(newState),
+      },
+    );
+  }
+
+  _teardownSubscription() {
+    if (!this._subscription) {
+      return;
+    }
+
+    this._subscription.unsubscribe();
+    this._subscription = null;
+  }
+
+  _render(newState) {
+    this.beforeRender();
+
+    reconcile(this.element, newState, this.keyAttribute);
+
+    this.rendered();
+  }
+}

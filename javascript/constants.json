@@ -1,7 +1,0 @@
-{
-    "keyAttr": "data-motion-key",
-    "stateAttr": "data-motion-state",
-    "actionAttr": "data-motion",
-    "markerAttr": "data-motion-component",
-    "disconnectedAttr": "data-motion-disconnected"
-}

@@ -10,6 +10,8 @@ module Motion
     include DeclarativeStreams
 
     def subscribed
+      assert_compatible_client!
+
       initialize_component
 
       component.connected
@@ -18,6 +20,7 @@ module Motion
 
     def unsubscribed
       component.disconnected
+
       # Intentionally don't `flush_component` here because there is nowhere to
       # send it. The channel is closed.
     end
@@ -35,6 +38,12 @@ module Motion
     def process_broadcast(broadcast, message)
       component.process_broadcast(broadcast, message)
       flush_component
+    end
+
+    def assert_compatible_client!
+      return if Motion::VERSION == (client_version = params.fetch(:version))
+
+      raise IncompatibleClientError.new(Motion::VERSION, client_version)
     end
 
     attr_reader :component

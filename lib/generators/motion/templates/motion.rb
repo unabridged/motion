@@ -6,14 +6,17 @@ Motion.configure do |config|
 
   # config.revision = `git rev-parse HEAD`.chomp
 
-  # config.renderer_for_connection_proc = ->(connection) do
+  # config.renderer_for_connection_proc = ->(websocket_connection) do
   #   ApplicationController.renderer.new(
-  #     connection.env.slice(
+  #     websocket_connection.env.slice(
   #       Rack::HTTP_COOKIE,
   #       Rack::RACK_SESSION,
-  #       Rack::RACK_SESSION_OPTIONS,
-  #       Rack::RACK_SESSION_UNPACKED_COOKIE_DATA
   #     )
   #   )
   # end
+
+  # config.stimulus_controller_identifier = "motion"
+  # config.key_attribute = "data-motion-key"
+  # config.state_attribute = "data-motion-state"
+  # config.action_attribute = "data-motion"
 end

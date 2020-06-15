@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'rails/generators/base'
+require "rails/generators/base"
 
 module Motion
   module Generators
     class InstallGenerator < Rails::Generators::Base
-      source_root File.expand_path('templates', __dir__)
+      source_root File.expand_path("templates", __dir__)
 
       desc "Installs Motion into your application."
 

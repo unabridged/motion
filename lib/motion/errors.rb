@@ -107,11 +107,24 @@ module Motion
   end
 
   class AlreadyConfiguredError < Error
-    def initialize(option)
+    def initialize
       super(<<~MSG)
         Motion is already configured.
 
         Fix: Move all Motion config to config/initializers/motion.rb.
+      MSG
+    end
+  end
+
+  class IncompatibleClientError < Error
+    attr_reader :expected_version,
+      :actual_version
+
+    def initialize(expected_version, actual_version)
+      super(<<~MSG)
+        Expected client version #{actual_version}, but got #{expected_version}.
+
+        Fix: Run `bin/yarn @unabridged/motion@#{expected_version}`
       MSG
     end
   end
