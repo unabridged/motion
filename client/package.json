@@ -1,5 +1,5 @@
 {
-  "name": "@unabridged/motion",
+  "name": "motion-client",
   "version": "0.0.1",
   "description": "Reactive view components written in Ruby for Rails",
   "main": "index.js",
@@ -9,7 +9,7 @@
     "morphdom": "^2.6.1"
   },
   "scripts": {
-    "postinstall": "echo \"Friendly reminder: When updating the @unabridged/motion NPM package, don't forget to update the Ruby gem as well.\"; exit 0"
+    "postinstall": "echo \"Friendly reminder: When updating the motion-client NPM package, don't forget to update the Ruby gem as well.\"; exit 0"
   },
   "repository": {
     "type": "git",

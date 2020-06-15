@@ -124,7 +124,7 @@ module Motion
       super(<<~MSG)
         Expected client version #{actual_version}, but got #{expected_version}.
 
-        Fix: Run `bin/yarn @unabridged/motion@#{expected_version}`
+        Fix: Run `bin/yarn motion-client@#{expected_version}`
       MSG
     end
   end
