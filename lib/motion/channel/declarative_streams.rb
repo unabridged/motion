@@ -46,16 +46,16 @@ module Motion
       # Routes provided broadcasts to `#process_broadcast`
       def streaming_from(broadcasts)
         @_declarative_streams.replace(broadcasts)
-
-        (@_declarative_streams - @_declarative_stream_proxies)
-          .each(&method(:_setup_declarative_stream_proxy))
+        @_declarative_streams.each(&method(:_ensure_declarative_stream_proxy))
       end
 
       # Override in subclass
       def process_broadcast(_broadcast, _message)
       end
 
-      def _setup_declarative_stream_proxy(broadcast)
+      def _ensure_declarative_stream_proxy(broadcast)
+        return unless @_declarative_stream_proxies.add?(broadcast)
+
         stream_from(broadcast) do |message|
           next unless @_declarative_streams.include?(broadcast)
 
