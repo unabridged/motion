@@ -66,6 +66,15 @@ module Motion
           @_declarative_stream_mutex.synchronize do
             send(@_declarative_stream_target, broadcast, message)
           end
+        rescue Exception => e # rubocop:disable Lint/RescueException
+          # It is very, very important that we do not allow an exception to
+          # escape here as the internals of ActionCable will stop processing
+          # the broadcast.
+
+          logger.error(
+            "There was an exception - #{e.class}(#{e.message})\n" +
+            e.backtrace.join("\n")
+          )
         end
       end
     end
