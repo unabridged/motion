@@ -41,20 +41,10 @@ module Motion
     end
 
     class DataAttributes
-      include Enumerable
-
       attr_reader :element
 
       def initialize(element)
         @element = element
-      end
-
-      def each
-        element.attributes.each do |attribute, value|
-          next unless attribute.starts_with?("data-")
-
-          yield attribute.delete_prefix("data-"), value
-        end
       end
 
       def [](data)

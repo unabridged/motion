@@ -10,8 +10,6 @@ module Motion
     include DeclarativeStreams
 
     def subscribed
-      assert_compatible_client!
-
       initialize_component
 
       component.connected
@@ -22,39 +20,29 @@ module Motion
 
     def unsubscribed
       component.disconnected
-
-      # Intentionally don't `flush_component` here because there is nowhere to
-      # send it. The channel is closed.
+      # no `flush_component` here because the channel is closed
     end
 
     def process_motion(data)
-      name = data.fetch("name")
-      event = Event.from_raw(data["event"])
-
-      component.process_motion(name, event)
+      component.process_motion data.fetch("name"), Event.from_raw(data["event"])
       flush_component
     end
 
     private
 
     def process_broadcast(broadcast, message)
-      component.process_broadcast(broadcast, message)
+      component.process_broadcast broadcast, message
       flush_component
-    end
-
-    def assert_compatible_client!
-      return if Motion::VERSION == (client_version = params.fetch(:version))
-
-      raise IncompatibleClientError.new(Motion::VERSION, client_version)
     end
 
     attr_reader :component
 
     def initialize_component
+      assert_compatible_client!
+
       @component = Motion.serializer.deserialize(params.fetch(:state))
 
-      # Intentionally don't `render_component` here because the client's markup
-      # matches the state they just provided (that's where they got it!).
+      # no `render_component` here because the initial markup was already sent
       setup_broadcasts
 
       @render_hash = component.render_hash
@@ -87,6 +75,12 @@ module Motion
       connection.instance_eval do
         @_motion_renderer ||= Motion.build_renderer_for(self)
       end
+    end
+
+    def assert_compatible_client!
+      return if Motion::VERSION == (client_version = params.fetch(:version))
+
+      raise IncompatibleClientError.new(Motion::VERSION, client_version)
     end
   end
 end
