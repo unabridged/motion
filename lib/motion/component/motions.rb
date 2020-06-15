@@ -34,10 +34,12 @@ module Motion
           raise MotionNotMapped.new(self, motion)
         end
 
-        if method(handler).arity.zero?
-          send(handler)
-        else
-          send(handler, event)
+        _with_current_event(event) do
+          if method(handler).arity.zero?
+            send(handler)
+          else
+            send(handler, event)
+          end
         end
       end
 
@@ -54,6 +56,18 @@ module Motion
         return @_motion_handlers if defined?(@_motion_handlers)
 
         self.class._motion_handlers
+      end
+
+      def current_event
+        @_current_event
+      end
+
+      def _with_current_event(event)
+        @_current_event = event
+
+        yield
+      ensure
+        remove_instance_variable(:@_current_event)
       end
     end
   end
