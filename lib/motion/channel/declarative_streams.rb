@@ -26,15 +26,15 @@ module Motion
       end
 
       # Synchronize all ActionCable entry points (after initialization).
-      def subscribe_to_channel
+      def subscribe_to_channel(*)
         @_declarative_stream_mutex.synchronize { super }
       end
 
-      def unsubscribe_from_channel
+      def unsubscribe_from_channel(*)
         @_declarative_stream_mutex.synchronize { super }
       end
 
-      def perform_action(_data)
+      def perform_action(*)
         @_declarative_stream_mutex.synchronize { super }
       end
 
