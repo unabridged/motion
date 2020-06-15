@@ -14,20 +14,24 @@ module Motion
 
       component.connected
       flush_component
-    rescue
+    rescue => error
       reject
 
-      raise
+      log_error(error, "An error occurred while connecting the component")
     end
 
     def unsubscribed
       component.disconnected
       # no `flush_component` here because the channel is closed
+    rescue => error
+      log_error(error, "An error occurred while disconnecting the component")
     end
 
     def process_motion(data)
       component.process_motion data.fetch("name"), Event.from_raw(data["event"])
       flush_component
+    rescue => error
+      log_processing_error(error, "the #{data["name"]} motion")
     end
 
     private
@@ -35,6 +39,8 @@ module Motion
     def process_broadcast(broadcast, message)
       component.process_broadcast broadcast, message
       flush_component
+    rescue => error
+      log_processing_error(error, "a broadcast to #{broadcast}")
     end
 
     attr_reader :component
@@ -83,6 +89,23 @@ module Motion
       return if Motion::VERSION == (client_version = params.fetch(:version))
 
       raise IncompatibleClientError.new(Motion::VERSION, client_version)
+    end
+
+    def log_processing_error(error, target)
+      log_error(error, "An error occurred while processing #{target}")
+    end
+
+    # TODO: Move this elsewhere
+    def log_error(error, message)
+      tag = component ? component.class.name : "Motion"
+
+      logger.error(
+        [
+          "[#{tag}] #{message}:",
+          "  #{error.class}: #{error.message}",
+          *error.backtrace.first(5).map { |line| "    #{line}" }
+        ].join("\n")
+      )
     end
   end
 end
