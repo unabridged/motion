@@ -25,11 +25,11 @@ module Motion
       # send it. The channel is closed.
     end
 
-    def process_action(data)
-      action = data.fetch("name")
+    def process_motion(data)
+      motion = data.fetch("name")
       event = data["event"]
 
-      component.process_action(action, event)
+      component.process_motion(motion, event)
       flush_component
     end
 

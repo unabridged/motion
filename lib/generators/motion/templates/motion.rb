@@ -18,5 +18,5 @@ Motion.configure do |config|
   # config.stimulus_controller_identifier = "motion"
   # config.key_attribute = "data-motion-key"
   # config.state_attribute = "data-motion-state"
-  # config.action_attribute = "data-motion"
+  # config.motion_attribute = "data-motion"
 end

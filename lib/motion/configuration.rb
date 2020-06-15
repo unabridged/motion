@@ -90,6 +90,6 @@ module Motion
 
     # This is included for completeness. It is not currently used internally by
     # Motion, but it might be required for building view helpers in the future.
-    option(:action_attribute) { "data-motion" }
+    option(:motion_attribute) { "data-motion" }
   end
 end

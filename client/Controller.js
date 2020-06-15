@@ -23,7 +23,7 @@ export default class extends Controller {
   // == OVERRIDE FREELY IN SUBCLASSES ==========================================
   keyAttribute = "data-motion-key";     // <--> `Motion.config.key_attribute`
   stateAttribute = "data-motion-state"; // <--> `Motion.config.state_attribute`
-  actionAttribute = "data-motion";      // <--> `Motion.config.action_attribute`
+  motionAttribute = "data-motion";      // <--> `Motion.config.motion_attribute`
 
   // Override with the application's consumer to avoid an extra websocket
   getConsumer() {
@@ -50,7 +50,7 @@ export default class extends Controller {
     const extraDataForEvent = event && this.getExtraDataForEvent(event);
 
     this._subscription.perform(
-      'process_action',
+      'process_motion',
       {
         name,
         event: serializeEvent(event, extraDataForEvent),
@@ -68,7 +68,7 @@ export default class extends Controller {
       this,
       {
         target: 'performMotion',
-        attribute: this.actionAttribute
+        attribute: this.motionAttribute
       },
     );
   }

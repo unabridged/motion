@@ -16,19 +16,19 @@ module Motion
 
   class ComponentRenderingError < ComponentError; end
 
-  class ActionNotMapped < ComponentError
-    attr_reader :action
+  class MotionNotMapped < ComponentError
+    attr_reader :motion
 
-    def initialize(component, action)
+    def initialize(component, motion)
       super(component, <<~MSG)
-        No component action handler mapped for action '#{action}' in component #{component.class}.
+        No component motion handler mapped for motion '#{motion}' in component #{component.class}.
 
         Fix: Add the following to #{component.class}:
 
-        map_action :#{action}
+        map_motion :#{motion}
       MSG
 
-      @action = action
+      @motion = motion
     end
   end
 
