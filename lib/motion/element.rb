@@ -40,6 +40,10 @@ module Motion
       attributes[key] || attributes[key.tr("_", "-")]
     end
 
+    def id
+      self[:id]
+    end
+
     class DataAttributes
       attr_reader :element
 
