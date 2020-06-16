@@ -14,10 +14,11 @@ module Motion
       :state_attribute
 
     def initialize(
-      serializer:,
-      stimulus_controller_identifier:,
-      key_attribute:,
-      state_attribute:
+      serializer: Motion.serializer,
+      stimulus_controller_identifier:
+        Motion.config.stimulus_controller_identifier,
+      key_attribute: Motion.config.key_attribute,
+      state_attribute: Motion.config.state_attribute
     )
       @serializer = serializer
       @stimulus_controller_identifier = stimulus_controller_identifier

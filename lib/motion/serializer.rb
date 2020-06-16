@@ -12,7 +12,10 @@ module Motion
 
     attr_reader :secret, :revision
 
-    def initialize(secret:, revision:)
+    def initialize(
+      secret: Motion.config.secret,
+      revision: Motion.config.revision
+    )
       @secret = secret
       @revision = revision
     end

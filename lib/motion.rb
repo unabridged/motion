@@ -27,21 +27,11 @@ module Motion
   singleton_class.alias_method :configuration, :config
 
   def self.serializer
-    @serializer ||= Serializer.new(secret: config.secret, revision: revision)
+    @serializer ||= Serializer.new
   end
 
   def self.markup_transformer
-    @markup_transformer ||=
-      MarkupTransformer.new(
-        serializer: serializer,
-        stimulus_controller_identifier: config.stimulus_controller_identifier,
-        key_attribute: config.key_attribute,
-        state_attribute: config.state_attribute
-      )
-  end
-
-  def self.revision
-    config.revision
+    @markup_transformer ||= MarkupTransformer.new
   end
 
   def self.build_renderer_for(websocket_connection)

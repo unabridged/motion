@@ -8,6 +8,8 @@ require "motion/channel/declarative_streams"
 require "motion/channel/logging"
 
 module Motion
+  # This class has gotten a bit out of control (especially with the logging).
+  # Perhaps the logging and component lifecycle management can be factored out.
   class Channel < ApplicationCable::Channel
     include ActionCableLogSuppression
     include DeclarativeStreams
@@ -104,6 +106,8 @@ module Motion
       end
     end
 
+    # TODO: This is too restrictive. Introduce a protocol version and support
+    # older versions of the client that have a compatible protocol.
     def assert_compatible_client!
       return if Motion::VERSION == (client_version = params.fetch(:version))
 
