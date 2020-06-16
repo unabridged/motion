@@ -27,6 +27,9 @@ module Motion
     end
 
     def unsubscribed
+      # unsubscribed will still be called when the subscription is rejected
+      return unless component
+
       component.disconnected
       # no `flush_component` here because the channel is closed
 
