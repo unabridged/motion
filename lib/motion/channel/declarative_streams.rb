@@ -10,9 +10,9 @@ module Motion
 
         # Allowing actions to be bound to streams (as this module provides)
         # introduces the possibiliy of multiple threads accessing user code at
-        # the same time. Protect user code with a Mutex so we only have to worry
-        # about that here.
-        @_declarative_stream_mutex = Mutex.new
+        # the same time. Protect user code with a Monitor so we only have to
+        # worry about that here.
+        @_declarative_stream_monitor = Monitor.new
 
         # Streams that we are currently interested in
         @_declarative_streams = Set.new
@@ -27,24 +27,15 @@ module Motion
 
       # Synchronize all ActionCable entry points (after initialization).
       def subscribe_to_channel(*)
-        @_declarative_stream_mutex.synchronize do
-          @_subscribing_to_channel = true
-
-          super
-        ensure
-          @_subscribing_to_channel = false
-        end
+        @_declarative_stream_monitor.synchronize { super }
       end
 
       def unsubscribe_from_channel(*)
-        return super if @_subscribing_to_channel &&
-          @_declarative_stream_mutex.owned?
-
-        @_declarative_stream_mutex.synchronize { super }
+        @_declarative_stream_monitor.synchronize { super }
       end
 
       def perform_action(*)
-        @_declarative_stream_mutex.synchronize { super }
+        @_declarative_stream_monitor.synchronize { super }
       end
 
       private
@@ -72,7 +63,7 @@ module Motion
         stream_from(broadcast) do |message|
           next unless @_declarative_streams.include?(broadcast)
 
-          @_declarative_stream_mutex.synchronize do
+          @_declarative_stream_monitor.synchronize do
             send(@_declarative_stream_target, broadcast, message)
           end
         rescue Exception => e # rubocop:disable Lint/RescueException
