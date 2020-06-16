@@ -3,11 +3,15 @@
 require "action_cable"
 
 require "motion"
+require "motion/channel/action_cable_log_suppression"
 require "motion/channel/declarative_streams"
+require "motion/channel/logging"
 
 module Motion
   class Channel < ApplicationCable::Channel
+    include ActionCableLogSuppression
     include DeclarativeStreams
+    include Logging
 
     def subscribed
       initialize_component
@@ -101,62 +105,6 @@ module Motion
       return if Motion::VERSION == (client_version = params.fetch(:version))
 
       raise IncompatibleClientError.new(Motion::VERSION, client_version)
-    end
-
-    # TODO: Move this elsewhere
-    def log_timing(action)
-      start = Time.now
-
-      yield
-    ensure
-      duration_ms = (Time.now - start) * 1000
-      duration_human =
-        if duration_ms < 0.1
-          "less than 0.1ms"
-        else
-          "#{duration_ms.round(1)}ms"
-        end
-
-      log_info("#{action} (in #{duration_human})")
-    end
-
-    # TODO: Move this elsewhere
-    def log_info(message)
-      Rails.logger.info("[#{log_tag}] #{message}")
-    end
-
-    # TODO: Move this elsewhere
-    def log_processing_error(error, target)
-      log_error(error, "An error occurred while processing #{target}")
-    end
-
-    # TODO: Move this elsewhere
-    def log_error(error, message)
-      Rails.logger.error(
-        [
-          "[#{log_tag}] #{message}:",
-          "  #{error.class}: #{error.message}",
-          *error.backtrace.first(5).map { |line| "    #{line}" }
-        ].join("\n")
-      )
-    end
-
-    # TODO: Move this elsewhere
-    def log_tag
-      component ? "#{component.class}:#{component.object_id}" : "Motion"
-    end
-
-    # TODO: Make this less hacky
-    class Suppressor < SimpleDelegator
-      def info(*)
-      end
-
-      def debug(*)
-      end
-    end
-
-    def logger
-      @logger ||= Suppressor.new(super)
     end
   end
 end
