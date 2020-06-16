@@ -57,9 +57,16 @@ export class ActionManager {
   }
 
   _findAllElementsWithAction() {
-      return Array
-        .from(this.controller.element.querySelectorAll(`[${this.attribute}]`))
-        .filter(element => this._isReceiverForAction(element));
+    const { element } = this.controller;
+
+    const selector = `[${this.attribute}]`;
+    const candidates = Array.from(element.querySelectorAll(selector));
+
+    if (element.matches(selector)) {
+      candidates.push(element);
+    }
+
+    return candidates.filter(candidate => this._isReceiverForAction(candidate));
   }
 
   _isReceiverForAction(element) {
