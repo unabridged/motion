@@ -41,7 +41,7 @@ This will install 2 files, both of which you are free to leave alone. If you alr
 
 ## How does it work?
 
-Motion allows you to mount special DOM elements (henceforth "Motion components") in your standard Rails views that can be real-time updated from both frontend interactions, from backend state changes, or from a combination of both. This is similar to something like [Stimulus Reflex](https://github.com/hopsoft/stimulus_reflex) in a few ways:
+Motion allows you to mount special DOM elements (henceforth "Motion components") in your standard Rails views that can be real-time updated from frontend interactions, backend state changes, or a combination of both. This is similar to something like [Stimulus Reflex](https://github.com/hopsoft/stimulus_reflex) in a few ways:
 
 - Communication with your Rails backend is performed via ActionCable.
 - The current page for a user is updated without a full page refresh. Stimulus Reflex accomplishes this by using Turbolinks, but the full page is rendered and replaced.
