@@ -160,7 +160,7 @@ See the code for full API for [Event](https://github.com/unabridged/motion/blob/
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/motion.
+Bug reports and pull requests are welcome on GitHub at https://github.com/unabridged/motion.
 
 
 ## License
