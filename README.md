@@ -119,9 +119,9 @@ class MyComponent < ViewComponent::Base
 end
 ```
 
-This will cause any user that has a page open with a `MyComponent` mounted on it to be re-rendered.
+This will cause any user that has a page open with `MyComponent` mounted on it to re-render that component's portion of the page.
 
-All invocations of stream_from connected methods will cause the component to re-render everywhere, and unchanged rendered HTML will not perform any changes.
+All invocations of `stream_from` connected methods will cause the component to re-render everywhere, and unchanged rendered HTML will not perform any changes.
 
 
 ## Motion::Event and Motion::Element
@@ -129,12 +129,28 @@ All invocations of stream_from connected methods will cause the component to re-
 Methods that are mapped using `map_motion` or `stream_from` accept an `event` parameter which is a `Motion::Event`. This object has a `target` attribute which is a `Motion::Element`, the element in the DOM that triggered the motion. Useful state and attributes can be extracted from these objects, including value, selected, checked, form state, data attributes, and more.
 
 ```ruby
-  map_motion :add_amount
+  map_motion :example
 
-  def add_amount(event)
-    event.target.value
+  def example(event)
+    event.type # => "change"
+    event.name # alias for type
+    
+    element = event.target # => Motion::Element instance
+    element.tag_name # => "input"
+    element.value # => "5"
+    element[:value] # hash lookup version, works for all attributes
+    element.attributes # { class: "col-xs-12", ... }
+
+    # DOM element with data-field="..."
+    element.data[:field]
+
+    # ActionController::Parameters instance with all form params. Also
+    # available on Motion::Event objects for convenience.
+    element.form_data
   end
 ```
+
+See the code for full API for [Event](https://github.com/unabridged/motion/blob/master/lib/motion/event.rb) and [Element](https://github.com/unabridged/motion/blob/master/lib/motion/element.rb).
 
 
 ## Limitations
