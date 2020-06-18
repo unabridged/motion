@@ -7,4 +7,6 @@ gemspec
 gem "pry"
 gem "rake", "~> 12.0"
 gem "rspec", "~> 3.0"
+gem "rspec-rails"
 gem "standard"
+gem "view_component"

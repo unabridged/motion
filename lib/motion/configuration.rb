@@ -8,7 +8,7 @@ module Motion
       attr_reader :options
 
       def default
-        new
+        @default ||= new
       end
 
       private

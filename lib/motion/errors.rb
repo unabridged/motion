@@ -128,4 +128,15 @@ module Motion
       MSG
     end
   end
+
+  class BadSecretError < Error
+    attr_reader :minimum_bytes
+
+    def initialize(minimum_bytes)
+      super(<<~MSG)
+        The secret that you provided is not long enough. It must have at least
+        #{minimum_bytes} bytes.
+      MSG
+    end
+  end
 end

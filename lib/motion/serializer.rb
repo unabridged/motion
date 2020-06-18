@@ -12,10 +12,18 @@ module Motion
 
     attr_reader :secret, :revision
 
+    def self.minimum_secret_byte_length
+      ActiveSupport::MessageEncryptor.key_len
+    end
+
     def initialize(
       secret: Motion.config.secret,
       revision: Motion.config.revision
     )
+      unless secret.each_byte.count >= self.class.minimum_secret_byte_length
+        raise BadSecretError.new(self.class.minimum_secret_byte_length)
+      end
+
       @secret = secret
       @revision = revision
     end
@@ -50,8 +58,8 @@ module Motion
       raise UnrepresentableStateError.new(component, e.message)
     end
 
-    def load(state, *args)
-      Marshal.load(state, *args)
+    def load(state)
+      Marshal.load(state)
     end
 
     def encrypt_and_sign(cleartext)
@@ -60,7 +68,8 @@ module Motion
 
     def decrypt_and_verify(cypertext)
       encryptor.decrypt_and_verify(cypertext)
-    rescue ActiveSupport::MessageEncryptor::InvalidMessage
+    rescue ActiveSupport::MessageEncryptor::InvalidMessage,
+      ActiveSupport::MessageVerifier::InvalidSignature
       raise InvalidSerializedStateError
     end
 
@@ -77,7 +86,7 @@ module Motion
     end
 
     def derive_encryptor_key
-      secret.byteslice(0, ActiveSupport::MessageEncryptor.key_len)
+      secret.byteslice(0, self.class.minimum_secret_byte_length)
     end
 
     def derive_hash_salt
