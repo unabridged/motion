@@ -14,10 +14,6 @@ module Motion
       @raw = raw.freeze
     end
 
-    def inspect
-      "#<#{self.class}(#{type}) target: #{target.inspect}, ...>"
-    end
-
     def type
       raw["type"]
     end
@@ -26,12 +22,6 @@ module Motion
 
     def details
       raw.fetch("details", {})
-    end
-
-    def [](key)
-      key = key.to_s
-
-      details[key] || details[key.camelize]
     end
 
     def extra_data

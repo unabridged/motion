@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
-ENV["RAILS_ENV"] ||= "test"
-
 require "bundler/setup"
+require "simplecov"
+SimpleCov.start
+
+ENV["RAILS_ENV"] ||= "test"
 
 require "pry"
 require "rails"
@@ -10,6 +12,8 @@ require "action_cable"
 require "action_controller"
 require "action_view"
 require "rspec/rails"
+require "generator_spec"
+
 require "view_component"
 require "motion"
 
@@ -25,6 +29,8 @@ end
 
 class TestApplication < Rails::Application
   secrets.secret_key_base = "test-secret-key-base"
+
+  load_generators
 end
 
 class ApplicationController < ActionController::Base
@@ -69,6 +75,7 @@ class TestComponent < ViewComponent::Base
     force_rerender
     setup_dynamic_motion
     setup_dynamic_stream
+    raise_error
   ].freeze
 
   # used by tests that want to know the initial broadcasts
@@ -78,6 +85,7 @@ class TestComponent < ViewComponent::Base
     force_rerender
     setup_dynamic_motion
     setup_dynamic_stream
+    raise_error
   ].freeze
 
   # used by tests that want to have a component be upgraded
@@ -158,6 +166,13 @@ class TestComponent < ViewComponent::Base
 
   def setup_dynamic_stream(*)
     stream_from DYNAMIC_BROADCAST, :noop
+  end
+
+  stream_from "raise_error", :raise_error
+  map_motion :raise_error
+
+  def raise_error(*)
+    raise "Error from TestComponent"
   end
 end
 

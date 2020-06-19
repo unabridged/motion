@@ -10,3 +10,5 @@ gem "rspec", "~> 3.0"
 gem "rspec-rails"
 gem "standard"
 gem "view_component"
+gem "simplecov", require: false
+gem "generator_spec"

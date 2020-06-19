@@ -141,7 +141,7 @@ module Motion
   end
 
   class BadRevisionError < Error
-    def initialize(minimum_bytes)
+    def initialize
       super("The revision cannot contain a NULL byte")
     end
   end

@@ -14,14 +14,6 @@ module Motion
       @raw = raw.freeze
     end
 
-    def inspect
-      if value
-        "#<#{self.class}(#{tag_name}) value: #{value.inspect}, ...>"
-      else
-        "#<#{self.class}(#{tag_name}) ...>"
-      end
-    end
-
     def tag_name
       raw["tagName"]
     end

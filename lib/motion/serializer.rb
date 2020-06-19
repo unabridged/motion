@@ -38,7 +38,7 @@ module Motion
 
       [
         salted_digest(state_with_revision),
-        encryptor.encrypt_and_sign(state_with_revision)
+        encrypt_and_sign(state_with_revision)
       ]
     end
 

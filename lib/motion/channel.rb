@@ -21,10 +21,7 @@ module Motion
     rescue => error
       reject
 
-      log_helper.error(
-        "An error occurred while connecting the component",
-        error: error
-      )
+      log_helper.error("Error while connecting a component", error: error)
     end
 
     def unsubscribed

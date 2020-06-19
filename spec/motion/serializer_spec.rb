@@ -19,6 +19,14 @@ RSpec.describe Motion::Serializer do
     end
   end
 
+  context "when the revision contains a NULL byte" do
+    let(:revision) { "hello\0world" }
+
+    it "raises BadRevisionError" do
+      expect { subject }.to raise_error(Motion::BadRevisionError)
+    end
+  end
+
   describe "#serialize" do
     subject(:output) { serializer.serialize(object) }
 
@@ -68,6 +76,32 @@ RSpec.describe Motion::Serializer do
 
       it "deserializes the object" do
         expect(subject).to eq(object)
+      end
+    end
+
+    context "with state that needs to be upgraded" do
+      let(:state) do
+        _key, state = serializer_for_previous_revision.serialize(object)
+        state
+      end
+
+      let(:object) { Object.new }
+      let(:upgraded_object) { Object.new }
+
+      let(:serializer_for_previous_revision) do
+        described_class.new(secret: secret, revision: previous_revision)
+      end
+
+      let(:previous_revision) { "a-revision-before-#{revision}" }
+
+      it "tries to upgrade the component" do
+        expect(object.class).to(
+          receive(:upgrade_from)
+          .with(previous_revision, object.class)
+          .and_return(upgraded_object)
+        )
+
+        expect(subject).to be(upgraded_object)
       end
     end
   end

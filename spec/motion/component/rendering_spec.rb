@@ -51,5 +51,22 @@ RSpec.describe Motion::Component::Rendering do
         )
       end
     end
+
+    context "when there is a render block" do
+      subject do
+        ApplicationController.render(inline: <<~ERB)
+          <%= render(TestComponent.new) do %>
+            block content
+          <% end %>
+        ERB
+      end
+
+      it "raises BlockNotAllowedError" do
+        # ActionView will wrap our error, so we check the message.
+        expect { subject }.to(
+          raise_error(/Motion does not support rendering with a block/)
+        )
+      end
+    end
   end
 end

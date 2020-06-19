@@ -86,6 +86,11 @@ RSpec.describe Motion::Channel, type: :channel do
         )
       end
     end
+
+    context "with a connected callback that raises an error" do
+      let(:component) { TestComponent.new(connected: :raise_error) }
+      it_behaves_like "failed to mount"
+    end
   end
 
   describe "#unsubscribed" do
@@ -127,6 +132,11 @@ RSpec.describe Motion::Channel, type: :channel do
 
     context "with a disconnected callback that streams" do
       let(:component) { TestComponent.new(disconnected: :setup_dynamic_stream) }
+      it_behaves_like "dismounted"
+    end
+
+    context "with a disconnected callback that raises an error" do
+      let(:component) { TestComponent.new(disconnected: :raise_error) }
       it_behaves_like "dismounted"
     end
   end
@@ -189,11 +199,16 @@ RSpec.describe Motion::Channel, type: :channel do
         )
       end
     end
+
+    context "with a handler that raises an error" do
+      let(:motion) { "raise_error" }
+      it_behaves_like "succesfully processed", render: false
+    end
   end
 
   describe "#process_broadcast" do
     # TODO: Sadly, there does not seem to be testing infrustructure for using
-    # broadcasts.
+    # broadcasts. This also makes `DeclarativeStreams` very hard to test.
     subject { subscription.send(:process_broadcast, stream, message) }
 
     before(:each) { subscribe(state: state, version: version) }
@@ -231,6 +246,11 @@ RSpec.describe Motion::Channel, type: :channel do
           include(TestComponent::DYNAMIC_BROADCAST)
         )
       end
+    end
+
+    context "with a handler that raises an error" do
+      let(:stream) { "raise_error" }
+      it_behaves_like "succesfully processed", render: false
     end
   end
 end
