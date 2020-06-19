@@ -10,6 +10,8 @@ module Motion
     HASH_PEPPER = "Motion"
     private_constant :HASH_PEPPER
 
+    NULL_BYTE = "\0"
+
     attr_reader :secret, :revision
 
     def self.minimum_secret_byte_length
@@ -24,13 +26,15 @@ module Motion
         raise BadSecretError.new(self.class.minimum_secret_byte_length)
       end
 
+      raise BadRevisionError if revision.include?(NULL_BYTE)
+
       @secret = secret
       @revision = revision
     end
 
     def serialize(component)
       state = dump(component)
-      state_with_revision = "#{revision},#{state}"
+      state_with_revision = "#{revision}#{NULL_BYTE}#{state}"
 
       [
         salted_digest(state_with_revision),
@@ -40,7 +44,7 @@ module Motion
 
     def deserialize(serialized_component)
       state_with_revision = decrypt_and_verify(serialized_component)
-      serialized_revision, state = state_with_revision.split(",", 2)
+      serialized_revision, state = state_with_revision.split(NULL_BYTE, 2)
       component = load(state)
 
       if revision == serialized_revision

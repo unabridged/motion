@@ -1,26 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Motion::Component::Rendering do
-  class ExampleComponent < ViewComponent::Base
-    include Motion::Component
-
-    def initialize
-      @state = 0
-    end
-
-    def call
-      content_tag(:div) { "My state is #{@state}!" }
-    end
-
-    def change_state
-      @state += 1
-    end
-
-    def noop
-    end
-  end
-
-  subject(:component) { ExampleComponent.new }
+  subject(:component) { TestComponent.new }
 
   describe "#rerender!" do
     subject { component.rerender! }

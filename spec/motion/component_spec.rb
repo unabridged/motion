@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Motion::Component do
-  class ExampleComponent < ViewComponent::Base
-    include Motion::Component
-  end
-
-  subject { ExampleComponent }
+  subject { TestComponent }
 
   it { is_expected.to include(Motion::Component::Broadcasts) }
   it { is_expected.to include(Motion::Component::Lifecycle) }

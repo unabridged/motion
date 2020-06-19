@@ -4,11 +4,13 @@ require "motion/version"
 require "motion/errors"
 
 module Motion
+  autoload :ActionCableExtentions, "motion/action_cable_extentions"
   autoload :Channel, "motion/channel"
   autoload :Component, "motion/component"
   autoload :Configuration, "motion/configuration"
   autoload :Element, "motion/element"
   autoload :Event, "motion/event"
+  autoload :LogHelper, "motion/log_helper"
   autoload :MarkupTransformer, "motion/markup_transformer"
   autoload :Railtie, "motion/railtie"
   autoload :Serializer, "motion/serializer"

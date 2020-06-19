@@ -1,66 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Motion::Channel, type: :channel do
-  class Component < ViewComponent::Base
-    include Motion::Component
-
-    attr_reader :count
-
-    def initialize(connected: :noop, disconnected: :noop, count: 0)
-      @connected = connected
-      @disconnected = disconnected
-
-      @count = count
-    end
-
-    def call
-      content_tag(:div) { "The state has been changed #{@count} times." }
-    end
-
-    def connected
-      public_send(@connected)
-    end
-
-    def disconnected
-      public_send(@disconnected)
-    end
-
-    stream_from "noop", :noop
-    map_motion :noop
-
-    def noop(*)
-    end
-
-    stream_from "change_state", :change_state
-    map_motion :change_state
-
-    def change_state(*)
-      @count += 1
-    end
-
-    stream_from "force_rerender", :force_rerender
-    map_motion :force_rerender
-
-    def force_rerender(*)
-      rerender!
-    end
-
-    stream_from "setup_dynamic_motion", :setup_dynamic_motion
-    map_motion :setup_dynamic_motion
-
-    def setup_dynamic_motion(*)
-      map_motion SecureRandom.hex, :noop
-    end
-
-    stream_from "setup_dynamic_stream", :setup_dynamic_stream
-    map_motion :setup_dynamic_stream
-
-    def setup_dynamic_stream(*)
-      stream_from SecureRandom.hex, :noop
-    end
-  end
-
-  let(:component) { Component.new }
+  let(:component) { TestComponent.new }
   let(:state) { Motion.serializer.serialize(component).last }
   let(:version) { Motion::VERSION }
 
@@ -79,7 +20,7 @@ RSpec.describe Motion::Channel, type: :channel do
       end
 
       it "runs the component's `connected` callback" do
-        expect_any_instance_of(Component).to receive(:connected)
+        expect_any_instance_of(TestComponent).to receive(:connected)
         subject
       end
 
@@ -114,28 +55,36 @@ RSpec.describe Motion::Channel, type: :channel do
     end
 
     context "with a connected callback that does nothing" do
-      let(:component) { Component.new(connected: :noop) }
+      let(:component) { TestComponent.new(connected: :noop) }
       it_behaves_like "succesfully mounted", render: false
     end
 
     context "with a connected callback that changes state" do
-      let(:component) { Component.new(connected: :change_state) }
+      let(:component) { TestComponent.new(connected: :change_state) }
       it_behaves_like "succesfully mounted", render: true
     end
 
     context "with a connected callback that forces rerender" do
-      let(:component) { Component.new(connected: :force_rerender) }
+      let(:component) { TestComponent.new(connected: :force_rerender) }
       it_behaves_like "succesfully mounted", render: true
     end
 
     context "with a connected callback that maps a motion" do
-      let(:component) { Component.new(connected: :setup_dynamic_motion) }
+      let(:component) { TestComponent.new(connected: :setup_dynamic_motion) }
       it_behaves_like "succesfully mounted", render: true
     end
 
     context "with a connected callback that streams" do
-      let(:component) { Component.new(connected: :setup_dynamic_stream) }
+      let(:component) { TestComponent.new(connected: :setup_dynamic_stream) }
       it_behaves_like "succesfully mounted", render: true
+
+      it "sets up the new stream" do
+        subject
+
+        expect(subscription.streams).to(
+          include(TestComponent::DYNAMIC_BROADCAST)
+        )
+      end
     end
   end
 
@@ -146,7 +95,7 @@ RSpec.describe Motion::Channel, type: :channel do
 
     shared_examples "dismounted" do
       it "runs the component's `disconnected` callback" do
-        expect_any_instance_of(Component).to receive(:disconnected)
+        expect_any_instance_of(TestComponent).to receive(:disconnected)
         subject
       end
 
@@ -157,27 +106,27 @@ RSpec.describe Motion::Channel, type: :channel do
     end
 
     context "with a disconnected callback that does nothing" do
-      let(:component) { Component.new(disconnected: :noop) }
+      let(:component) { TestComponent.new(disconnected: :noop) }
       it_behaves_like "dismounted"
     end
 
     context "with a disconnected callback that changes state" do
-      let(:component) { Component.new(disconnected: :change_state) }
+      let(:component) { TestComponent.new(disconnected: :change_state) }
       it_behaves_like "dismounted"
     end
 
     context "with a disconnected callback that forces rerender" do
-      let(:component) { Component.new(disconnected: :force_rerender) }
+      let(:component) { TestComponent.new(disconnected: :force_rerender) }
       it_behaves_like "dismounted"
     end
 
     context "with a disconnected callback that maps a motion" do
-      let(:component) { Component.new(disconnected: :setup_dynamic_motion) }
+      let(:component) { TestComponent.new(disconnected: :setup_dynamic_motion) }
       it_behaves_like "dismounted"
     end
 
     context "with a disconnected callback that streams" do
-      let(:component) { Component.new(disconnected: :setup_dynamic_stream) }
+      let(:component) { TestComponent.new(disconnected: :setup_dynamic_stream) }
       it_behaves_like "dismounted"
     end
   end
@@ -231,6 +180,14 @@ RSpec.describe Motion::Channel, type: :channel do
     context "with a handler that streams" do
       let(:motion) { "setup_dynamic_stream" }
       it_behaves_like "succesfully processed", render: true
+
+      it "sets up the new stream" do
+        subject
+
+        expect(subscription.streams).to(
+          include(TestComponent::DYNAMIC_BROADCAST)
+        )
+      end
     end
   end
 
@@ -266,6 +223,14 @@ RSpec.describe Motion::Channel, type: :channel do
     context "with a handler that streams" do
       let(:stream) { "setup_dynamic_stream" }
       it_behaves_like "succesfully processed", render: true
+
+      it "sets up the new stream" do
+        subject
+
+        expect(subscription.streams).to(
+          include(TestComponent::DYNAMIC_BROADCAST)
+        )
+      end
     end
   end
 end

@@ -139,4 +139,10 @@ module Motion
       MSG
     end
   end
+
+  class BadRevisionError < Error
+    def initialize(minimum_bytes)
+      super("The revision cannot contain a NULL byte")
+    end
+  end
 end

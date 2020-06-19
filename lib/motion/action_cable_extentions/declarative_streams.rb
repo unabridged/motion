@@ -3,7 +3,12 @@
 require "motion"
 
 module Motion
-  class Channel < ApplicationCable::Channel
+  module ActionCableExtentions
+    # Provides a `streaming_from(broadcasts, to:)` API that can be used to
+    # declaratively specify what `broadcasts` the channel is interested in
+    # receiving and `to` what method they should be routed. Additionally,
+    # this module extends the "at most one executor at a time" property that
+    # naturally comes with actions to the streams that it sets up as well.
     module DeclarativeStreams
       def initialize(*)
         super

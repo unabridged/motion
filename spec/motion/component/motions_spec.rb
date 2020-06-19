@@ -1,71 +1,45 @@
 # frozen_string_literal: true
 
 RSpec.describe Motion::Component::Motions do
-  class ExampleComponent < ViewComponent::Base
-    include Motion::Component
-
-    map_motion :simple
-
-    def simple(_event)
-    end
-
-    map_motion :no_argument
-
-    def no_argument
-    end
-
-    map_motion "customName", :custom_name
-
-    def custom_name(_event)
-    end
-
-    def add_dynamic_motion
-      map_motion :dynamic_motion
-    end
-
-    def dynamic_motion(_event)
-    end
-  end
-
-  subject(:component) { ExampleComponent.new }
+  subject(:component) { TestComponent.new }
 
   describe "#motions" do
     subject { component.motions }
 
-    it { is_expected.to include("simple", "no_argument", "customName") }
+    it { is_expected.to contain_exactly(*TestComponent::STATIC_MOTIONS) }
 
     context "when a dynamic motion is added" do
-      before(:each) { component.add_dynamic_motion }
+      before(:each) { component.setup_dynamic_motion }
 
-      it { is_expected.to include("dynamic_motion") }
+      it { is_expected.to include(TestComponent::DYNAMIC_MOTION) }
     end
   end
 
-  describe "process_motion" do
+  describe "#process_motion" do
     subject { component.process_motion(motion, event) }
 
-    let(:event) { double(Motion::Event) }
+    let(:event) { Motion::Event.new({}) }
 
     context "for a motion that takes an event" do
-      let(:motion) { "simple" }
+      let(:motion) { "noop_with_event" }
 
       it "calls the handler with the event" do
-        expect(component).to receive(:simple).with(event)
+        expect(component).to receive(:noop_with_event).with(event)
         subject
       end
     end
 
     context "for a motion that does not take an event" do
-      let(:motion) { "no_argument" }
+      let(:motion) { "noop_without_event" }
 
       it "calls the handler without the event" do
-        expect(component).to receive(:no_argument)
+        expect(component).to receive(:noop_without_event)
         subject
       end
     end
 
     context "for a motion which is not mapped" do
-      let(:motion) { "invalid" }
+      let(:motion) { "invalid_#{SecureRandom.hex}" }
 
       it "raises MotionNotMapped" do
         expect { subject }.to raise_error(Motion::MotionNotMapped)

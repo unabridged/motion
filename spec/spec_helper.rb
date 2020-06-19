@@ -57,6 +57,110 @@ Motion.configure do |config|
   end
 end
 
+class TestComponent < ViewComponent::Base
+  include Motion::Component
+
+  # used by tests that want to know the initial motions
+  STATIC_MOTIONS = %w[
+    noop
+    noop_with_event
+    noop_without_event
+    change_state
+    force_rerender
+    setup_dynamic_motion
+    setup_dynamic_stream
+  ].freeze
+
+  # used by tests that want to know the initial broadcasts
+  STATIC_BROADCASTS = %w[
+    noop
+    change_state
+    force_rerender
+    setup_dynamic_motion
+    setup_dynamic_stream
+  ].freeze
+
+  # used by tests that want to have a component be upgraded
+  UPGRADEABLE_REVISION = "upgradeable-revision"
+
+  def self.upgrade_from(revision, instance)
+    return super unless revision == UPGRADEABLE_REVISION
+
+    new(count: instance.count)
+  end
+
+  attr_reader :count
+
+  def initialize(connected: :noop, disconnected: :noop, count: 0)
+    @connected = connected
+    @disconnected = disconnected
+
+    @count = count
+  end
+
+  def call
+    content_tag(:div) { "The state has been changed #{@count} times." }
+  end
+
+  def connected
+    public_send(@connected)
+  end
+
+  def disconnected
+    public_send(@disconnected)
+  end
+
+  stream_from "noop", :noop
+  map_motion :noop
+
+  def noop(*)
+  end
+
+  map_motion :noop_with_event
+
+  def noop_with_event(_event)
+  end
+
+  map_motion :noop_without_event
+
+  def noop_without_event
+  end
+
+  stream_from "change_state", :change_state
+  map_motion :change_state
+
+  def change_state(*)
+    @count += 1
+  end
+
+  stream_from "force_rerender", :force_rerender
+  map_motion :force_rerender
+
+  def force_rerender(*)
+    rerender!
+  end
+
+  stream_from "setup_dynamic_motion", :setup_dynamic_motion
+  map_motion :setup_dynamic_motion
+
+  # used for tests that want to detect this dynamic motion being setup
+  DYNAMIC_MOTION = "dynamic_motion"
+
+  def setup_dynamic_motion(*)
+    map_motion DYNAMIC_MOTION, :noop
+  end
+
+  stream_from "setup_dynamic_stream", :setup_dynamic_stream
+  map_motion :setup_dynamic_stream
+
+  # used for tests that want to detect this dynamic broadcast being setup
+  DYNAMIC_BROADCAST = "dynamic_broadcast"
+
+  def setup_dynamic_stream(*)
+    stream_from DYNAMIC_BROADCAST, :noop
+  end
+end
+
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"

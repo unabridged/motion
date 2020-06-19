@@ -1,30 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.describe Motion::Component::Broadcasts do
-  class ExampleComponent < ViewComponent::Base
-    include Motion::Component
-
-    stream_from "static-broadcast", :handler
-
-    def add_dynamic_broadcast
-      stream_from "dynamic-broadcast", :handler
-    end
-
-    def handler(_message)
-    end
-  end
-
-  subject(:component) { ExampleComponent.new }
+  subject(:component) { TestComponent.new }
 
   describe "#broadcasts" do
     subject { component.broadcasts }
 
-    it { is_expected.to include "static-broadcast" }
+    it { is_expected.to contain_exactly(*TestComponent::STATIC_BROADCASTS) }
 
     context "when a dynamic broadcast is added" do
-      before(:each) { component.add_dynamic_broadcast }
+      before(:each) { component.setup_dynamic_stream }
 
-      it { is_expected.to include "dynamic-broadcast" }
+      it { is_expected.to include(TestComponent::DYNAMIC_BROADCAST) }
     end
   end
 
@@ -34,19 +21,19 @@ RSpec.describe Motion::Component::Broadcasts do
     let(:message) { SecureRandom.hex }
 
     context "for a broadcast the component is streaming from" do
-      let(:broadcast) { "static-broadcast" }
+      let(:broadcast) { TestComponent::STATIC_BROADCASTS.sample }
 
       it "invokes the corresponding handler" do
-        expect(component).to receive(:handler).with(message)
+        expect(component).to receive(broadcast).with(message)
         subject
       end
     end
 
     context "for a broadcast the component is *not* streaming from" do
-      let(:broadcast) { "random-broadcast" }
+      let(:broadcast) { "random-broadcast:#{SecureRandom.hex}" }
 
       it "does not invoke the corresponding handler" do
-        expect(component).not_to receive(:handler)
+        expect(component).not_to receive(broadcast)
         subject
       end
     end
