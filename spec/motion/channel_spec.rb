@@ -5,6 +5,12 @@ RSpec.describe Motion::Channel, type: :channel do
   let(:state) { Motion.serializer.serialize(component).last }
   let(:version) { Motion::VERSION }
 
+  describe ".action_methods" do
+    subject { described_class.action_methods }
+
+    it { is_expected.to contain_exactly('process_motion') }
+  end
+
   describe "#subscribed" do
     subject { subscribe(state: state, version: version) }
 
@@ -209,7 +215,7 @@ RSpec.describe Motion::Channel, type: :channel do
   describe "#process_broadcast" do
     # TODO: Sadly, there does not seem to be testing infrustructure for using
     # broadcasts. This also makes `DeclarativeStreams` very hard to test.
-    subject { subscription.send(:process_broadcast, stream, message) }
+    subject { subscription.process_broadcast(stream, message) }
 
     before(:each) { subscribe(state: state, version: version) }
 

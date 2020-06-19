@@ -43,8 +43,6 @@ module Motion
         @_declarative_stream_monitor.synchronize { super }
       end
 
-      private
-
       # Declaratively routes provided broadcasts to the provided method.
       def streaming_from(broadcasts, to:)
         @_declarative_streams.replace(broadcasts)
@@ -61,6 +59,8 @@ module Motion
 
         @_declarative_stream_proxies.clear
       end
+
+      private
 
       def _ensure_declarative_stream_proxy(broadcast)
         return unless @_declarative_stream_proxies.add?(broadcast)

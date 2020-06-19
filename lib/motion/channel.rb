@@ -11,6 +11,18 @@ module Motion
     include ActionCableExtentions::DeclarativeStreams
     include ActionCableExtentions::LogSuppression
 
+    ACTION_METHODS = Set.new(['process_motion']).freeze
+    private_constant :ACTION_METHODS
+
+    # Don't use the ActionCable huertistic for deciding what actions can be
+    # called from JavaScript. Instead, hard-code the list so we can make other
+    # methods public without worrying about them being called from JavaScript.
+    def self.action_methods
+      ACTION_METHODS
+    end
+
+    attr_reader :component
+
     def subscribed
       initialize_component
 
@@ -54,8 +66,6 @@ module Motion
       )
     end
 
-    private
-
     def process_broadcast(broadcast, message)
       log_helper.timing "Proccessed broadcast to #{broadcast}" do
         component.process_broadcast broadcast, message
@@ -69,11 +79,7 @@ module Motion
       )
     end
 
-    def log_helper
-      @log_helper ||= LogHelper.for_channel(self)
-    end
-
-    attr_reader :component
+    private
 
     def initialize_component
       assert_compatible_client!
@@ -122,6 +128,10 @@ module Motion
       return if Motion::VERSION == (client_version = params.fetch(:version))
 
       raise IncompatibleClientError.new(Motion::VERSION, client_version)
+    end
+
+    def log_helper
+      @log_helper ||= LogHelper.for_channel(self)
     end
   end
 end
