@@ -11,7 +11,7 @@ module Motion
     include ActionCableExtentions::DeclarativeStreams
     include ActionCableExtentions::LogSuppression
 
-    ACTION_METHODS = Set.new(['process_motion']).freeze
+    ACTION_METHODS = Set.new(["process_motion"]).freeze
     private_constant :ACTION_METHODS
 
     # Don't use the ActionCable huertistic for deciding what actions can be

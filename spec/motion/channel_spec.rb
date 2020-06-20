@@ -8,7 +8,7 @@ RSpec.describe Motion::Channel, type: :channel do
   describe ".action_methods" do
     subject { described_class.action_methods }
 
-    it { is_expected.to contain_exactly('process_motion') }
+    it { is_expected.to contain_exactly("process_motion") }
   end
 
   describe "#subscribed" do
