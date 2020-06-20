@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+ENV['RAILS_ENV']  ||= 'test'
+ENV['RACK_ENV']   ||= 'test'
+ENV['NODE_ENV']   ||= 'test'
+
+require "bundler/setup"
+
+require "webpacker"
+require "webpacker/webpack_runner"
+
+APP_ROOT = File.expand_path("..", __dir__)
+
+Dir.chdir(APP_ROOT) do
+  Webpacker::WebpackRunner.run(ARGV)
+end

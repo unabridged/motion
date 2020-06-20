@@ -12,3 +12,7 @@ gem "standard"
 gem "view_component"
 gem "simplecov", require: false
 gem "generator_spec"
+gem "capybara", ">= 2.15", "< 4.0"
+gem "selenium-webdriver"
+gem "puma"
+gem "webpacker"

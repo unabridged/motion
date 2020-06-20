@@ -15,3 +15,8 @@ yarn.lock
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+
+/spec/node_modules
+/spec/yarn.lock
+/spec/tmp
+/spec/public

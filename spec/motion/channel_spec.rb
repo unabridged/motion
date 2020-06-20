@@ -213,8 +213,6 @@ RSpec.describe Motion::Channel, type: :channel do
   end
 
   describe "#process_broadcast" do
-    # TODO: Sadly, there does not seem to be testing infrustructure for using
-    # broadcasts. This also makes `DeclarativeStreams` very hard to test.
     subject { subscription.process_broadcast(stream, message) }
 
     before(:each) { subscribe(state: state, version: version) }
