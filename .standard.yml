@@ -1,3 +1,6 @@
 fix: true
-parallel: true 
+parallel: true
 format: progress
+
+ignore:
+  - 'spec/node_modules/**/*'

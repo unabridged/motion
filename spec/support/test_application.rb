@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-ENV['RAILS_ENV']  ||= 'test'
-ENV['RACK_ENV']   ||= 'test'
-ENV['NODE_ENV']   ||= 'test'
+ENV["RAILS_ENV"] ||= "test"
+ENV["RACK_ENV"] ||= "test"
+ENV["NODE_ENV"] ||= "test"
 
 require "rails"
 require "action_cable/engine"

@@ -46,7 +46,7 @@ class TestComponent < ViewComponent::Base
           content_tag(:div) { "The state has been changed #{@count} times." },
           *STATIC_MOTIONS.map do |motion|
             content_tag(:div) do
-              content_tag(:button, motion, data: { motion: motion })
+              content_tag(:button, motion, data: {motion: motion})
             end
           end
         ]
@@ -123,6 +123,7 @@ class TestComponent < ViewComponent::Base
   map_motion :raise_exception
 
   def raise_exception(*)
-    raise Exception, "Exception from TestComponent"
+    raise Exception, # rubocop:disable Lint/RaiseException
+      "Exception from TestComponent"
   end
 end
