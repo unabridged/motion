@@ -42,12 +42,12 @@ RSpec.describe "Core Functionality", type: :system do
     click_button "+"
     click_button "+"
 
-    expect(find('.count')).to have_text('2')
+    expect(find(".count")).to have_text("2")
 
     click_button "Build Child"
 
-    expect(find('.parent .count')).to have_text('2')
-    expect(find('.child .count')).to have_text('2')
+    expect(find(".parent .count")).to have_text("2")
+    expect(find(".child .count")).to have_text("2")
 
     within ".parent" do
       click_button "+"
@@ -57,18 +57,18 @@ RSpec.describe "Core Functionality", type: :system do
       click_button "-"
     end
 
-    expect(find('.parent .count')).to have_text('3')
-    expect(find('.child .count')).to have_text('1')
+    expect(find(".parent .count")).to have_text("3")
+    expect(find(".child .count")).to have_text("1")
 
     within ".parent" do
       click_button "Clear Child"
     end
 
-    expect(find('.count')).to have_text('3')
+    expect(find(".count")).to have_text("3")
 
     click_button "Build Child"
 
-    expect(find('.parent .count')).to have_text('3')
-    expect(find('.child .count')).to have_text('3')
+    expect(find(".parent .count")).to have_text("3")
+    expect(find(".child .count")).to have_text("3")
   end
 end
