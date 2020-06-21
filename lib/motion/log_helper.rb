@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "rails"
 require "active_support/core_ext/string/indent"
 
 require "motion"
@@ -9,19 +10,19 @@ module Motion
     BACKTRACE_FRAMES = 5
     DEFAULT_TAG = "Motion"
 
-    def self.for_channel(channel)
-      new(channel.connection.logger)
+    def self.for_channel(channel, logger: channel.connection.logger)
+      new(logger: logger, tag: DEFAULT_TAG)
     end
 
-    def self.for_component(logger, component)
-      new(logger, tag: "#{component.class}:#{component.object_id}")
+    def self.for_component(component, logger: nil)
+      new(logger: logger, tag: "#{component.class}:#{component.object_id}")
     end
 
     attr_reader :logger, :tag
 
-    def initialize(logger, tag: DEFAULT_TAG)
-      @logger = logger
-      @tag = tag
+    def initialize(logger: nil, tag: nil)
+      @logger = logger || Rails.logger
+      @tag = tag || DEFAULT_TAG
     end
 
     def error(message, error: nil)
@@ -45,7 +46,7 @@ module Motion
     end
 
     def for_component(component)
-      self.class.for_component(logger, component)
+      self.class.for_component(component, logger: logger)
     end
 
     private

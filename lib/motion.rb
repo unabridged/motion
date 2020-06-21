@@ -7,6 +7,7 @@ module Motion
   autoload :ActionCableExtentions, "motion/action_cable_extentions"
   autoload :Channel, "motion/channel"
   autoload :Component, "motion/component"
+  autoload :ComponentConnection, "motion/component_connection"
   autoload :Configuration, "motion/configuration"
   autoload :Element, "motion/element"
   autoload :Event, "motion/event"

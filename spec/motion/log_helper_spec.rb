@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Motion::LogHelper do
-  subject(:log_helper) { described_class.new(logger, tag: tag) }
+  subject(:log_helper) { described_class.new(logger: logger, tag: tag) }
 
   let(:logger) { Logger.new(File::NULL) }
   let(:tag) { SecureRandom.hex }
@@ -25,7 +25,7 @@ RSpec.describe Motion::LogHelper do
   end
 
   describe ".for_component" do
-    subject { described_class.for_component(logger, component) }
+    subject { described_class.for_component(component, logger: logger) }
 
     let(:component) { TestComponent.new }
 

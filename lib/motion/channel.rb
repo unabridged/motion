@@ -5,8 +5,6 @@ require "action_cable"
 require "motion"
 
 module Motion
-  # This class has gotten a bit out of control (especially with the logging).
-  # Perhaps the logging and component lifecycle management can be factored out.
   class Channel < ApplicationCable::Channel
     include ActionCableExtentions::DeclarativeStreams
     include ActionCableExtentions::LogSuppression
@@ -21,96 +19,61 @@ module Motion
       ACTION_METHODS
     end
 
-    attr_reader :component
+    attr_reader :component_connection
 
     def subscribed
-      initialize_component
+      state, client_version = params.values_at("state", "version")
 
-      component.connected
-      flush_component
+      # TODO: This is too restrictive. Introduce a protocol version and support
+      # older versions of the client that have a compatible protocol.
+      unless Motion::VERSION == client_version
+        raise IncompatibleClientError.new(Motion::VERSION, client_version)
+      end
 
-      log_helper.info "Connected"
+      @component_connection =
+        ComponentConnection.from_state!(state, log_helper: log_helper)
+
+      synchronize
     rescue => error
       reject
 
-      log_helper.error("Error while connecting a component", error: error)
+      handle_error(error, "connecting a component")
     end
 
     def unsubscribed
-      # unsubscribed will still be called when the subscription is rejected
-      return unless component
+      component_connection&.close
 
-      component.disconnected
-      # no `flush_component` here because the channel is closed
-
-      log_helper.info "Disconnected"
-    rescue => error
-      log_helper.error(
-        "An error occurred while disconnecting the component",
-        error: error
-      )
+      @component_connection = nil
     end
 
     def process_motion(data)
-      name = data.fetch("name")
+      motion, raw_event = data.values_at("name", "event")
 
-      log_helper.timing "Proccessed motion #{name}" do
-        component.process_motion name, Event.from_raw(data["event"])
-      end
-
-      flush_component
-    rescue => error
-      log_helper.error(
-        "An error occurred while processing the #{name} motion",
-        error: error
-      )
+      component_connection.process_motion(motion, Event.from_raw(raw_event))
+      synchronize
     end
 
     def process_broadcast(broadcast, message)
-      log_helper.timing "Proccessed broadcast to #{broadcast}" do
-        component.process_broadcast broadcast, message
-      end
-
-      flush_component
-    rescue => error
-      log_helper.error(
-        "An error occurred while processing a broadcast to #{broadcast}",
-        error: error
-      )
+      component_connection.process_broadcast(broadcast, message)
+      synchronize
     end
 
     private
 
-    def initialize_component
-      assert_compatible_client!
+    def synchronize
+      streaming_from(component_connection.broadcasts, to: :process_broadcast)
 
-      @component = Motion.serializer.deserialize(params.fetch(:state))
-      @log_helper = log_helper.for_component(@component)
-
-      # no `render_component` here because the initial markup was already sent
-      setup_broadcasts
-
-      @render_hash = component.render_hash
+      component_connection.if_render_required do |component|
+        transmit(renderer.render(component))
+      end
     end
 
-    def flush_component
-      next_render_hash = component.render_hash
-
-      return if !component.awaiting_forced_rerender? &&
-        @render_hash == next_render_hash
-
-      render_component
-      setup_broadcasts
-
-      @render_hash = next_render_hash
+    def handle_error(error, context)
+      log_helper.error("An error occurred while #{context}", error: error)
     end
 
-    def setup_broadcasts
-      streaming_from(component.broadcasts, to: :process_broadcast)
-    end
-
-    def render_component
-      transmit(log_helper.timing("Rendered") { renderer.render(component) })
+    def log_helper
+      @log_helper ||= LogHelper.for_channel(self)
     end
 
     # Memoize the renderer on the connection so that it can be shared accross
@@ -120,18 +83,6 @@ module Motion
       connection.instance_eval do
         @_motion_renderer ||= Motion.build_renderer_for(self)
       end
-    end
-
-    # TODO: This is too restrictive. Introduce a protocol version and support
-    # older versions of the client that have a compatible protocol.
-    def assert_compatible_client!
-      return if Motion::VERSION == (client_version = params.fetch(:version))
-
-      raise IncompatibleClientError.new(Motion::VERSION, client_version)
-    end
-
-    def log_helper
-      @log_helper ||= LogHelper.for_channel(self)
     end
   end
 end
