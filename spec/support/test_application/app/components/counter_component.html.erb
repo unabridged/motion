@@ -1,0 +1,15 @@
+<div class="counter">
+    <div class="<%= child ? "parent" : "child" %>">
+        <p>The current count is <span class="count"><%= count %></span></p>
+
+        <div class="actions">
+            <button data-motion="decrement">-</button>
+            <button data-motion="increment">+</button>
+
+            <button data-motion="build_child">Build Child</button>
+            <button data-motion="clear_child">Clear Child</button>
+        </div>
+    </div>
+
+    <%= render(child) if child %>
+</div>
