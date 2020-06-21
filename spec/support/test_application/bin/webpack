@@ -1,9 +1,5 @@
 #!/usr/bin/env ruby
 
-ENV["RAILS_ENV"] ||= "test"
-ENV["RACK_ENV"] ||= "test"
-ENV["NODE_ENV"] ||= "test"
-
 require "bundler/setup"
 
 require "webpacker"

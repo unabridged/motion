@@ -16,7 +16,10 @@ yarn.lock
 yarn-debug.log*
 .yarn-integrity
 
-/spec/node_modules
-/spec/yarn.lock
-/spec/tmp
-/spec/public
+/spec/support/test_application/node_modules
+/spec/support/test_application/tmp
+/spec/support/test_application/log
+/spec/support/test_application/public
+/spec/support/test_application/yarn-error.log
+/spec/support/test_application/yarn-debug.log*
+/spec/support/test_application/.yarn-integrity

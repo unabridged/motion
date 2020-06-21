@@ -3,4 +3,4 @@ parallel: true
 format: progress
 
 ignore:
-  - 'spec/node_modules/**/*'
+  - 'spec/support/test_application/node_modules/**/*'

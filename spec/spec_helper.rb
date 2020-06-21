@@ -4,18 +4,23 @@ require "bundler/setup"
 
 # Accurate coverage reports require SimpleCov to be required immediately.
 require "simplecov"
-SimpleCov.start
+
+SimpleCov.start do
+  add_filter "/bin/"
+  add_filter "/spec/"
+end
 
 # Require Pry early so that it is always avaliable.
 require "pry"
 
 require_relative "support/test_application"
-require_relative "support/test_component"
-require_relative "support/webdriver"
 
 require "rspec/rails"
 require "capybara/rspec"
 require "generator_spec"
+
+require_relative "support/test_component"
+require_relative "support/webdriver"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
