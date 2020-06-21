@@ -33,8 +33,11 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
-  # Use headless Chrome for system tests
   config.before(:each, type: :system) do
+    # Ensure that the client JavaScript within the app is synced with the gem
+    TestApplication.sync_motion_client!
+
+    # Use headless Chrome for system tests
     driven_by :selenium_chrome_headless
   end
 
