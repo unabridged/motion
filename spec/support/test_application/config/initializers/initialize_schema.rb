@@ -1,3 +1,5 @@
 # frozen_string_literal: true
 
-ActiveRecord::Tasks::DatabaseTasks.load_schema_current
+ActiveRecord::Migration.suppress_messages do
+  ActiveRecord::Tasks::DatabaseTasks.load_schema_current
+end

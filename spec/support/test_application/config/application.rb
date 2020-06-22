@@ -2,11 +2,12 @@
 
 require_relative "boot"
 
-require "rails/all"
-# require "action_cable/engine"
-# require "action_controller/railtie"
-# require "action_view/railtie"
-# require "sprockets/railtie"
+require "rails"
+require "active_record/railtie"
+require "action_cable/engine"
+require "action_controller/railtie"
+require "action_view/railtie"
+require "sprockets/railtie"
 require "webpacker"
 
 require "view_component/engine"
@@ -17,6 +18,11 @@ class TestApplication < Rails::Application
 
   config.secret_key_base = "test-secret-key-base"
   config.eager_load = true
+
+  # Silence irrelevant deprecation warning in Rails 5.2
+  if Rails::VERSION::MAJOR == 5
+    config.active_record.sqlite3.represent_boolean_as_integer = true
+  end
 
   # Raise exceptions instead of rendering exception templates
   config.action_dispatch.show_exceptions = false

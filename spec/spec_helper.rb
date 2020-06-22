@@ -14,6 +14,7 @@ end
 require "pry"
 
 require_relative "support/test_application"
+require_relative "support/action_cable_testing_workaround"
 
 require "rspec/rails"
 require "capybara/rspec"

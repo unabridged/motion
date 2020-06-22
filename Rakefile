@@ -3,9 +3,11 @@
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
 require "standard/rake"
+require "appraisal/task"
 require "json"
 
 RSpec::Core::RakeTask.new(:spec)
+Appraisal::Task.new
 
 namespace :release do
   task :guard_version do
@@ -35,4 +37,8 @@ task release: %i[
   release:rubygem_push
 ]
 
-task default: :spec
+if !ENV["APPRAISAL_INITIALIZED"] && !ENV["TRAVIS"]
+  task default: :appraisal
+else
+  task default: :spec
+end
