@@ -1,0 +1,9 @@
+<%= form_for(dog, data: { motion: 'change->validate' }) do |f| %>
+    <div>
+        <%= f.label :name %>
+        <%= f.text_field :name %>
+        <%= f.object.errors[:name].to_sentence %>
+    </div>
+
+    <%= f.submit %>
+<% end %>

@@ -20,6 +20,7 @@ yarn-debug.log*
 /spec/support/test_application/tmp
 /spec/support/test_application/log
 /spec/support/test_application/public
+/spec/support/test_application/db/*.sqlite3
 /spec/support/test_application/yarn-error.log
 /spec/support/test_application/yarn-debug.log*
 /spec/support/test_application/.yarn-integrity

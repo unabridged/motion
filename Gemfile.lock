@@ -199,6 +199,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    sqlite3 (1.4.2)
     standard (0.4.7)
       rubocop (~> 0.85.0)
       rubocop-performance (~> 1.6.0)
@@ -235,6 +236,7 @@ DEPENDENCIES
   rspec-rails
   selenium-webdriver
   simplecov
+  sqlite3
   standard
   view_component
   webpacker

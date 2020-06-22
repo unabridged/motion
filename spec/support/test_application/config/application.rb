@@ -2,11 +2,11 @@
 
 require_relative "boot"
 
-require "rails"
-require "action_cable/engine"
-require "action_controller/railtie"
-require "action_view/railtie"
-require "sprockets/railtie"
+require "rails/all"
+# require "action_cable/engine"
+# require "action_controller/railtie"
+# require "action_view/railtie"
+# require "sprockets/railtie"
 require "webpacker"
 
 require "view_component/engine"
