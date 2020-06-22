@@ -43,6 +43,16 @@ module Motion
         @_declarative_stream_monitor.synchronize { super }
       end
 
+      # Clean up declarative streams when all streams are stopped.
+      def stop_all_streams
+        super
+
+        @_declarative_streams.clear
+        @_declarative_stream_target = nil
+
+        @_declarative_stream_proxies.clear
+      end
+
       # Declaratively routes provided broadcasts to the provided method.
       def streaming_from(broadcasts, to:)
         @_declarative_streams.replace(broadcasts)
@@ -51,13 +61,8 @@ module Motion
         @_declarative_streams.each(&method(:_ensure_declarative_stream_proxy))
       end
 
-      def stop_all_streams
-        super
-
-        @_declarative_streams.clear
-        @_declarative_stream_target = nil
-
-        @_declarative_stream_proxies.clear
+      def declarative_stream_target
+        @_declarative_stream_target
       end
 
       private
