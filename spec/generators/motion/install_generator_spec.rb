@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-RSpec.describe Generators::Motion::InstallGenerator, type: :generator do
+RSpec.describe Motion::Generators::InstallGenerator, type: :generator do
   before(:each) { run_generator }
 
   it "is accessible via `motion:install`" do
-    expect(generator_class.banner).to include("motion:install")
+    expect(generator_class.banner).to include("rails generate motion:install")
   end
 
   it "creates the initializer" do
