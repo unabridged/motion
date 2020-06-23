@@ -58,6 +58,13 @@ RSpec.describe Motion::Component::Broadcasts do
       it "prefixes the component class" do
         is_expected.to start_with(component_class.name)
       end
+
+      context "with an object that supports global id" do
+        let(:model) { double(to_gid_param: global_id) }
+        let(:global_id) { SecureRandom.hex }
+
+        it { is_expected.to include(global_id) }
+      end
     end
   end
 
@@ -96,6 +103,22 @@ RSpec.describe Motion::Component::Broadcasts do
         expect(component).not_to receive(broadcast)
         subject
       end
+    end
+  end
+
+  describe "#broadcast_to" do
+    subject { component.broadcast_to(model, message) }
+
+    let(:model) { SecureRandom.hex }
+    let(:message) { SecureRandom.hex }
+    let(:broadcast) { component.class.broadcasting_for(model) }
+
+    it "broadcasts the message to the topic for the model" do
+      expect(ActionCable.server).to(
+        receive(:broadcast).with(broadcast, message)
+      )
+
+      subject
     end
   end
 
