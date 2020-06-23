@@ -31,7 +31,7 @@ module Motion
       end
 
       @component_connection =
-        ComponentConnection.from_state!(state, log_helper: log_helper)
+        ComponentConnection.from_state(state, log_helper: log_helper)
 
       synchronize
     rescue => error

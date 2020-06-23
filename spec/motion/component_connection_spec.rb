@@ -5,8 +5,8 @@ RSpec.describe Motion::ComponentConnection do
 
   let(:component) { TestComponent.new }
 
-  describe ".from_state!" do
-    subject { described_class.from_state!(state) }
+  describe ".from_state" do
+    subject { described_class.from_state(state) }
 
     let(:state) do
       _key, state = Motion.serializer.serialize(component)

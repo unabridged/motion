@@ -4,15 +4,22 @@ require "motion"
 
 module Motion
   class ComponentConnection
-    def self.from_state!(state, serializer: Motion.serializer, **options)
-      new(serializer.deserialize(state), **options)
+    def self.from_state(
+      state,
+      serializer: Motion.serializer,
+      log_helper: LogHelper.new,
+      **kargs
+    )
+      component = serializer.deserialize(state)
+
+      new(component, log_helper: log_helper.for_component(component), **kargs)
     end
 
     attr_reader :component
 
-    def initialize(component, log_helper: LogHelper.new)
+    def initialize(component, log_helper: LogHelper.for_component(component))
       @component = component
-      @log_helper = log_helper.for_component(component)
+      @log_helper = log_helper
 
       timing("Connected") do
         @render_hash = component.render_hash
