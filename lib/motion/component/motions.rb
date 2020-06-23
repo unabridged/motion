@@ -41,12 +41,12 @@ module Motion
         end
       end
 
-      private
-
       def map_motion(motion, handler = motion)
         self._motion_handlers =
           _motion_handlers.merge(motion.to_s => handler.to_sym).freeze
       end
+
+      private
 
       attr_writer :_motion_handlers
 

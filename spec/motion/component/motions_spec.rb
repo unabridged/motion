@@ -1,6 +1,29 @@
 # frozen_string_literal: true
 
 RSpec.describe Motion::Component::Motions do
+  describe described_class::ClassMethods do
+    subject(:component_class) do # We need a fresh class for every spec
+      stub_const("TemporaryComponent", Class.new(ViewComponent::Base) {
+        include Motion::Component
+
+        def noop
+        end
+      })
+    end
+
+    let(:component) { component_class.new }
+
+    describe "#map_motion" do
+      subject! { component_class.map_motion(motion, :noop) }
+
+      let(:motion) { SecureRandom.hex }
+
+      it "causes instances of the component to have that motion" do
+        expect(component.motions).to include(motion)
+      end
+    end
+  end
+
   subject(:component) { TestComponent.new }
 
   describe "#motions" do
@@ -56,6 +79,16 @@ RSpec.describe Motion::Component::Motions do
       it "raises MotionNotMapped" do
         expect { subject }.to raise_error(Motion::MotionNotMapped)
       end
+    end
+  end
+
+  describe "#map_motion" do
+    subject! { component.map_motion(motion, :noop) }
+
+    let(:motion) { SecureRandom.hex }
+
+    it "sets up the motion" do
+      expect(component.motions).to include(motion)
     end
   end
 end

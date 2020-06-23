@@ -2,6 +2,7 @@
 
 require "active_support/concern"
 require "active_support/core_ext/class/attribute"
+require "active_support/core_ext/object/to_param"
 
 require "motion"
 
@@ -19,9 +20,34 @@ module Motion
       end
 
       class_methods do
+        def broadcast_to(model, message)
+          ActionCable.server.broadcast(broadcasting_for(model), message)
+        end
+
         def stream_from(broadcast, handler)
           self._broadcast_handlers =
             _broadcast_handlers.merge(broadcast.to_s => handler.to_sym).freeze
+        end
+
+        def stream_for(model, handler)
+          stream_from(broadcasting_for(model), handler)
+        end
+
+        def broadcasting_for(model)
+          serialize_broadcasting([name, model])
+        end
+
+        private
+
+        # Taken from ActionCable::Channel::Broadcasting
+        def serialize_broadcasting(object)
+          if object.is_a?(Array)
+            object.map { |m| serialize_broadcasting(m) }.join(":")
+          elsif object.respond_to?(:to_gid_param)
+            object.to_gid_param
+          else
+            object.to_param
+          end
         end
       end
 
@@ -35,12 +61,20 @@ module Motion
         send(handler, message)
       end
 
-      private
+      def broadcast_to(model, message)
+        self.class.broadcast_to(model, message)
+      end
 
       def stream_from(broadcast, handler)
         self._broadcast_handlers =
           _broadcast_handlers.merge(broadcast.to_s => handler.to_sym).freeze
       end
+
+      def stream_for(model, handler)
+        stream_from(self.class.broadcasting_for(model), handler)
+      end
+
+      private
 
       attr_writer :_broadcast_handlers
 
