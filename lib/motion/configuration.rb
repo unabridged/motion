@@ -72,10 +72,21 @@ module Motion
     end
 
     option :renderer_for_connection_proc do
-      require "rack"
-
       ->(websocket_connection) do
-        ApplicationController.renderer.new(
+        require "rack"
+        require "action_controller"
+
+        # Make a special effort to use the host application's base controller
+        # in case the CSRF protection has been customized, but don't couple to
+        # a particular constant from the outer application.
+        controller =
+          if defined?(ApplicationController)
+            ApplicationController
+          else
+            ActionController::Base
+          end
+
+        controller.renderer.new(
           websocket_connection.env.slice(
             Rack::HTTP_COOKIE,
             Rack::RACK_SESSION

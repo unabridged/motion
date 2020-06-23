@@ -64,6 +64,14 @@ RSpec.describe Motion::Configuration do
           eq(cookies["bar"])
         )
       end
+
+      context "when no ApplicationController is defined" do
+        before(:each) { hide_const("ApplicationController") }
+
+        it "builds a renderer from ActionController::Base" do
+          expect(subject.controller).to eq(ActionController::Base)
+        end
+      end
     end
 
     describe "#stimulus_controller_identifier" do

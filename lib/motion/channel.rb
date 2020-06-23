@@ -5,7 +5,7 @@ require "action_cable"
 require "motion"
 
 module Motion
-  class Channel < ApplicationCable::Channel
+  class Channel < ActionCable::Channel::Base
     include ActionCableExtentions::DeclarativeStreams
     include ActionCableExtentions::LogSuppression
 

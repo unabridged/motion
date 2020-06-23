@@ -1,16 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Generators::Motion::InstallGenerator, type: :generator do
-  around(:each) do |example|
-    Dir.mktmpdir do |path|
-      self.destination_root = path
-
-      prepare_destination
-      run_generator
-
-      example.run
-    end
-  end
+  before(:each) { run_generator }
 
   it "is accessible via `motion:install`" do
     expect(generator_class.banner).to include("motion:install")
