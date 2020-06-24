@@ -4,6 +4,7 @@
 [![npm version](https://badge.fury.io/js/%40unabridged%2Fmotion.svg)](https://badge.fury.io/js/%40unabridged%2Fmotion)
 [![Build Status](https://travis-ci.com/unabridged/motion.svg?branch=master)](https://travis-ci.com/unabridged/motion)
 [![Maintainability](https://api.codeclimate.com/v1/badges/3167364a38b1392a5478/maintainability)](https://codeclimate.com/github/unabridged/motion/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/3167364a38b1392a5478/test_coverage)](https://codeclimate.com/github/unabridged/motion/test_coverage)
 [![Ruby Code Style](https://img.shields.io/badge/Ruby_Code_Style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
 
 Motion allows you to build reactive, real-time frontend UI components in your Rails application using pure Ruby.
