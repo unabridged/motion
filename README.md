@@ -1,5 +1,7 @@
 # Motion
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/3167364a38b1392a5478/maintainability)](https://codeclimate.com/github/unabridged/motion/maintainability)
+
 Motion allows you to build reactive frontend UI components in your Rails application using pure Ruby.
 
 * Plays nicely with the Rails monolith you have.
