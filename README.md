@@ -11,19 +11,19 @@ Motion allows you to build reactive frontend UI components in your Rails applica
 * Plays nicely with the Rails monolith you have.
 * Peacfully coexists with your existing tech: Turbolinks, Trix, React, Vue, etc.
 * Leans on Stimulus, ActionCable, and ViewComponent for the heavy lifting.
-* No more need for frontend models, stores, and syncing; your source of truth is all server-side. Use the database you already have.
-* Supports graceful degradation when JavaScript is turned off.
-* Real-time frontend updates in response to frontend user interaction AND to server-side updates.
+* No more frontend models, stores, or syncing; your source of truth is the database you already have.
+* Supports *graceful degradation* when JavaScript is turned off.
+* *Real-time frontend UI updates* from frontend user interaction AND server-side updates.
 * No JavaScript required!
 
 
 ## Installation
 
-Motion has ruby and javascript parts, execute both of these commands:
+Motion has Ruby and JavaScript parts, execute both of these commands:
 
 ```sh
 bundle add motion
-yarn add motion
+yarn add @unabridged/motion
 ```
 
 Motion also relies on but does not currently enforce the following libraries:
@@ -35,7 +35,7 @@ yarn add stimulus
 
 Motion communicates over and therefore requires ActionCable. AnyCable support coming soon!
 
-Github's [ViewComponent](https://github.com/github/view_component) is currently the de-facto standard for component/presenter-style libraries for use with Rails and likely will make it into Rails eventually. Until then, we plan to not enforce this dependency and are open to supporting other, similar libraries.
+Github's [ViewComponent](https://github.com/github/view_component) is currently the de-facto standard for component/presenter-style libraries for use with Rails and likely will make it into Rails eventually. Until then, we plan to not enforce this dependency and are exploring support for other, similar libraries (https://github.com/trailblazer/cells, https://github.com/dry-rb/dry-view, https://github.com/komposable/komponent etc).
 
 After installing all libraries, run the install script:
 
@@ -49,15 +49,15 @@ This will install 2 files, both of which you are free to leave alone. If you alr
 
 Motion allows you to mount special DOM elements (henceforth "Motion components") in your standard Rails views that can be real-time updated from frontend interactions, backend state changes, or a combination of both. This is similar to something like [Stimulus Reflex](https://github.com/hopsoft/stimulus_reflex) in a few ways:
 
-- Communication with your Rails backend is performed via ActionCable.
-- The current page for a user is updated without a full page refresh. Stimulus Reflex accomplishes this by using Turbolinks, but the full page is rendered and replaced.
-- DOM diffing is performed when replacing existing content with new content.
+- *Websockets Communication* - Communication with your Rails backend is performed via ActionCable (AnyCable support coming soon).
+- *No Full Page Reload* - The current page for a user is updated in place.
+- *Blazing Fast* - DOM diffing is performed when replacing existing content with new content. Communication does not have to go through the full Rails router and controller stack. No complicated interaction between component and controller.
 
 However it is fundamentally different from the architecture of Stimulus Reflex and much more like Phoenix LiveView in some key ways that give you much greater freedom to develop applications the way you want to:
 
-- Server-side events can trigger updates to arbitrarily many users that are viewing Motion components via websocket channels.
-- Motion does not use full page replacement, but rather replaces only the component on the page with new HTML, DOM diffed for performance.
-- Your component has continuous state for the user viewing it, and that state does not go away between renderings.
+- *Server Triggered Events* - Server-side events can trigger updates to arbitrarily many users that are viewing Motion components via websocket channels.
+- *Partial Page Replacement* - Motion does not use full page replacement, but rather replaces only the component on the page with new HTML, DOM diffed for performance.
+- *Consistent State* - Your component has continuous state for the user viewing it, and that state does not go away between renderings.
 
 
 ### Frontend interactions
@@ -89,17 +89,24 @@ To invoke this motion on the frontend, add `data-motion='add'` to your component
 ```erb
 <div>
   <span><%= total %></span>
-  <%= button_to "Increment", data: { motion: "add" } %>
+  <%= button_tag "Increment", data: { motion: "add" } %>
 </div>
 ```
 
+This component can be included on your page the same as always with ViewComponent:
+
+```erb
+<%= render MyComponent.new(total: 5) %>
+```
+
 Every time the "Increment" button is clicked, MyComponent will call the `add` method, re-render your component and send it back to the frontend to replace the existing DOM. All invocations of mapped motions will cause the component to re-render, and unchanged rendered HTML will not perform any changes.
+
 
 ### Backend interactions
 
 Backend changes can be streamed to your Motion components in 2 steps.
 
-1. Broadcast changes on an ActionCable channel after an event you care about:
+1. Broadcast changes using ActionCable after an event you care about:
 
 ```ruby
 class Todo < ApplicationModel
@@ -111,7 +118,7 @@ class Todo < ApplicationModel
 end
 ```
 
-2. Configure your Motion component to listen on that ActionCable channel:
+2. Configure your Motion component to listen to an ActionCable channel:
 
 ```ruby
 class MyComponent < ViewComponent::Base
@@ -162,6 +169,16 @@ See the code for full API for [Event](https://github.com/unabridged/motion/blob/
 ## Limitations
 
 * Due to the way that your components are replaced on the page, Motion ViewComponents templates are limited to a single top-level DOM element. If you have multiple DOM elements in your template at the top level, you must wrap them in a single element.
+
+
+## Roadmap
+
+Broadly speaking, these initiatives are on our roadmap:
+
+- Support more ViewComponent-like libraries.
+- Support communication via AJAX instead of (or in addition to) websockets
+- AnyCable support for ultra-scalable performance
+- Decouple from Stimulus for fewer dependencies (in progress)
 
 
 ## Contributing
