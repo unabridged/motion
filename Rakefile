@@ -1,44 +1,32 @@
 # frozen_string_literal: true
 
 require "bundler/gem_tasks"
-require "rspec/core/rake_task"
-require "standard/rake"
-require "appraisal/task"
-require "json"
 
-RSpec::Core::RakeTask.new(:spec)
-Appraisal::Task.new
-
-namespace :release do
-  task :guard_version do
-    next if Motion::VERSION == JSON.parse(File.read("./package.json")).fetch("version")
-
-    raise "The NPM package version does not match the gem version."
+namespace :test do
+  task :local do
+    sh "bin/rspec"
   end
 
-  task :npm_publish do
-    sh "bin/yarn " \
-      "publish " \
-      "--cwd ./client " \
-      "--new-version '#{Motion::VERSION}' " \
-      "--access public"
+  task :all do
+    sh "bin/appraisal install"
+    sh "bin/appraisal bin/rake test:local"
   end
 end
 
-# Remove the default release task defined by Bundler
-Rake::Task[:release].clear
-
-task release: %i[
-  build
-  release:guard_version
-  release:guard_clean
-  release:source_control_push
-  release:npm_publish
-  release:rubygem_push
-]
-
-if !ENV["APPRAISAL_INITIALIZED"] && !ENV["TRAVIS"]
-  task default: :appraisal
-else
-  task default: :spec
+task :test do
+  if ENV["TRAVIS"]
+    Rake::Task["test:local"].invoke
+  else
+    Rake::Task["test:all"].invoke
+  end
 end
+
+task :lint do
+  if ENV["TRAVIS"]
+    sh "bin/standardrb --no-fix"
+  else
+    sh "bin/standardrb"
+  end
+end
+
+task default: %i[lint test]

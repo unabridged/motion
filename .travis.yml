@@ -1,9 +1,22 @@
 ---
 language: ruby
 cache: bundler
+sudo: false
 
 addons:
   chrome: stable
+
+before_install:
+  - gem update --system --no-doc
+  - gem install bundler --no-doc
+  - wget -O ./cc-test-reporter -- https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+  - chmod +x ./cc-test-reporter
+
+# before_script:
+#   - ./cc-test-reporter before-build
+
+# after_script:
+#   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 rvm:
   - 2.5.8
@@ -15,4 +28,5 @@ gemfile:
   - gemfiles/rails_6_0.gemfile
   - gemfiles/rails_master.gemfile
 
-before_install: gem install bundler -v 2.1.2
+notifications:
+  email: false
