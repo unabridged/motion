@@ -51,7 +51,7 @@ RSpec.configure do |config|
     TestApplication.sync_motion_client!
 
     # Use headless Chrome for system tests
-    driven_by :selenium_chrome_headless
+    driven_by :headless_chrome_no_sandbox
   end
 
   # For most specs, we want Motion to be configured in a predictable way, but
