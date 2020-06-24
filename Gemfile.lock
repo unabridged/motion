@@ -1,15 +1,13 @@
 PATH
   remote: .
   specs:
-    motion (0.0.1)
+    motion (0.1.0)
       nokogiri
       rails (>= 5.2)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    action-cable-testing (0.6.1)
-      actioncable (>= 5.0)
     actioncable (6.0.3.2)
       actionpack (= 6.0.3.2)
       nio4r (~> 2.0)
@@ -232,7 +230,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  action-cable-testing
   appraisal
   capybara (>= 2.15, < 4.0)
   generator_spec
@@ -250,4 +247,4 @@ DEPENDENCIES
   webpacker
 
 BUNDLED WITH
-   2.1.2
+   2.1.4
