@@ -1,7 +1,7 @@
 # Motion
 
 [![Gem Version](https://badge.fury.io/rb/motion.svg)](https://badge.fury.io/rb/motion)
-[![npm version](https://badge.fury.io/js/motion-client.svg)](https://badge.fury.io/js/motion-client)
+[![npm version](https://badge.fury.io/js/@unabridged/motion.svg)](https://badge.fury.io/js/@unabridged/motion)
 [![Build Status](https://travis-ci.com/unabridged/motion.svg?branch=master)](https://travis-ci.com/unabridged/motion)
 [![Maintainability](https://api.codeclimate.com/v1/badges/3167364a38b1392a5478/maintainability)](https://codeclimate.com/github/unabridged/motion/maintainability)
 [![Ruby Code Style](https://img.shields.io/badge/Ruby_Code_Style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
