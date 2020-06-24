@@ -10,7 +10,10 @@ gem "rspec", "~> 3.0"
 gem "rspec-rails"
 gem "standard"
 gem "view_component"
-gem "simplecov", require: false
+
+# https://github.com/codeclimate/test-reporter/issues/413
+gem "simplecov", "< 0.18", require: false
+
 gem "generator_spec"
 gem "capybara", ">= 2.15", "< 4.0"
 gem "selenium-webdriver"
