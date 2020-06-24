@@ -1,7 +1,7 @@
 import { Application } from "stimulus"
 import { createConsumer } from "@rails/actioncable";
 
-import { Controller } from "motion-client";
+import { Controller } from "@unabridged/motion";
 
 const application = Application.start();
 const consumer = createConsumer();

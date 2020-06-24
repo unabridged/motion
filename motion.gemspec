@@ -33,6 +33,6 @@ Gem::Specification.new do |spec|
 
   spec.post_install_message = <<~MSG
     Friendly reminder: When updating the motion gem, don't forget to update the
-    NPM package as well (`bin/yarn add 'motion-client@#{spec.version}'`).
+    NPM package as well (`bin/yarn add '@unabridged/motion@#{spec.version}'`).
   MSG
 end
