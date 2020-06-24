@@ -70,22 +70,34 @@ module Motion
       def _ensure_declarative_stream_proxy(broadcast)
         return unless @_declarative_stream_proxies.add?(broadcast)
 
+        # TODO: Something about this doesn't deal with the coder correctly.
         stream_from(broadcast) do |message|
-          next unless @_declarative_streams.include?(broadcast)
-
-          @_declarative_stream_monitor.synchronize do
-            send(@_declarative_stream_target, broadcast, message) if @_declarative_stream_target
-          end
-        rescue Exception => e # rubocop:disable Lint/RescueException
+          _handle_incoming_broadcast_to_declarative_stream(broadcast, message)
+        rescue Exception => exception # rubocop:disable Lint/RescueException
           # It is very, very important that we do not allow an exception to
           # escape here as the internals of ActionCable will stop processing
           # the broadcast.
 
-          logger.error(
-            "There was an exception - #{e.class}(#{e.message})\n" +
-            e.backtrace.join("\n")
-          )
+          _handle_exception_in_declarative_stream(broadcast, exception)
         end
+      end
+
+      def _handle_incoming_broadcast_to_declarative_stream(broadcast, message)
+        @_declarative_stream_monitor.synchronize do
+          return unless @_declarative_stream_target &&
+            @_declarative_streams.include?(broadcast)
+
+          send(@_declarative_stream_target, broadcast, message)
+        end
+      end
+
+      def _handle_exception_in_declarative_stream(broadcast, exception)
+        logger.error(
+          "There was an exception while handling a broadcast to #{broadcast}" \
+          "on #{self.class}:\n" \
+          "  #{exception.class}: #{exception.message}\n" \
+          "#{exception.backtrace.map { |line| "    #{line}" }.join("\n")}"
+        )
       end
     end
   end
