@@ -6,14 +6,13 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/3167364a38b1392a5478/maintainability)](https://codeclimate.com/github/unabridged/motion/maintainability)
 [![Ruby Code Style](https://img.shields.io/badge/Ruby_Code_Style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
 
-Motion allows you to build reactive frontend UI components in your Rails application using pure Ruby.
+Motion allows you to build reactive, real-time frontend UI components in your Rails application using pure Ruby.
 
 * Plays nicely with the Rails monolith you have.
 * Peacfully coexists with your existing tech: Turbolinks, Trix, React, Vue, etc.
+* Real-time frontend UI updates from frontend user interaction AND server-side updates.
 * Leans on Stimulus, ActionCable, and ViewComponent for the heavy lifting.
 * No more frontend models, stores, or syncing; your source of truth is the database you already have.
-* Supports *graceful degradation* when JavaScript is turned off.
-* *Real-time frontend UI updates* from frontend user interaction AND server-side updates.
 * No JavaScript required!
 
 
@@ -49,15 +48,16 @@ This will install 2 files, both of which you are free to leave alone. If you alr
 
 Motion allows you to mount special DOM elements (henceforth "Motion components") in your standard Rails views that can be real-time updated from frontend interactions, backend state changes, or a combination of both. This is similar to something like [Stimulus Reflex](https://github.com/hopsoft/stimulus_reflex) in a few ways:
 
-- *Websockets Communication* - Communication with your Rails backend is performed via ActionCable (AnyCable support coming soon).
-- *No Full Page Reload* - The current page for a user is updated in place.
-- *Blazing Fast* - DOM diffing is performed when replacing existing content with new content. Communication does not have to go through the full Rails router and controller stack. No complicated interaction between component and controller.
+- **Websockets Communication** - Communication with your Rails backend is performed via ActionCable (AnyCable support coming soon).
+- **No Full Page Reload** - The current page for a user is updated in place.
+- **Fast DOM Diffing** - DOM diffing is performed when replacing existing content with new content.
 
 However it is fundamentally different from the architecture of Stimulus Reflex and much more like Phoenix LiveView in some key ways that give you much greater freedom to develop applications the way you want to:
 
-- *Server Triggered Events* - Server-side events can trigger updates to arbitrarily many users that are viewing Motion components via websocket channels.
-- *Partial Page Replacement* - Motion does not use full page replacement, but rather replaces only the component on the page with new HTML, DOM diffed for performance.
-- *Consistent State* - Your component has continuous state for the user viewing it, and that state does not go away between renderings.
+- **Server Triggered Events** - Server-side events can trigger updates to arbitrarily many users that are viewing Motion components via websocket channels.
+- **Partial Page Replacement** - Motion does not use full page replacement, but rather replaces only the component on the page with new HTML, DOM diffed for performance.
+- **Consistent State** - Your component has continuous state for the user viewing it, and that state does not go away between renderings.  
+- **Blazing Fast** - Communication does not have to go through the full Rails router and controller stack. No complicated interaction between component and controller.
 
 
 ### Frontend interactions
@@ -175,10 +175,10 @@ See the code for full API for [Event](https://github.com/unabridged/motion/blob/
 
 Broadly speaking, these initiatives are on our roadmap:
 
-- Support more ViewComponent-like libraries.
-- Support communication via AJAX instead of (or in addition to) websockets
-- AnyCable support for ultra-scalable performance
 - Decouple from Stimulus for fewer dependencies (in progress)
+- Support more ViewComponent-like libraries.
+- AnyCable support for ultra-scalable performance
+- Support communication via AJAX instead of (or in addition to) websockets
 
 
 ## Contributing
