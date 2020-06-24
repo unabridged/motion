@@ -56,7 +56,7 @@ However it is fundamentally different from the architecture of Stimulus Reflex a
 
 - **Server Triggered Events** - Server-side events can trigger updates to arbitrarily many users that are viewing Motion components via websocket channels.
 - **Partial Page Replacement** - Motion does not use full page replacement, but rather replaces only the component on the page with new HTML, DOM diffed for performance.
-- **Consistent State** - Your component has continuous state for the user viewing it, and that state does not go away between renderings.  
+- **Consistent State** - Your component has continuous state for the user viewing it, and that state does not go away between renderings.
 - **Blazing Fast** - Communication does not have to go through the full Rails router and controller stack. No complicated interaction between component and controller.
 
 
@@ -69,7 +69,7 @@ The primary way to handle user interactions on the frontend is by using `map_mot
 ```ruby
 class MyComponent < ViewComponent::Base
   include Motion::Component
-  
+
   attr_reader :total
 
   def initialize(total: 0)
@@ -110,7 +110,7 @@ Backend changes can be streamed to your Motion components in 2 steps.
 
 ```ruby
 class Todo < ApplicationModel
-  after_create :broadcast_created
+  after_commit :broadcast_created, on: :create
 
   def broadcast_created
     ActionCable.server.broadcast("todos:created", id)
@@ -147,7 +147,7 @@ Methods that are mapped using `map_motion` or `stream_from` accept an `event` pa
   def example(event)
     event.type # => "change"
     event.name # alias for type
-    
+
     element = event.target # => Motion::Element instance
     element.tag_name # => "input"
     element.value # => "5"
