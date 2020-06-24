@@ -8,10 +8,10 @@ Gem::Specification.new do |spec|
   spec.authors = ["Alec Larsen", "Drew Ulmer"]
   spec.email = ["alec@unabridgedsoftware.com", "drew@unabridgedsoftware.com"]
 
-  spec.summary = "Reactive view components written in Ruby for Rails"
+  spec.summary = "Reactive frontend UI components for Rails in pure Ruby. "
   spec.description = <<~TEXT
-    Motion extends Github's `view_component` gem with reactivity to interactions
-    from the user and broadcasts on the server.
+    Motion extends Github's `view_component` to allow you to build reactive,
+    real-time frontend UI components in your Rails application using pure Ruby.
   TEXT
 
   spec.license = "MIT"
