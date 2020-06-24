@@ -4,3 +4,4 @@ format: progress
 
 ignore:
   - 'spec/support/test_application/node_modules/**/*'
+  - 'gemfiles/vendor/**/*'
