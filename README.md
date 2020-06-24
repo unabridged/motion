@@ -34,7 +34,7 @@ yarn add stimulus
 
 Motion communicates over and therefore requires ActionCable. AnyCable support coming soon!
 
-Github's [ViewComponent](https://github.com/github/view_component) is currently the de-facto standard for component/presenter-style libraries for use with Rails and likely will make it into Rails eventually. Until then, we plan to not enforce this dependency and are exploring support for other, similar libraries (https://github.com/trailblazer/cells, https://github.com/dry-rb/dry-view, https://github.com/komposable/komponent etc).
+Github's [ViewComponent](https://github.com/github/view_component) is currently the de-facto standard for component/presenter-style libraries for use with Rails and likely will make it into Rails eventually. Until then, we plan to not enforce this dependency and are exploring support for other, similar libraries ([trailblazer/cells](https://github.com/trailblazer/cells), [dry-rb/dry-view](https://github.com/dry-rb/dry-view), [komposable/komponent](https://github.com/komposable/komponent etc)).
 
 After installing all libraries, run the install script:
 
