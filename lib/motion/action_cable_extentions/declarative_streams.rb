@@ -74,7 +74,7 @@ module Motion
           next unless @_declarative_streams.include?(broadcast)
 
           @_declarative_stream_monitor.synchronize do
-            send(@_declarative_stream_target, broadcast, message)
+            send(@_declarative_stream_target, broadcast, message) if @_declarative_stream_target
           end
         rescue Exception => e # rubocop:disable Lint/RescueException
           # It is very, very important that we do not allow an exception to
