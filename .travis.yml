@@ -1,7 +1,8 @@
 ---
+os: linux
+dist: xenial
 language: ruby
 cache: bundler
-sudo: false
 
 addons:
   chrome: stable
