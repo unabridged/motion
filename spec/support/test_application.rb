@@ -10,10 +10,14 @@ TestApplication.load_generators
 def TestApplication.sync_motion_client!
   return if @synced_motion_client
 
-  # This is adapted from how Webpacker runs Webpack.
+  # Clear webpacker's cache (if it exists)
+  cache_path = File.expand_path('tmp/cache', Rails.root)
+  FileUtils.rm_r(cache_path) if File.exists?(cache_path)
+
+  # Install the latest version of the client code into the test application.
   stdout, stderr, status =
     Open3.capture3(
-      "#{RbConfig.ruby} ./bin/yarn add --force @unabridged/motion@../../../client",
+      "bin/yarn add --force @unabridged/motion@../../../client",
       chdir: File.expand_path(Rails.root)
     )
 
