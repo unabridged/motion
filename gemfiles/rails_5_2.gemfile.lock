@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    motion (0.1.0)
+    motion (0.1.1)
       nokogiri
       rails (>= 5.2)
 

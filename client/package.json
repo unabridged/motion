@@ -1,6 +1,6 @@
 {
   "name": "@unabridged/motion",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Reactive view components written in Ruby for Rails",
   "main": "index.js",
   "dependencies": {

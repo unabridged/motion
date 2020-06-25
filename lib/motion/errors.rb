@@ -122,7 +122,7 @@ module Motion
 
     def initialize(expected_version, actual_version)
       super(<<~MSG)
-        Expected client version #{expected_revision}, but got #{actual_version}.
+        Expected client version #{expected_version}, but got #{actual_version}.
 
         Fix: Run `bin/yarn add @unabridged/motion@#{expected_version}`
       MSG
