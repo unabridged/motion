@@ -10,7 +10,7 @@
 Motion allows you to build reactive, real-time frontend UI components in your Rails application using pure Ruby.
 
 * Plays nicely with the Rails monolith you have.
-* Peacfully coexists with your existing tech: Turbolinks, Trix, React, Vue, etc.
+* Peacfully coexists with your existing tech: Strong Parameters, Turbolinks, Trix, React, Vue, etc.
 * Real-time frontend UI updates from frontend user interaction AND server-side updates.
 * Leans on Stimulus, ActionCable, and ViewComponent for the heavy lifting.
 * No more frontend models, stores, or syncing; your source of truth is the database you already have.
