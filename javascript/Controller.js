@@ -1,6 +1,6 @@
 import { Controller } from 'stimulus';
 
-import { version } from './package.json';
+import { version } from '../package.json';
 
 import createActionManager from './createActionManager';
 import createNavigationGuard from './createNavigationGuard';

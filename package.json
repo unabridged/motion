@@ -2,7 +2,10 @@
   "name": "@unabridged/motion",
   "version": "0.1.1",
   "description": "Reactive view components written in Ruby for Rails",
-  "main": "index.js",
+  "main": "javascript/index.js",
+  "files": [
+    "javascript/**/*"
+  ],
   "dependencies": {
     "@rails/actioncable": ">= 6.0",
     "morphdom": "^2.6.1",
