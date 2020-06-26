@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    motion (0.1.1)
+    motion (0.1.2)
       nokogiri
       rails (>= 5.2)
 
@@ -183,7 +183,7 @@ GEM
       rubocop-ast (>= 0.0.3)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-ast (0.0.3)
+    rubocop-ast (0.1.0)
       parser (>= 2.7.0.1)
     rubocop-performance (1.6.1)
       rubocop (>= 0.71.0)
