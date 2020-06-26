@@ -34,7 +34,7 @@ bundle add view_component
 yarn add stimulus
 ```
 
-Motion communicates over and therefore requires ActionCable. AnyCable support coming soon!
+Motion communicates over and therefore requires ActionCable.
 
 After installing all libraries, run the install script:
 
@@ -54,7 +54,7 @@ Github's [ViewComponent](https://github.com/github/view_component) is currently 
 
 Motion allows you to mount special DOM elements (henceforth "Motion components") in your standard Rails views that can be real-time updated from frontend interactions, backend state changes, or a combination of both. This is similar to something like [Stimulus Reflex](https://github.com/hopsoft/stimulus_reflex) in a few ways:
 
-- **Websockets Communication** - Communication with your Rails backend is performed via ActionCable (AnyCable support coming soon).
+- **Websockets Communication** - Communication with your Rails backend is performed via ActionCable
 - **No Full Page Reload** - The current page for a user is updated in place.
 - **Fast DOM Diffing** - DOM diffing is performed when replacing existing content with new content.
 - **Server Triggered Events** - Server-side events can trigger updates to arbitrarily many components via WebSocket channels.
@@ -184,7 +184,6 @@ Broadly speaking, these initiatives are on our roadmap:
 - Decouple from Stimulus for fewer dependencies (in progress)
 - Enhanced documentation and usage examples
 - Support more ViewComponent-like libraries: [trailblazer/cells](https://github.com/trailblazer/cells), [dry-rb/dry-view](https://github.com/dry-rb/dry-view), [komposable/komponent](https://github.com/komposable/komponent)
-- AnyCable support for ultra-scalable performance
 - Support communication via AJAX instead of (or in addition to) websockets
 
 
