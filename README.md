@@ -36,15 +36,19 @@ yarn add stimulus
 
 Motion communicates over and therefore requires ActionCable. AnyCable support coming soon!
 
-Github's [ViewComponent](https://github.com/github/view_component) is currently the de-facto standard for component/presenter-style libraries for use with Rails and likely will make it into Rails eventually. Until then, we plan to not enforce this dependency and are exploring support for other, similar libraries ([trailblazer/cells](https://github.com/trailblazer/cells), [dry-rb/dry-view](https://github.com/dry-rb/dry-view), [komposable/komponent](https://github.com/komposable/komponent), etc).
-
 After installing all libraries, run the install script:
 
 ```sh
-bin/rails motion:install
+bin/rails g motion:install
 ```
 
 This will install 2 files, both of which you are free to leave alone. If you already have Stimulus set up and working, no more work is required.
+
+
+### Note: Component Support in Rails 6
+
+Github's [ViewComponent](https://github.com/github/view_component) is currently the most popular Ruby gem for component/presenter-style libraries in Rails. Formal support for 3rd-party component frameworks [landed in Rails 6](rails/rails#36388), and it's very possible that a blessed component framework will become "ActionView::Component" or similar for Rails 6.1. Until then, we plan to *not* enforce this dependency and are exploring support for other, similar libraries.
+
 
 ## How does it work?
 
@@ -53,13 +57,13 @@ Motion allows you to mount special DOM elements (henceforth "Motion components")
 - **Websockets Communication** - Communication with your Rails backend is performed via ActionCable (AnyCable support coming soon).
 - **No Full Page Reload** - The current page for a user is updated in place.
 - **Fast DOM Diffing** - DOM diffing is performed when replacing existing content with new content.
+- **Server Triggered Events** - Server-side events can trigger updates to arbitrarily many components via WebSocket channels.
 
-However it is fundamentally different from the architecture of Stimulus Reflex and much more like Phoenix LiveView in some key ways that give you much greater freedom to develop applications the way you want to:
+However Motion has a fundamentally different architecture than Stimulus Reflex and is much more like [Phoenix LiveView](https://github.com/phoenixframework/phoenix_live_view) (and even React!) in some key ways:
 
-- **Server Triggered Events** - Server-side events can trigger updates to arbitrarily many users that are viewing Motion components via websocket channels.
 - **Partial Page Replacement** - Motion does not use full page replacement, but rather replaces only the component on the page with new HTML, DOM diffed for performance.
-- **Consistent State** - Your component has continuous state for the user viewing it, and that state does not go away between renderings.
-- **Blazing Fast** - Communication does not have to go through the full Rails router and controller stack. No complicated interaction between component and controller.
+- **Encapsulated, consistent stateful components** - Components have continuous internal state that persists and updates. This means each time a component changes, new rendered HTML is generated and can replace what was there before.
+- **Blazing Fast** - Communication does not have to go through the full Rails router and controller stack. No changes to your routing or controller are required to get the full functionality of Motion.
 
 
 ### Frontend interactions
@@ -170,7 +174,7 @@ See the code for full API for [Event](https://github.com/unabridged/motion/blob/
 
 ## Limitations
 
-* Due to the way that your components are replaced on the page, Motion ViewComponents templates are limited to a single top-level DOM element. If you have multiple DOM elements in your template at the top level, you must wrap them in a single element.
+* Due to the way that your components are replaced on the page, Motion ViewComponents templates are limited to a single top-level DOM element. If you have multiple DOM elements in your template at the top level, you must wrap them in a single element. This is a similar limitation that React enforced until `React.Fragment` appeared and is for a very similar reason.
 
 
 ## Roadmap
@@ -178,7 +182,8 @@ See the code for full API for [Event](https://github.com/unabridged/motion/blob/
 Broadly speaking, these initiatives are on our roadmap:
 
 - Decouple from Stimulus for fewer dependencies (in progress)
-- Support more ViewComponent-like libraries.
+- Enhanced documentation and usage examples
+- Support more ViewComponent-like libraries: [trailblazer/cells](https://github.com/trailblazer/cells), [dry-rb/dry-view](https://github.com/dry-rb/dry-view), [komposable/komponent](https://github.com/komposable/komponent)
 - AnyCable support for ultra-scalable performance
 - Support communication via AJAX instead of (or in addition to) websockets
 
