@@ -11,6 +11,10 @@ namespace :test do
     sh "bin/appraisal install"
     sh "bin/appraisal bin/rake test:local"
   end
+
+  task :javascript do
+    sh "bin/yarn test"
+  end
 end
 
 task :test do
@@ -19,14 +23,28 @@ task :test do
   else
     Rake::Task["test:all"].invoke
   end
+
+  Rake::Task["test:javascript"].invoke
+end
+
+namespace :lint do
+  task :javascript do
+    if ENV["TRAVIS"]
+      sh "bin/yarn lint"
+    else
+      sh "bin/yarn lint --fix"
+    end
+  end
 end
 
 task :lint do
   if ENV["TRAVIS"]
-    sh "bin/standardrb --no-fix"
-  else
     sh "bin/standardrb"
+  else
+    sh "bin/standardrb --fix"
   end
+
+  Rake::Task["lint:javascript"].invoke
 end
 
 task default: %i[lint test]

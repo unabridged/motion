@@ -1,74 +1,83 @@
-import { Controller } from 'stimulus';
+import { Controller } from 'stimulus'
 
-import { version } from '../package.json';
+import { version } from '../package.json'
 
-import createActionManager from './createActionManager';
-import createNavigationGuard from './createNavigationGuard';
-import dispatchEvent from './dispatchEvent';
-import getFallbackConsumer from './getFallbackConsumer';
-import reconcile from './reconcile';
-import serializeEvent from './serializeEvent';
+import createActionManager from './createActionManager'
+import createNavigationGuard from './createNavigationGuard'
+import dispatchEvent from './dispatchEvent'
+import getFallbackConsumer from './getFallbackConsumer'
+import reconcile from './reconcile'
+import serializeEvent from './serializeEvent'
 
 export default class extends Controller {
   // == STIMULUS CALLBACKS =====================================================
-  connect() {
-    this._setupActionManager();
-    this._setupSubscription();
-    this._setupNavigationGuard();
+  connect () {
+    this._setupActionManager()
+    this._setupSubscription()
+    this._setupNavigationGuard()
   }
 
-  disconnect() {
-    this._teardownActionManager();
-    this._teardownSubscription();
-    this._teardownNavigationGuard();
+  disconnect () {
+    this._teardownActionManager()
+    this._teardownSubscription()
+    this._teardownNavigationGuard()
   }
 
   // == OVERRIDE FREELY IN SUBCLASSES ==========================================
-  keyAttribute = "data-motion-key";     // <--> `Motion.config.key_attribute`
-  stateAttribute = "data-motion-state"; // <--> `Motion.config.state_attribute`
-  motionAttribute = "data-motion";      // <--> `Motion.config.motion_attribute`
+  constructor () {
+    super(...arguments)
+
+    // This must match `Motion.config.key_attribute`
+    this.keyAttribute = 'data-motion-key'
+
+    // This must match `Motion.config.state_attribute`
+    this.stateAttribute = 'data-motion-state'
+
+    // This must match `Motion.config.motion_attribute`
+    this.motionAttribute = 'data-motion'
+  }
 
   // Override with the application's consumer to avoid an extra websocket
-  getConsumer() {
-    return getFallbackConsumer();
+  getConsumer () {
+    return getFallbackConsumer()
   }
 
   // Available at `Motion::Event#extra_data`
-  getExtraDataForEvent(_event) {}
+  getExtraDataForEvent (_event) {}
 
   // Lifecycle callbacks (dispatch DOM events by default)
-  beforeConnect()   { dispatchEvent(this.element, 'motion:before-connect'); }
-  connected()       { dispatchEvent(this.element, 'motion:connected'); }
-  connectFailed()   { dispatchEvent(this.element, 'motion:connect-failed'); }
-  disconnected()    { dispatchEvent(this.element, 'motion:disconnected'); }
-  beforeRender()    { dispatchEvent(this.element, 'motion:before-render'); }
-  rendered()        { dispatchEvent(this.element, 'motion:rendered'); }
+  beforeConnect () { dispatchEvent(this.element, 'motion:before-connect') }
+  connected () { dispatchEvent(this.element, 'motion:connected') }
+  connectFailed () { dispatchEvent(this.element, 'motion:connect-failed') }
+  disconnected () { dispatchEvent(this.element, 'motion:disconnected') }
+  beforeRender () { dispatchEvent(this.element, 'motion:before-render') }
+  rendered () { dispatchEvent(this.element, 'motion:rendered') }
 
   // == USE FREELY IN SUBCLASSES ===============================================
-  performMotion(name, event = null) {
+  performMotion (name, event = null) {
     if (!this._subscription) {
-      return;
+      return
     }
 
-    const extraDataForEvent = event && this.getExtraDataForEvent(event);
+    const extraDataForEvent = event && this.getExtraDataForEvent(event)
 
     this._subscription.perform(
       'process_motion',
       {
         name,
-        event: event && serializeEvent(event, extraDataForEvent),
-      },
-    );
+        event: event && serializeEvent(event, extraDataForEvent)
+      }
+    )
 
     if (event) {
-      event.preventDefault();
+      event.preventDefault()
     }
   }
 
   // == PRIVATE ================================================================
-  _setupActionManager() {
+  _setupActionManager () {
     if (this._actionManager) {
-      return;
+      return
     }
 
     this._actionManager = createActionManager(
@@ -76,59 +85,59 @@ export default class extends Controller {
       {
         target: 'performMotion',
         attribute: this.motionAttribute
-      },
-    );
+      }
+    )
   }
 
-  _teardownActionManager() {
+  _teardownActionManager () {
     if (!this._actionManager) {
-      return;
+      return
     }
 
-    this._actionManager.stop();
-    this._actionManager = null;
+    this._actionManager.stop()
+    this._actionManager = null
   }
 
-  _setupSubscription() {
+  _setupSubscription () {
     if (this._subscription) {
-      return;
+      return
     }
 
-    this.beforeConnect();
+    this.beforeConnect()
 
-    const state = this.element.getAttribute(this.stateAttribute);
+    const state = this.element.getAttribute(this.stateAttribute)
 
     if (!state) {
-      return this.connectFailed();
+      return this.connectFailed()
     }
 
     this._subscription = this.getConsumer().subscriptions.create(
       {
         channel: 'Motion::Channel',
         version,
-        state,
+        state
       },
       {
         connected: () => this.connected(),
         rejected: () => this.connectFailed(),
         disconnected: () => this.disconnected(),
-        received: newState => this._render(newState),
-      },
-    );
+        received: newState => this._render(newState)
+      }
+    )
   }
 
-  _teardownSubscription() {
+  _teardownSubscription () {
     if (!this._subscription) {
-      return;
+      return
     }
 
-    this._subscription.unsubscribe();
-    this._subscription = null;
+    this._subscription.unsubscribe()
+    this._subscription = null
   }
 
-  _setupNavigationGuard() {
+  _setupNavigationGuard () {
     if (this._navigationGuard) {
-      return;
+      return
     }
 
     // Disconncting the component when the browser starts to navigate away works
@@ -136,24 +145,24 @@ export default class extends Controller {
     // controller action that they are navigating to has some effect on the
     // component.
     this._navigationGuard = createNavigationGuard(() => {
-      this._teardownSubscription();
-    });
+      this._teardownSubscription()
+    })
   }
 
-  _teardownNavigationGuard() {
+  _teardownNavigationGuard () {
     if (!this._navigationGuard) {
-      return;
+      return
     }
 
-    this._navigationGuard.stop();
-    this._navigationGuard = null;
+    this._navigationGuard.stop()
+    this._navigationGuard = null
   }
 
-  _render(newState) {
-    this.beforeRender();
+  _render (newState) {
+    this.beforeRender()
 
-    reconcile(this.element, newState, this.keyAttribute);
+    reconcile(this.element, newState, this.keyAttribute)
 
-    this.rendered();
+    this.rendered()
   }
 }

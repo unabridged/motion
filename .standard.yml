@@ -1,7 +1,6 @@
-fix: true
 parallel: true
 format: progress
 
 ignore:
-  - 'spec/support/test_application/node_modules/**/*'
+  - '**/node_modules/**/*'
   - 'gemfiles/vendor/**/*'

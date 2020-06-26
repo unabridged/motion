@@ -4,14 +4,20 @@
   "description": "Reactive view components written in Ruby for Rails",
   "main": "javascript/index.js",
   "files": [
+    "package.json",
     "javascript/**/*"
   ],
+  "directories": {
+    "lib": "javascript"
+  },
   "dependencies": {
     "@rails/actioncable": ">= 6.0",
     "morphdom": "^2.6.1",
     "stimulus": ">= 1.1"
   },
   "scripts": {
+    "test": "karma start",
+    "lint": "standard javascript/**/*.js spec/javascript/**/*.js",
     "postinstall": "echo \"Friendly reminder: When updating the @unabridged/motion NPM package, don't forget to update the Ruby gem as well.\"; exit 0"
   },
   "repository": {
@@ -23,5 +29,26 @@
   "bugs": {
     "url": "https://github.com/unabridged/motion/issues"
   },
-  "homepage": "https://github.com/unabridged/motion#readme"
+  "homepage": "https://github.com/unabridged/motion#readme",
+  "devDependencies": {
+    "@open-wc/karma-esm": "^2.16.16",
+    "chai": "^4.2.0",
+    "karma": "^5.1.0",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-coverage": "^2.0.2",
+    "karma-mocha": "^2.0.1",
+    "mocha": "^8.0.1",
+    "puppeteer": "^4.0.1",
+    "standard": "^14.3.4"
+  },
+  "standard": {
+    "envs": [
+      "browser",
+      "mocha"
+    ],
+    "globals": [
+      "expect"
+    ]
+  }
 }

@@ -1,27 +1,27 @@
-import morphdom from 'morphdom';
+import morphdom from 'morphdom'
 
 export default (rootElement, newState, keyAttribute) => {
-  if (typeof(newState) !== 'string') {
-    throw new TypeError("Expected raw HTML for reconcile newState");
+  if (typeof (newState) !== 'string') {
+    throw new TypeError('Expected raw HTML for reconcile newState')
   }
 
-  const rootKey = rootElement.getAttribute(keyAttribute);
+  const rootKey = rootElement.getAttribute(keyAttribute)
 
   if (!rootKey) {
-    throw new TypeError("Expected key on reconcile rootElement");
+    throw new TypeError('Expected key on reconcile rootElement')
   }
 
   const onBeforeElUpdated = (fromElement, toElement) => {
     // When we are doing an inner update, propgrate the key and replace.
     if (rootElement === fromElement) {
-      toElement.setAttribute(keyAttribute, rootKey);
-      return true;
+      toElement.setAttribute(keyAttribute, rootKey)
+      return true
     }
 
     // When we are doing an outer update, do not replace if the key is the same.
-    const toKey = toElement.getAttribute(keyAttribute);
+    const toKey = toElement.getAttribute(keyAttribute)
     if (toKey && toKey === fromElement.getAttribute(keyAttribute)) {
-      return false;
+      return false
     }
 
     // When two nodes have (deep) DOM equality, don't replace. This is correct
@@ -29,18 +29,18 @@ export default (rootElement, newState, keyAttribute) => {
     // (which cannot possibly have state outside of the DOM because no handles
     // have been allowed to leave this function since parsing).
     if (fromElement.isEqualNode(toElement)) {
-      return false;
+      return false
     }
 
     // Otherwise, take the new version.
-    return true;
-  };
+    return true
+  }
 
   return morphdom(
     rootElement,
     newState,
     {
-      onBeforeElUpdated,
+      onBeforeElUpdated
     }
-  );
-};
+  )
+}

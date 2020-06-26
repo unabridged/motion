@@ -1,122 +1,122 @@
-export default function createActionManager(controller, config) {
-  const actionManager = new ActionManager(controller, config);
-  actionManager.start();
+export default function createActionManager (controller, config) {
+  const actionManager = new ActionManager(controller, config)
+  actionManager.start()
 
-  return actionManager;
+  return actionManager
 }
 
 export class ActionManager {
-  constructor(controller, { attribute, target }) {
-    this.controller = controller;
-    this.attribute = attribute;
-    this.target = target;
+  constructor (controller, { attribute, target }) {
+    this.controller = controller
+    this.attribute = attribute
+    this.target = target
 
-    this._mutationObserver = new MutationObserver(() => this._setupActions());
+    this._mutationObserver = new MutationObserver(() => this._setupActions())
   }
 
-  start() {
-    this._setupActions();
+  start () {
+    this._setupActions()
 
     this._mutationObserver.observe(
       this.controller.element,
       {
         attributes: true,
         childList: true,
-        subtree: true,
-      },
-    );
+        subtree: true
+      }
+    )
   }
 
-  stop() {
-    this._mutationObserver.disconnect();
+  stop () {
+    this._mutationObserver.disconnect()
   }
 
-  _setupActions() {
-    for(const element of this._findAllElementsWithAction()) {
+  _setupActions () {
+    for (const element of this._findAllElementsWithAction()) {
       for (const { event, action } of this._getActionsForElement(element)) {
         this._setupAction(element, action, event)
       }
     }
   }
 
-  _setupAction(element, action, event = null) {
-    const { dataset } = element;
+  _setupAction (element, action, event = null) {
+    const { dataset } = element
     const actionProxy = this._getActionProxy(action)
     const actionString =
-      buildActionString(this.controller.identifier, actionProxy, event);
+      buildActionString(this.controller.identifier, actionProxy, event)
 
-    if (dataset.action?.includes(actionString)) {
-      return;
+    if (dataset.action && dataset.action.includes(actionString)) {
+      return
     }
 
     if (dataset.action) {
-      dataset.action += ` ${actionString}`;
+      dataset.action += ` ${actionString}`
     } else {
-      dataset.action = actionString;
+      dataset.action = actionString
     }
   }
 
-  _findAllElementsWithAction() {
-    const { element } = this.controller;
+  _findAllElementsWithAction () {
+    const { element } = this.controller
 
-    const selector = `[${this.attribute}]`;
-    const candidates = Array.from(element.querySelectorAll(selector));
+    const selector = `[${this.attribute}]`
+    const candidates = Array.from(element.querySelectorAll(selector))
 
     if (element.matches(selector)) {
-      candidates.push(element);
+      candidates.push(element)
     }
 
-    return candidates.filter(candidate => this._isReceiverForAction(candidate));
+    return candidates.filter(candidate => this._isReceiverForAction(candidate))
   }
 
-  _isReceiverForAction(element) {
+  _isReceiverForAction (element) {
     const receiverSelector =
-      `[data-controller~="${this.controller.identifier}"]`;
+      `[data-controller~="${this.controller.identifier}"]`
 
-    return this.controller.element === element.closest(receiverSelector);
+    return this.controller.element === element.closest(receiverSelector)
   }
 
-  _getActionsForElement(element) {
-      return parseActionsString(element.getAttribute(this.attribute));
+  _getActionsForElement (element) {
+    return parseActionsString(element.getAttribute(this.attribute))
   }
 
-  _getActionProxy(action) {
-    const handler = `__${this.target}$${action}`;
+  _getActionProxy (action) {
+    const handler = `__${this.target}$${action}`
 
     if (!(handler in this.controller)) {
-      this.controller[handler] = this._buildActionProxyHandler(action);
+      this.controller[handler] = this._buildActionProxyHandler(action)
     }
 
-    return handler;
+    return handler
   }
 
-  _buildActionProxyHandler(action) {
-    return event => this.controller[this.target](action, event);
+  _buildActionProxyHandler (action) {
+    return event => this.controller[this.target](action, event)
   }
 }
 
-function parseActionsString(actionsString) {
+function parseActionsString (actionsString) {
   if (!actionsString) {
-    return [];
+    return []
   }
 
   return actionsString.split(' ').map(actionString => {
-    const [eventOrAction, action] = actionString.split('->', 2);
+    const [eventOrAction, action] = actionString.split('->', 2)
 
     if (action) {
       return {
-          event: eventOrAction,
-          action,
-      };
+        event: eventOrAction,
+        action
+      }
     } else {
       return {
-          event: null,
-          action: eventOrAction,
-      };
+        event: null,
+        action: eventOrAction
+      }
     }
-  });
+  })
 }
 
-function buildActionString(controller, action, event = null) {
-  return `${event ? `${event}->` : ''}${controller}#${action}`;
+function buildActionString (controller, action, event = null) {
+  return `${event ? `${event}->` : ''}${controller}#${action}`
 }

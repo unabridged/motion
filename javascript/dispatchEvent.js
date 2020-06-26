@@ -1,8 +1,8 @@
-export default function dispatchEvent(target, name) {
-    const event = new CustomEvent(name, {
-        bubbles: true,
-        cancelable: false
-    });
+export default function dispatchEvent (target, name) {
+  const event = new CustomEvent(name, {
+    bubbles: true,
+    cancelable: false
+  })
 
-    target.dispatchEvent(event);
+  target.dispatchEvent(event)
 }

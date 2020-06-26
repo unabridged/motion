@@ -1,25 +1,25 @@
-export default function registerBeforeNavigate(callback) {
+export default function registerBeforeNavigate (callback) {
   const capature = () => {
     listenOnce(window, 'beforeunload', ({ defaultPrevented }) => {
       if (!defaultPrevented) {
-        callback();
+        callback()
       }
-    });
-  };
+    })
+  }
 
-  window.addEventListener('beforeunload', capature, true);
+  window.addEventListener('beforeunload', capature, true)
 
   return {
-    stop() {
-      window.removeEventListener('beforeunload', capature, true);
+    stop () {
+      window.removeEventListener('beforeunload', capature, true)
     }
-  };
+  }
 }
 
-function listenOnce(target, eventName, callback) {
-  target.addEventListener(eventName, function handler() {
-    target.removeEventListener(eventName, handler);
+function listenOnce (target, eventName, callback) {
+  target.addEventListener(eventName, function handler () {
+    target.removeEventListener(eventName, handler)
 
-    return callback.apply(this, arguments);
-  });
+    return callback.apply(this, arguments)
+  })
 }

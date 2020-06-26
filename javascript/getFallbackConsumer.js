@@ -1,7 +1,7 @@
-import { createConsumer } from '@rails/actioncable';
+import { createConsumer } from '@rails/actioncable'
 
-let fallbackConsumer = null;
+let fallbackConsumer = null
 
-export default function getFallbackConsumer() {
-  return fallbackConsumer || (fallbackConsumer = createConsumer());
+export default function getFallbackConsumer () {
+  return fallbackConsumer || (fallbackConsumer = createConsumer())
 }
