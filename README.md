@@ -145,7 +145,7 @@ All invocations of `stream_from` connected methods will cause the component to r
 
 ## Motion::Event and Motion::Element
 
-Methods that are mapped using `map_motion` or `stream_from` accept an `event` parameter which is a `Motion::Event`. This object has a `target` attribute which is a `Motion::Element`, the element in the DOM that triggered the motion. Useful state and attributes can be extracted from these objects, including value, selected, checked, form state, data attributes, and more.
+Methods that are mapped using `map_motion` accept an `event` parameter which is a `Motion::Event`. This object has a `target` attribute which is a `Motion::Element`, the element in the DOM that triggered the motion. Useful state and attributes can be extracted from these objects, including value, selected, checked, form state, data attributes, and more.
 
 ```ruby
   map_motion :example
