@@ -2,36 +2,13 @@
 os: linux
 dist: xenial
 language: ruby
-cache: bundler
-
-addons:
-  chrome: stable
-
-before_install:
-  - gem update --system --no-doc
-  - gem install bundler --no-doc
-
-  - nvm install 12
-  - bin/yarn install
-
-  # TODO: There _must_ be a better way to do this.
-  - CHROME_MAIN_VERSION=`google-chrome-stable --version | sed -E 's/(^Google Chrome |\.[0-9]+ )//g'`
-  - CHROMEDRIVER_VERSION=`curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAIN_VERSION"`
-  - curl "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" -O
-  - unzip chromedriver_linux64.zip -d ~/bin
-
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-
-before_script:
-  - ./cc-test-reporter before-build
-
-after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 env:
   global:
     secure: gbhfFSnxpYU4yviZTCJ7bjKuNpGEI0fnjKp+wROeaBgg8TAh0Ood/RwqcRWPT/OAsuuAtZS3gSrlMJYqzj2DOjP6ZiXRiQqTOcm1Onx6KpejFA9GXAKxC5H/JGikSpizwgSWQI6ZxqdkxB97UY03Gl6wNdIwMgynLVeBHlhv2PijTLAFrpbNtz/VtWm9FDppw3r6nEBKLK9GAThYHbicyvXVYgALLNQA56AJEPF2jGap+f1dERtzrUHl0/TD61uPyAd9GHKadbaff0tRKUl5pKX7vI8AOmiLEBAe0Legfm2uZWZUolEXpAWN0qwBkjPbgUwDVCABQayIPhNkec5ddKDMcUcTum67SdFRUH+4Bk0cnW7QlpTl5TgzXEizteYGPkuFmo+6ZStcrwCEJ1DgJSHKWQAS94X7LO3WZVyPdbH18K9KJgnfWNESwzR93Bor1AVRSSHk86VvHmfLALqR3yCnpVbGWzJZ5KnJASfDTjrFJOCTM72Sg6MFxsjg8enVmU3QxFEAIEdrOXNNsQmGcY25S0pi67JvoqOq26JUgwkCwl0V/pKhWToKUlT8gu+4yctS9CKSkwalljKu0oyeHlTPoyrvESVLhhyWbUrcKK/yRItH1J8b4K488UrTXmOH4HgaHE2ndNhXds1VDHSR1r+OBxyCEu7Mha3H4OHR8jw=
+
+  jobs:
+    - NODE_VERSION=12
 
 rvm:
   - 2.5.8
@@ -43,14 +20,38 @@ gemfile:
   - gemfiles/rails_6_0.gemfile
   - gemfiles/rails_master.gemfile
 
-jobs:
-  include:
-    - name: "JavaScript Unit Tests"
-      language: javascript
-      cache: yarn
-      script:
-        - bin/yarn lint
-        - bin/yarn test
+addons:
+  chrome: stable
+
+cache:
+  - bundler
+  - yarn
+
+before_install:
+  # Install Node and JS dependencies
+  - nvm install $NODE_VERSION
+  - bin/yarn install
+
+  # Install the Code Climate reporter
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+
+  # Install the Chrome Driver for the installed version of Chrome
+  - CHROME_MAIN_VERSION=`google-chrome-stable --version | sed -E 's/(^Google Chrome |\.[0-9]+ )//g'`
+  - CHROMEDRIVER_VERSION=`curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAIN_VERSION"`
+  - curl "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" -O
+  - unzip chromedriver_linux64.zip -d ~/bin
+
+  # Always use the latest versions of rubygems and bundler regardless of the Ruby version
+  - gem update --system --no-doc
+  - gem install bundler --no-doc
+
+before_script:
+  - ./cc-test-reporter before-build
+
+after_script:
+  # TODO: Also report JavaScript test coverage
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 notifications:
   email: false

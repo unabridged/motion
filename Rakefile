@@ -3,29 +3,21 @@
 require "bundler/gem_tasks"
 
 namespace :test do
-  task :local do
-    sh "bin/rspec"
-  end
-
   task :all do
     sh "bin/appraisal install"
-    sh "bin/appraisal bin/rake test:local"
+    sh "bin/appraisal bin/rake test"
   end
 end
 
 task :test do
-  if ENV["TRAVIS"]
-    Rake::Task["test:local"].invoke
-  else
-    Rake::Task["test:all"].invoke
-
-    sh "bin/yarn test"
-  end
+  sh "bin/rspec"
+  sh "bin/yarn test"
 end
 
 task :lint do
   if ENV["TRAVIS"]
     sh "bin/standardrb"
+    sh "bin/yarn lint"
   else
     sh "bin/standardrb --fix"
     sh "bin/yarn lint --fix"
