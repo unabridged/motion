@@ -3,6 +3,10 @@ set -euo pipefail
 IFS=$'\n\t'
 set -vx
 
-bundle install
+# Switch to the project root directory
+DIR="$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+cd "${DIR}/.."
 
-# Do any other automated setup that you need to do here
+# Install development dependencies
+bin/bundle install
+bin/yarn install

@@ -10,7 +10,9 @@ addons:
 before_install:
   - gem update --system --no-doc
   - gem install bundler --no-doc
+
   - nvm install 12
+  - bin/yarn install
 
   # TODO: There _must_ be a better way to do this.
   - CHROME_MAIN_VERSION=`google-chrome-stable --version | sed -E 's/(^Google Chrome |\.[0-9]+ )//g'`
@@ -40,6 +42,15 @@ gemfile:
   - gemfiles/rails_5_2.gemfile
   - gemfiles/rails_6_0.gemfile
   - gemfiles/rails_master.gemfile
+
+jobs:
+  include:
+    - name: "JavaScript Unit Tests"
+      language: javascript
+      cache: yarn
+      script:
+        - bin/yarn lint
+        - bin/yarn test
 
 notifications:
   email: false
