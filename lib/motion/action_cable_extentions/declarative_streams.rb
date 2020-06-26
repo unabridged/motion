@@ -70,8 +70,9 @@ module Motion
       def _ensure_declarative_stream_proxy(broadcast)
         return unless @_declarative_stream_proxies.add?(broadcast)
 
-        # TODO: Something about this doesn't deal with the coder correctly.
-        stream_from(broadcast) do |message|
+        # TODO: I feel like the fact that we have to specify the coder here is
+        # a bug in ActionCable. It should be the default for this karg.
+        stream_from(broadcast, coder: ActiveSupport::JSON) do |message|
           _handle_incoming_broadcast_to_declarative_stream(broadcast, message)
         rescue Exception => exception # rubocop:disable Lint/RescueException
           # It is very, very important that we do not allow an exception to
