@@ -44,7 +44,7 @@ namespace :release do
   end
 
   task :yarn_publish do
-    sh "bin/yarn --new-version '#{Motion::VERSION}' --access public"
+    sh "bin/yarn publish --new-version '#{Motion::VERSION}' --access public"
   end
 end
 
