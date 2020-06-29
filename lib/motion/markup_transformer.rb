@@ -35,7 +35,9 @@ module Motion
       fragment = Nokogiri::HTML::DocumentFragment.parse(html)
       root, *unexpected_others = fragment.children
 
-      raise MultipleRootsError, component if unexpected_others.any?(&:present?)
+      if !root || unexpected_others.any?(&:present?)
+        raise MultipleRootsError, component
+      end
 
       yield root
 
