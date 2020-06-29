@@ -46,7 +46,7 @@ This will install 2 files, both of which you are free to leave alone.
 
 ### Note: Component Support in Rails 6
 
-Github's [ViewComponent](https://github.com/github/view_component) is currently the most popular Ruby gem for component/presenter-style libraries in Rails. Formal support for 3rd-party component frameworks [landed in Rails 6](rails/rails#36388), and it's very possible that a blessed component framework will become "ActionView::Component" or similar for Rails 6.1. Until then, we plan to *not* enforce this dependency and are exploring support for other, similar libraries.
+Github's [ViewComponent](https://github.com/github/view_component) is currently the most popular Ruby gem for components that conforms to the new [`render_in` interface that landed in Rails 6.1](rails/rails#36388). Until a blessed component framework becomes `ActionView::Component` or similar, we plan to *not* enforce this dependency.
 
 
 ## How does it work?
@@ -181,7 +181,7 @@ See the code for full API for [Event](https://github.com/unabridged/motion/blob/
 Broadly speaking, these initiatives are on our roadmap:
 
 - Enhanced documentation and usage examples
-- Support more ViewComponent-like libraries: [trailblazer/cells](https://github.com/trailblazer/cells), [dry-rb/dry-view](https://github.com/dry-rb/dry-view), [komposable/komponent](https://github.com/komposable/komponent)
+- Support more ViewComponent-like libraries
 - Support communication via AJAX instead of (or in addition to) websockets
 
 
