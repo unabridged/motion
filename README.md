@@ -27,13 +27,12 @@ bundle add motion
 yarn add @unabridged/motion
 ```
 
-Motion also relies on but does not currently enforce the following libraries:
+You will also need a view component library. Any view component library that
+impliments the new [`render_in` interface that landed in Rails 6.1](rails/rails#36388)
+should be compatible, but Motion is actively developed and tested against
+Github's [ViewComponent](https://github.com/github/view_component).
 
-```sh
-bundle add view_component
-```
-
-Motion communicates over and therefore requires ActionCable.
+Motion communicates over and therefore requires [ActionCable](https://guides.rubyonrails.org/action_cable_overview.html).
 
 After installing all libraries, run the install script:
 
@@ -42,11 +41,6 @@ bin/rails g motion:install
 ```
 
 This will install 2 files, both of which you are free to leave alone.
-
-
-### Note: Component Support in Rails 6
-
-Github's [ViewComponent](https://github.com/github/view_component) is currently the most popular Ruby gem for components that conforms to the new [`render_in` interface that landed in Rails 6.1](rails/rails#36388). Until a blessed component framework becomes `ActionView::Component` or similar, we plan to *not* enforce this dependency.
 
 
 ## How does it work?
@@ -131,8 +125,12 @@ class MyComponent < ViewComponent::Base
 
   stream_from "todos:created", :handle_created
 
+  def initialize
+    @todos = Todo.all.to_a
+  end
+
   def handle_created
-    @todos = Todo.all
+    @todos = Todo.all.to_a
   end
 end
 ```
