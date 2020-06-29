@@ -15,19 +15,11 @@ module Motion
 
       def include_motion
         inject_into_class component_path, "#{class_name}Component" do
-          "  include Motion::Component#{whitespace_after_include}"
+          "  include Motion::Component\n\n"
         end
       end
 
       private
-
-      def whitespace_after_include
-        if attributes.any?
-          "\n\n"
-        else
-          "\n"
-        end
-      end
 
       def component_path
         @component_path ||=

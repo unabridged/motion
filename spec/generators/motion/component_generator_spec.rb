@@ -33,18 +33,7 @@ RSpec.describe Motion::Generators::ComponentGenerator, type: :generator do
     it "creates a component that includes `Motion::Component`" do
       assert_file(
         "app/components/magic_component.rb",
-        /include Motion::Component\n/
-      )
-    end
-  end
-
-  context "with additional arguments" do
-    arguments %w[MagicComponent a b c]
-
-    it "creates a component that includes `Motion::Component`" do
-      assert_file(
-        "app/components/magic_component.rb",
-        /include Motion::Component\n\n/
+        /include Motion::Component/
       )
     end
   end
