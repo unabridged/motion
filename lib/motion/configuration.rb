@@ -95,7 +95,6 @@ module Motion
       end
     end
 
-    option(:stimulus_controller_identifier) { "motion" }
     option(:key_attribute) { "data-motion-key" }
     option(:state_attribute) { "data-motion-state" }
 

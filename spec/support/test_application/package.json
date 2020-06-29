@@ -4,8 +4,7 @@
   "dependencies": {
     "@rails/actioncable": "^6.0.0",
     "@rails/webpacker": "4.2.2",
-    "@unabridged/motion": "../../..",
-    "stimulus": "^1.1.1"
+    "@unabridged/motion": "../../.."
   },
   "version": "0.1.0"
 }

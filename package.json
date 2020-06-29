@@ -12,8 +12,7 @@
   },
   "dependencies": {
     "@rails/actioncable": ">= 6.0",
-    "morphdom": "^2.6.1",
-    "stimulus": ">= 1.1"
+    "morphdom": "^2.6.1"
   },
   "scripts": {
     "test": "karma start",
@@ -50,5 +49,8 @@
     "globals": [
       "expect"
     ]
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

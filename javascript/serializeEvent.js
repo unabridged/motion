@@ -12,7 +12,7 @@ export default function serializeEvent (event, extraData = null) {
 };
 
 function serializeEventDetails (event) {
-  if (event instanceof MouseEvent) {
+  if (event instanceof MouseEvent || event instanceof TouchEvent) {
     const { button, x, y, altKey, ctrlKey, metaKey, shiftKey } = event
 
     return {

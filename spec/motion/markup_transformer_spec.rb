@@ -4,13 +4,11 @@ RSpec.describe Motion::MarkupTransformer do
   subject(:markup_transformer) do
     described_class.new(
       serializer: serializer,
-      stimulus_controller_identifier: identifier,
       key_attribute: key_attribute,
       state_attribute: state_attribute
     )
   end
 
-  let(:identifier) { SecureRandom.hex }
   let(:key_attribute) { SecureRandom.hex }
   let(:state_attribute) { SecureRandom.hex }
 
@@ -29,7 +27,6 @@ RSpec.describe Motion::MarkupTransformer do
         expect(subject).to(
           eq(
             "<div " \
-              "data-controller=\"#{identifier}\" " \
               "#{key_attribute}=\"#{key}\" " \
               "#{state_attribute}=\"#{state}\"" \
             ">" \
@@ -55,30 +52,11 @@ RSpec.describe Motion::MarkupTransformer do
         expect(subject).to(
           eq(
             "<div " \
-              "data-controller=\"#{identifier}\" " \
               "#{key_attribute}=\"#{key}\" " \
               "#{state_attribute}=\"#{state}\"" \
             ">" \
               "content" \
             "</div>\n\n"
-          )
-        )
-      end
-    end
-
-    context "when the markup has a root element with a Stimulus controller" do
-      let(:html) { "<div data-controller=\"another-controller\">content</div>" }
-
-      it "includes both controllers" do
-        expect(subject).to(
-          eq(
-            "<div " \
-              "data-controller=\"#{identifier} another-controller\" " \
-              "#{key_attribute}=\"#{key}\" " \
-              "#{state_attribute}=\"#{state}\"" \
-            ">" \
-              "content" \
-            "</div>"
           )
         )
       end

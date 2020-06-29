@@ -16,10 +16,17 @@ module Motion
         )
       end
 
-      def copy_stimlus_controller
+      def copy_client_initializer
         template(
-          "motion_controller.js",
-          "app/javascript/controllers/motion_controller.js"
+          "motion.js",
+          "app/javascript/motion.js"
+        )
+      end
+
+      def add_client_to_application_pack
+        append_to_file(
+          "app/javascript/packs/application.js",
+          'import "motion"'
         )
       end
     end

@@ -34,8 +34,7 @@ RSpec.describe Motion::Component::Rendering do
       expect(subject).to(
         include(
           Motion.config.key_attribute,
-          Motion.config.state_attribute,
-          Motion.config.stimulus_controller_identifier
+          Motion.config.state_attribute
         )
       )
     end

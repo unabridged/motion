@@ -13,7 +13,7 @@ Motion allows you to build reactive, real-time frontend UI components in your Ra
 * Plays nicely with the Rails monolith you have.
 * Peacefully coexists with your existing tech: Strong Parameters, Turbolinks, Trix, React, Vue, etc.
 * Real-time frontend UI updates from frontend user interaction AND server-side updates.
-* Leans on Stimulus, ActionCable, and ViewComponent for the heavy lifting.
+* Leans on ActionCable and ViewComponent for the heavy lifting.
 * No more frontend models, stores, or syncing; your source of truth is the database you already have.
 * No JavaScript required!
 
@@ -31,7 +31,6 @@ Motion also relies on but does not currently enforce the following libraries:
 
 ```sh
 bundle add view_component
-yarn add stimulus
 ```
 
 Motion communicates over and therefore requires ActionCable.
@@ -42,7 +41,7 @@ After installing all libraries, run the install script:
 bin/rails g motion:install
 ```
 
-This will install 2 files, both of which you are free to leave alone. If you already have Stimulus set up and working, no more work is required.
+This will install 2 files, both of which you are free to leave alone.
 
 
 ### Note: Component Support in Rails 6
@@ -181,7 +180,6 @@ See the code for full API for [Event](https://github.com/unabridged/motion/blob/
 
 Broadly speaking, these initiatives are on our roadmap:
 
-- Decouple from Stimulus for fewer dependencies (in progress)
 - Enhanced documentation and usage examples
 - Support more ViewComponent-like libraries: [trailblazer/cells](https://github.com/trailblazer/cells), [dry-rb/dry-view](https://github.com/dry-rb/dry-view), [komposable/komponent](https://github.com/komposable/komponent)
 - Support communication via AJAX instead of (or in addition to) websockets

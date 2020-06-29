@@ -74,12 +74,6 @@ RSpec.describe Motion::Configuration do
       end
     end
 
-    describe "#stimulus_controller_identifier" do
-      subject { default.stimulus_controller_identifier }
-
-      it { is_expected.to eq("motion") }
-    end
-
     describe "#key_attribute" do
       subject { default.key_attribute }
 
