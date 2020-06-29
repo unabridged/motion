@@ -28,7 +28,7 @@ yarn add @unabridged/motion
 ```
 
 You will also need a view component library. Any view component library that
-impliments the new [`render_in` interface that landed in Rails 6.1](https://github.com/rails/rails#36388)
+impliments the new [`render_in` interface that landed in Rails 6.1](https://github.com/rails/rails/pull/36388)
 should be compatible, but Motion is actively developed and tested against
 Github's [ViewComponent](https://github.com/github/view_component).
 
