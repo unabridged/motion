@@ -24,9 +24,7 @@ module Motion
     def subscribed
       state, client_version = params.values_at("state", "version")
 
-      # TODO: This is too restrictive. Introduce a protocol version and support
-      # older versions of the client that have a compatible protocol.
-      unless Motion::VERSION == client_version
+      if Gem::Version.new(Motion::VERSION) < Gem::Version.new(client_version)
         raise IncompatibleClientError.new(Motion::VERSION, client_version)
       end
 

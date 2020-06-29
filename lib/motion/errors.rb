@@ -117,15 +117,18 @@ module Motion
   end
 
   class IncompatibleClientError < Error
-    attr_reader :expected_version,
-      :actual_version
+    attr_reader :server_version, :client_version
 
-    def initialize(expected_version, actual_version)
+    def initialize(server_version, client_version)
       super(<<~MSG)
-        Expected client version #{expected_version}, but got #{actual_version}.
+        The client version (#{client_version}) is newer than the server version
+        (#{server_version}). Please upgrade the Motion gem.
 
-        Fix: Run `bin/yarn add @unabridged/motion@#{expected_version}`
+        Fix: Run `bundle update motion`
       MSG
+
+      @server_version = server_version
+      @client_version = client_version
     end
   end
 

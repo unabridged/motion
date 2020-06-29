@@ -51,7 +51,7 @@ RSpec.describe Motion::Channel, type: :channel do
     end
 
     context "when the client version is not supported" do
-      let(:version) { "invalid" }
+      let(:version) { "9999.1" }
       it_behaves_like "failed to mount"
     end
 
