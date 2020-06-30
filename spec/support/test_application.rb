@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "fileutils"
-require "json"
-
 # Load the TestApplication environment into this Ruby process
 require_relative "test_application/config/environment"
 
@@ -11,7 +8,7 @@ TestApplication.load_generators
 
 # Add a helper method to sync the JavaScript in the test app with the outer gem.
 class << TestApplication
-  def TestApplication.sync_motion_client!
+  def sync_motion_client!
     return if @synced_motion_client
 
     yarn! "--cwd", "../../..", "link"
@@ -31,14 +28,12 @@ class << TestApplication
   end
 
   def yarn!(*args)
-    root_path = File.expand_path(Rails.root)
-
     stdout, stderr, status =
-      Open3.capture3("bin/yarn", *args, chdir: root_path)
+      Open3.capture3("bin/yarn", *args, chdir: Rails.root)
 
     unless status.success?
       short_output = [stdout, stderr].delete_if(&:empty?).join("\n\n")
-      raise "Failed to #{command}! Yarn says:\n#{short_output}"
+      raise "Failed to `yarn #{args.join(" ")}`! Yarn says:\n#{short_output}"
     end
   end
 end

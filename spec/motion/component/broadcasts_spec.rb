@@ -104,6 +104,36 @@ RSpec.describe Motion::Component::Broadcasts do
         subject
       end
     end
+
+    context "for a broadcast that takes a message" do
+      let(:broadcast) { "noop_with_arg" }
+
+      it "calls the handler with the message" do
+        expect(component).to receive(:noop_with_arg).with(message)
+        subject
+      end
+    end
+
+    context "for a broadcast that does not take a message" do
+      let(:broadcast) { "noop_without_arg" }
+
+      it "calls the handler without the argument" do
+        # Sadly, the way rspec's mocking works, this will change the arity:
+        #   expect(component).to receive(:noop_without_event).with(no_args)
+        #
+        # Instead we roll out own watcher that we know will take 0 args:
+        called = false
+
+        component.define_singleton_method(:noop_without_arg) do
+          called = true
+          super()
+        end
+
+        subject
+
+        expect(called).to be(true)
+      end
+    end
   end
 
   describe "#broadcast_to" do

@@ -9,8 +9,8 @@ class TestComponent < ViewComponent::Base
   # used by tests that want to know the initial motions
   STATIC_MOTIONS = %w[
     noop
-    noop_with_event
-    noop_without_event
+    noop_with_arg
+    noop_without_arg
     change_state
     force_rerender
     setup_dynamic_motion
@@ -22,6 +22,8 @@ class TestComponent < ViewComponent::Base
   # used by tests that want to know the initial broadcasts
   STATIC_BROADCASTS = %w[
     noop
+    noop_with_arg
+    noop_without_arg
     change_state
     force_rerender
     setup_dynamic_motion
@@ -68,14 +70,16 @@ class TestComponent < ViewComponent::Base
   def noop(*)
   end
 
-  map_motion :noop_with_event
+  stream_from "noop_with_arg", :noop_with_arg
+  map_motion :noop_with_arg
 
-  def noop_with_event(_event)
+  def noop_with_arg(_event_or_message)
   end
 
-  map_motion :noop_without_event
+  stream_from "noop_without_arg", :noop_without_arg
+  map_motion :noop_without_arg
 
-  def noop_without_event
+  def noop_without_arg
   end
 
   stream_from "change_state", :change_state

@@ -44,16 +44,16 @@ RSpec.describe Motion::Component::Motions do
     let(:event) { Motion::Event.new({}) }
 
     context "for a motion that takes an event" do
-      let(:motion) { "noop_with_event" }
+      let(:motion) { "noop_with_arg" }
 
       it "calls the handler with the event" do
-        expect(component).to receive(:noop_with_event).with(event)
+        expect(component).to receive(:noop_with_arg).with(event)
         subject
       end
     end
 
     context "for a motion that does not take an event" do
-      let(:motion) { "noop_without_event" }
+      let(:motion) { "noop_without_arg" }
 
       it "calls the handler without the event" do
         # Sadly, the way rspec's mocking works, this will change the arity:
@@ -62,7 +62,7 @@ RSpec.describe Motion::Component::Motions do
         # Instead we roll out own watcher that we know will take 0 args:
         called = false
 
-        component.define_singleton_method(:noop_without_event) do
+        component.define_singleton_method(:noop_without_arg) do
           called = true
           super()
         end
