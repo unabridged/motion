@@ -24,11 +24,18 @@ export default (rootElement, newState, keyAttribute) => {
       return false
     }
 
-    // When two nodes have (deep) DOM equality, don't replace. This is correct
-    // because we checked above that we are reconsiling against an HTML string
-    // (which cannot possibly have state outside of the DOM because no handles
-    // have been allowed to leave this function since parsing).
-    if (fromElement.isEqualNode(toElement)) {
+    if (
+      // For some reason, it it seems like all TEXTAREAs are equal to eachother
+      // regardless of their content which is super werid because the same thing
+      // does not seem to be true for INPUTs or SELECTs whose value has changed.
+      fromElement.tagName !== 'TEXTAREA' &&
+
+      // When two nodes have (deep) DOM equality, don't replace. This is correct
+      // because we checked above that we are reconsiling against an HTML string
+      // (which cannot possibly have state outside of the DOM because no handles
+      // have been allowed to leave this function since parsing).
+      fromElement.isEqualNode(toElement)
+    ) {
       return false
     }
 
