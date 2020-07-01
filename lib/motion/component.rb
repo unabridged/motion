@@ -7,6 +7,7 @@ require "motion"
 require "motion/component/broadcasts"
 require "motion/component/lifecycle"
 require "motion/component/motions"
+require "motion/component/periodic_timers"
 require "motion/component/rendering"
 
 module Motion
@@ -16,6 +17,7 @@ module Motion
     include Broadcasts
     include Lifecycle
     include Motions
+    include PeriodicTimers
     include Rendering
   end
 end

@@ -70,6 +70,38 @@ RSpec.describe Motion::ComponentConnection do
     end
   end
 
+  describe "#process_periodic_timer" do
+    subject { component_connection.process_periodic_timer(timer) }
+
+    before(:each) { component_connection }
+
+    let(:timer) { SecureRandom.hex }
+
+    it "processes the timer callback on the underlying component" do
+      expect_any_instance_of(TestComponent).to(
+        receive(:process_periodic_timer).with(timer)
+      )
+
+      subject
+    end
+
+    it "logs the timing for processing the timer" do
+      expect(Rails.logger).to receive(:info).with(/timer/)
+
+      subject
+    end
+
+    context "when an error occurs while processing the timer" do
+      let(:timer) { "raise_error" }
+
+      it "logs the error and returns false" do
+        expect(Rails.logger).to receive(:error).with(/Error from TestComponent/)
+
+        expect(subject).to be(false)
+      end
+    end
+  end
+
   describe "#if_render_required" do
     subject(:yielded?) do
       yielded = false
@@ -124,6 +156,14 @@ RSpec.describe Motion::ComponentConnection do
 
     it "gives the broadcasts of the underlying component" do
       expect(subject).to eq(component.broadcasts)
+    end
+  end
+
+  describe "#periodic_timers" do
+    subject { component_connection.periodic_timers }
+
+    it "gives the periodic timers of the underlying component" do
+      expect(subject).to eq(component.periodic_timers)
     end
   end
 end

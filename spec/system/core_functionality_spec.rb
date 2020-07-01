@@ -21,21 +21,6 @@ RSpec.describe "Core Functionality", type: :system do
     expect(page).to have_text("The state has been changed 1 times.")
   end
 
-  scenario "A catastrophic error in the component does not break the app" do
-    visit(test_component_path)
-
-    expect(page).to have_text("The state has been changed 0 times.")
-
-    expect(Rails.logger).to(
-      receive(:error).with(/Exception from TestComponent/)
-    )
-
-    expect { ActionCable.server.broadcast "raise_exception", "message" }
-      .not_to(raise_exception)
-
-    expect(page).to have_text("The state has been changed 0 times.")
-  end
-
   scenario "Nested state is preserved when an outer component renders" do
     visit(counter_component_path)
 
@@ -70,5 +55,15 @@ RSpec.describe "Core Functionality", type: :system do
 
     expect(find(".parent .count")).to have_text("3")
     expect(find(".child .count")).to have_text("3")
+  end
+
+  scenario "Periodic timers run and can be removed dynamically" do
+    visit(timer_component_path)
+
+    expect(page).to have_text("1")
+    sleep 1
+    expect(page).to have_text("0")
+    sleep 1
+    expect(page).to have_text("0")
   end
 end
