@@ -16,7 +16,7 @@ const DEFAULT_EVENT = {
   _other: 'click',
 
   FORM: 'submit',
-  INPUT: 'change',
+  INPUT: ({ type }) => type === 'submit' ? 'click' : 'change',
   SELECT: 'change',
   TEXTAREA: 'change'
 }
@@ -26,7 +26,7 @@ const DEFAULT_MODE = {
   change: MODE_LISTEN
 }
 
-export default function parseBindings (input, tagName = '_other') {
+export default function parseBindings (input, element) {
   if (!input) {
     return []
   }
@@ -37,13 +37,11 @@ export default function parseBindings (input, tagName = '_other') {
 
     const event =
       match[captureIndicies.event] ||
-      DEFAULT_EVENT[tagName] ||
-      DEFAULT_EVENT._other
+      defaultEventFor(element)
 
     const mode =
       match[captureIndicies.mode] ||
-      DEFAULT_MODE[event] ||
-      DEFAULT_MODE._other
+      defaultModeFor(event)
 
     return {
       id,
@@ -52,4 +50,20 @@ export default function parseBindings (input, tagName = '_other') {
       mode
     }
   })
+}
+
+function defaultEventFor (element) {
+  const event =
+    DEFAULT_EVENT[element && element.tagName] ||
+    DEFAULT_EVENT._other
+
+  if (typeof (event) === 'function') {
+    return event(element)
+  } else {
+    return event
+  }
+}
+
+function defaultModeFor (event) {
+  return DEFAULT_MODE[event] || DEFAULT_MODE._other
 }
