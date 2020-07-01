@@ -39,6 +39,21 @@ RSpec.describe Motion::Component::Broadcasts do
       end
     end
 
+    describe "#stop_streaming_from" do
+      subject { component_class.stop_streaming_from(broadcast) }
+
+      context "for a topic that instances are set to stream from" do
+        before(:each) { component_class.stream_from(broadcast, :noop) }
+
+        let(:broadcast) { SecureRandom.hex }
+
+        it "causes instances of the component not to stream from the topic" do
+          subject
+          expect(component.broadcasts).not_to include(broadcast)
+        end
+      end
+    end
+
     describe "#stream_for" do
       subject! { component_class.stream_for(model, :noop) }
 
@@ -47,6 +62,22 @@ RSpec.describe Motion::Component::Broadcasts do
 
       it "causes instances to stream from the topic for the model" do
         expect(component.broadcasts).to include(broadcast)
+      end
+    end
+
+    describe "#stop_streaming_for" do
+      subject { component_class.stop_streaming_for(model) }
+
+      context "for a model that instances are set to stream for" do
+        before(:each) { component_class.stream_for(model, :noop) }
+
+        let(:model) { SecureRandom.hex }
+        let(:broadcast) { component_class.broadcasting_for(model) }
+
+        it "causes instances of the component not to stream from the topic" do
+          subject
+          expect(component.broadcasts).not_to include(broadcast)
+        end
       end
     end
 
@@ -136,22 +167,6 @@ RSpec.describe Motion::Component::Broadcasts do
     end
   end
 
-  describe "#broadcast_to" do
-    subject { component.broadcast_to(model, message) }
-
-    let(:model) { SecureRandom.hex }
-    let(:message) { SecureRandom.hex }
-    let(:broadcast) { component.class.broadcasting_for(model) }
-
-    it "broadcasts the message to the topic for the model" do
-      expect(ActionCable.server).to(
-        receive(:broadcast).with(broadcast, message)
-      )
-
-      subject
-    end
-  end
-
   describe "#stream_from" do
     subject! { component.stream_from(broadcast, :noop) }
 
@@ -159,6 +174,18 @@ RSpec.describe Motion::Component::Broadcasts do
 
     it "streams from the broadcast" do
       expect(component.broadcasts).to include(broadcast)
+    end
+  end
+
+  describe "#stop_streaming_from" do
+    subject! { component.stop_streaming_from(broadcast) }
+
+    context "for a broadcast the component is streaming from" do
+      let(:broadcast) { TestComponent::STATIC_BROADCASTS.sample }
+
+      it "causes the component to stop to streaming from the broadcast" do
+        expect(component.broadcasts).not_to include(broadcast)
+      end
     end
   end
 
@@ -170,6 +197,22 @@ RSpec.describe Motion::Component::Broadcasts do
 
     it "streams from the topic for the model" do
       expect(component.broadcasts).to include(broadcast)
+    end
+  end
+
+  describe "#stop_streaming_for" do
+    subject { component.stop_streaming_for(model) }
+
+    context "for a model the component is streaming for" do
+      before(:each) { component.stream_for(model, :noop) }
+
+      let(:model) { SecureRandom.hex }
+      let(:broadcast) { component.class.broadcasting_for(model) }
+
+      it "causes the component to stop to streaming from the broadcast" do
+        subject
+        expect(component.broadcasts).not_to include(broadcast)
+      end
     end
   end
 end

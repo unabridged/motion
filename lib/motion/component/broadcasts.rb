@@ -3,6 +3,7 @@
 require "active_support/concern"
 require "active_support/core_ext/class/attribute"
 require "active_support/core_ext/object/to_param"
+require "active_support/core_ext/hash/except"
 
 require "motion"
 
@@ -10,6 +11,31 @@ module Motion
   module Component
     module Broadcasts
       extend ActiveSupport::Concern
+
+      # Analogous to `module_function` (available on both class and instance)
+      module ModuleFunctions
+        def stream_from(broadcast, handler)
+          self._broadcast_handlers =
+            _broadcast_handlers.merge(broadcast.to_s => handler.to_sym).freeze
+        end
+
+        def stop_streaming_from(broadcast)
+          self._broadcast_handlers =
+            _broadcast_handlers.except(broadcast.to_s).freeze
+        end
+
+        def stream_for(model, handler)
+          stream_from(broadcasting_for(model), handler)
+        end
+
+        def stop_streaming_for(model)
+          stop_streaming_from(broadcasting_for(model))
+        end
+
+        def broadcasts
+          _broadcast_handlers.keys
+        end
+      end
 
       included do
         class_attribute :_broadcast_handlers,
@@ -20,17 +46,10 @@ module Motion
       end
 
       class_methods do
+        include ModuleFunctions
+
         def broadcast_to(model, message)
           ActionCable.server.broadcast(broadcasting_for(model), message)
-        end
-
-        def stream_from(broadcast, handler)
-          self._broadcast_handlers =
-            _broadcast_handlers.merge(broadcast.to_s => handler.to_sym).freeze
-        end
-
-        def stream_for(model, handler)
-          stream_from(broadcasting_for(model), handler)
         end
 
         def broadcasting_for(model)
@@ -39,7 +58,7 @@ module Motion
 
         private
 
-        # Taken from ActionCable::Channel::Broadcasting
+        # This definition is copied from ActionCable::Channel::Broadcasting
         def serialize_broadcasting(object)
           if object.is_a?(Array)
             object.map { |m| serialize_broadcasting(m) }.join(":")
@@ -51,9 +70,7 @@ module Motion
         end
       end
 
-      def broadcasts
-        _broadcast_handlers.keys
-      end
+      include ModuleFunctions
 
       def process_broadcast(broadcast, message)
         return unless (handler = _broadcast_handlers[broadcast])
@@ -65,20 +82,11 @@ module Motion
         end
       end
 
-      def broadcast_to(model, message)
-        self.class.broadcast_to(model, message)
-      end
-
-      def stream_from(broadcast, handler)
-        self._broadcast_handlers =
-          _broadcast_handlers.merge(broadcast.to_s => handler.to_sym).freeze
-      end
-
-      def stream_for(model, handler)
-        stream_from(self.class.broadcasting_for(model), handler)
-      end
-
       private
+
+      def broadcasting_for(model)
+        self.class.broadcasting_for(model)
+      end
 
       attr_writer :_broadcast_handlers
 
