@@ -4,7 +4,7 @@ require "motion"
 
 module Motion
   module ActionCableExtentions
-    # Provides a `periodicly_notify(broadcasts, to:)` API that can be used to
+    # Provides a `periodically_notify(broadcasts, to:)` API that can be used to
     # declaratively specify when a handler should be called.
     module DeclarativeNotifications
       include Synchronization
@@ -23,10 +23,10 @@ module Motion
       end
 
       def declarative_notifications
-        @_declarative_notifications.keys
+        @_declarative_notifications
       end
 
-      def periodicly_notify(notifications, via:)
+      def periodically_notify(notifications, via:)
         (@_declarative_notifications.to_a - notifications.to_a)
           .each do |notification, _interval|
             _shutdown_declarative_notifcation_timer(notification)
@@ -46,15 +46,18 @@ module Motion
       def stop_periodic_timers
         super
 
+        @_declarative_notifications.clear
         @_declarative_notification_timers.clear
+        @_declarative_notifications_target = nil
       end
 
       # Sadly, the only public interface in ActionCable for defining periodic
       # timers is exposed at the class level. Looking at the source though,
       # it is easy to see that new timers can be setup with
       # `start_periodic_timer`. To ensure that we do not leak any timers, it is
-      # important to store these intances in `active_periodic_timers` so that
-      # ActionCable cleans them up for use when the channel shuts down.
+      # important to store these instances in `active_periodic_timers` so that
+      # ActionCable cleans them up for use when the channel shuts down. Also,
+      # periodic timers are not supported in testing.
       #
       # See `ActionCable::Channel::PeriodicTimers` for details.
       def _setup_declarative_notifcation_timer(notification, interval)

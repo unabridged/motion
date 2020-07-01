@@ -28,8 +28,8 @@ RSpec.describe Motion::Channel, type: :channel do
       it "sets up all of the component's periodic timers" do
         subject
 
-        expect(subscription.declarative_notifications).to(
-          include(*component.periodic_timers.keys)
+        expect(subscription.declarative_notifications.to_a).to(
+          include(*component.periodic_timers)
         )
       end
 
@@ -182,8 +182,8 @@ RSpec.describe Motion::Channel, type: :channel do
     it "sets up all of the component's periodic timers" do
       subject
 
-      expect(subscription.declarative_notifications).to(
-        include(*component.periodic_timers.keys)
+      expect(subscription.declarative_notifications.to_a).to(
+        include(*component.periodic_timers)
       )
     end
 
