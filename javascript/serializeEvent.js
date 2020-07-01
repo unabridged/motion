@@ -11,33 +11,28 @@ export default function serializeEvent (event, extraData = null) {
   }
 };
 
+const detailProperties = [
+  'button',
+  'x',
+  'y',
+  'key',
+  'keyCode',
+  'altKey',
+  'ctrlKey',
+  'metaKey',
+  'shiftKey'
+]
+
 function serializeEventDetails (event) {
-  if (event instanceof MouseEvent || event instanceof TouchEvent) {
-    const { button, x, y, altKey, ctrlKey, metaKey, shiftKey } = event
+  const details = {}
 
-    return {
-      button,
-      x,
-      y,
-      altKey,
-      ctrlKey,
-      metaKey,
-      shiftKey
+  for (const property of detailProperties) {
+    if (Object.prototype.hasOwnProperty.call(event, property)) {
+      details[property] = event[property]
     }
-  } else if (event instanceof KeyboardEvent) {
-    const { key, keyCode, altKey, ctrlKey, metaKey, shiftKey } = event
-
-    return {
-      key,
-      keyCode,
-      altKey,
-      ctrlKey,
-      metaKey,
-      shiftKey
-    }
-  } else {
-    return event // take any enumerable properties
   }
+
+  return details
 }
 
 function serializeElement (element) {
