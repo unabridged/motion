@@ -14,6 +14,7 @@ module Motion
   autoload :LogHelper, "motion/log_helper"
   autoload :MarkupTransformer, "motion/markup_transformer"
   autoload :Railtie, "motion/railtie"
+  autoload :RevisionCalculator, "motion/revision_calculator"
   autoload :Serializer, "motion/serializer"
   autoload :TestHelpers, "motion/test_helpers"
 

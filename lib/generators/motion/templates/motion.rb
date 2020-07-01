@@ -5,12 +5,12 @@ Motion.configure do |config|
   # version of your application. By default, the commit hash from git is used,
   # but depending on your deployment, this may not be available in production.
   #
-  # If you are sure that git is available in your production enviorment, you can
+  # If you are sure that git is available in your production environment, you can
   # uncomment this line:
   #
   #     config.revision = `git rev-parse HEAD`.chomp
   #
-  # If git is not available in your production enviorment, you must identify
+  # If git is not available in your production environment, you must identify
   # your application version some other way:
   #
   #     config.revision =

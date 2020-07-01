@@ -59,16 +59,28 @@ module Motion
       Rails.application.key_generator.generate_key("motion:secret")
     end
 
+    option :revision_paths do
+      require "rails"
+
+      paths
+    end
+
     option :revision do
-      warn <<~MSG # TODO: Better message (Focus on "How do I fix this?")
-        Motion is automatically inferring the application's revision from git.
-        Depending on your deployment, this may not work for you in production.
-        If it does, add "config.revision = `git rev-parse HEAD`.chomp" to your
-        Motion initializer. If it does not, do something else (probably read an
-        env var or something).
+      warn <<~MSG
+        Motion is automatically inferring the application's revision by
+        calculating the content of files in motion_config.revision_paths.
+        The defaults revision paths are: Rails paths, bin, and the Gemfile.lock.
+
+        You can add paths to the revision_path using the `revision_paths` option.
+
+        If you prefer to use git for the revision in production,
+        add "config.revision = `git rev-parse HEAD`.chomp" to your
+        Motion initializer.
+
+        Other options might include an environmental variable.
       MSG
 
-      `git rev-parse HEAD`.chomp
+      RevisionCalculator.new(revision_paths: @revision_paths).perform
     end
 
     option :renderer_for_connection_proc do
@@ -101,5 +113,17 @@ module Motion
     # This is included for completeness. It is not currently used internally by
     # Motion, but it might be required for building view helpers in the future.
     option(:motion_attribute) { "data-motion" }
+
+    def paths
+      @paths ||= begin
+        paths = Rails.application.config.paths.dup
+
+        paths.add "bin", glob: "*"
+
+        paths.add "Gemfile.lock"
+
+        paths
+      end
+    end
   end
 end
