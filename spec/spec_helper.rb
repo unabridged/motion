@@ -55,7 +55,7 @@ RSpec.configure do |config|
   end
 
   # To avoid running every test twice on subsequent runs because of the
-  # recursive symlink, make sure to unlint the client.
+  # recursive symlink, make sure to unlink the client.
   config.after(:suite) do
     TestApplication.unlink_motion_client!
   end

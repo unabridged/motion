@@ -12,11 +12,11 @@ module Motion
       def initialize(*)
         super
 
-        # The current set of declartive notifications
+        # The current set of declarative notifications
         @_declarative_notifications = {}
 
-        # The active timers for the declartive notifications
-        @_declarative_notification_timers = {}
+        # The active timers for the declarative notifications
+        @_declarative_notifications_timers = {}
 
         # The method we are routing declarative notifications to
         @_declarative_notifications_target = nil
@@ -37,7 +37,7 @@ module Motion
             _setup_declarative_notifcation_timer(notification, interval)
           end
 
-        @_declarative_notifications.replace(notifications)
+        @_declarative_notifications = notifications
         @_declarative_notifications_target = via
       end
 
@@ -47,22 +47,23 @@ module Motion
         super
 
         @_declarative_notifications.clear
-        @_declarative_notification_timers.clear
+        @_declarative_notifications_timers.clear
         @_declarative_notifications_target = nil
       end
 
-      # Sadly, the only public interface in ActionCable for defining periodic
-      # timers is exposed at the class level. Looking at the source though,
-      # it is easy to see that new timers can be setup with
-      # `start_periodic_timer`. To ensure that we do not leak any timers, it is
-      # important to store these instances in `active_periodic_timers` so that
-      # ActionCable cleans them up for use when the channel shuts down. Also,
-      # periodic timers are not supported in testing.
+      # The only public interface in ActionCable for defining periodic timers is
+      # exposed at the class level. Looking at the source though, it is easy to
+      # see that new timers can be setup with `start_periodic_timer`. To ensure
+      # that we do not leak any timers, it is important to store these instances
+      # in `active_periodic_timers` so that ActionCable cleans them up for us
+      # when the channel shuts down. Also, periodic timers are not supported by
+      # the testing adapter, so we have to skip all of this in unit tests (it
+      # _will_ be covered in systems tests though).
       #
       # See `ActionCable::Channel::PeriodicTimers` for details.
       def _setup_declarative_notifcation_timer(notification, interval)
         return if connection.is_a?(ActionCable::Channel::ConnectionStub) ||
-          @_declarative_notification_timers.include?(notification)
+          @_declarative_notifications_timers.include?(notification)
 
         callback = proc do
           synchronize_entrypoint! do
@@ -72,12 +73,12 @@ module Motion
 
         timer = start_periodic_timer(callback, every: interval)
 
-        @_declarative_notification_timers[notification] = timer
+        @_declarative_notifications_timers[notification] = timer
         active_periodic_timers << timer
       end
 
       def _shutdown_declarative_notifcation_timer(notification, *)
-        timer = @_declarative_notification_timers.delete(notification)
+        timer = @_declarative_notifications_timers.delete(notification)
         return unless timer
 
         timer.shutdown
