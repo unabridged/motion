@@ -34,8 +34,16 @@ module Motion
       @target = Motion::Element.from_raw(raw["target"])
     end
 
+    def current_target
+      return @current_target if defined?(@current_target)
+
+      @current_target = Motion::Element.from_raw(raw["currentTarget"])
+    end
+
+    alias element current_target
+
     def form_data
-      target&.form_data
+      element&.form_data
     end
   end
 end

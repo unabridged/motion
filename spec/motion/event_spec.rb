@@ -32,19 +32,30 @@ RSpec.describe Motion::Event do
           "y" => "7"
         },
         "extraData" => nil,
-        "target" =>
-         {
-           "tagName" => "INPUT",
-           "value" => "test",
-           "attributes" => {
-             "class" => "form-control",
-             "data-field" => "name",
-             "type" => "text",
-             "name" => "sign_up[name]",
-             "id" => "sign_up_name"
-           },
-           "formData" => "sign_up%5Bname%5D=test"
-         }
+        "target" => {
+          "tagName" => "INPUT",
+          "value" => "test",
+          "attributes" => {
+            "class" => "form-control",
+            "data-field" => "name",
+            "type" => "text",
+            "name" => "sign_up[name]",
+            "id" => "sign_up_name"
+          },
+          "formData" => "sign_up%5Bname%5D=test"
+        },
+        "currentTarget" => {
+          "tagName" => "INPUT",
+          "value" => "test",
+          "attributes" => {
+            "class" => "form-control",
+            "data-field" => "name",
+            "type" => "text",
+            "name" => "sign_up[name]",
+            "id" => "sign_up_name"
+          },
+          "formData" => "sign_up%5Bname%5D=test"
+        }
       }
     end
 
@@ -79,6 +90,16 @@ RSpec.describe Motion::Event do
 
       it "has raw data from the underlying event" do
         expect(subject.raw).to eq(raw["target"])
+      end
+    end
+
+    describe "#current_target" do
+      subject { event.current_target }
+
+      it { is_expected.to be_a(Motion::Element) }
+
+      it "has raw data from the underlying event" do
+        expect(subject.raw).to eq(raw["currentTarget"])
       end
     end
 
