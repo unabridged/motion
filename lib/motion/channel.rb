@@ -6,6 +6,7 @@ require "motion"
 
 module Motion
   class Channel < ActionCable::Channel::Base
+    include ActionCableExtentions::DeclarativeNotifications
     include ActionCableExtentions::DeclarativeStreams
     include ActionCableExtentions::LogSuppression
 
@@ -56,10 +57,19 @@ module Motion
       synchronize
     end
 
+    def process_periodic_timer(timer)
+      component_connection.process_periodic_timer(timer)
+      synchronize
+    end
+
     private
 
     def synchronize
-      streaming_from(component_connection.broadcasts, to: :process_broadcast)
+      streaming_from component_connection.broadcasts,
+        to: :process_broadcast
+
+      periodically_notify component_connection.periodic_timers,
+        via: :process_periodic_timer
 
       component_connection.if_render_required do |component|
         transmit(renderer.render(component))

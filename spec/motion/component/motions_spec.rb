@@ -22,6 +22,21 @@ RSpec.describe Motion::Component::Motions do
         expect(component.motions).to include(motion)
       end
     end
+
+    describe "#unmap_motion" do
+      subject { component_class.unmap_motion(motion) }
+
+      context "for a mapped motion" do
+        before(:each) { component_class.map_motion(motion, :noop) }
+
+        let(:motion) { SecureRandom.hex }
+
+        it "causes instances of the component not to have that motion" do
+          subject
+          expect(component.motions).not_to include(motion)
+        end
+      end
+    end
   end
 
   subject(:component) { TestComponent.new }
@@ -89,6 +104,18 @@ RSpec.describe Motion::Component::Motions do
 
     it "sets up the motion" do
       expect(component.motions).to include(motion)
+    end
+  end
+
+  describe "#unmap_motion" do
+    subject! { component.unmap_motion(motion) }
+
+    context "for a mapped motion" do
+      let(:motion) { TestComponent::STATIC_MOTIONS.sample }
+
+      it "removes the motion" do
+        expect(component.motions).not_to include(motion)
+      end
     end
   end
 end

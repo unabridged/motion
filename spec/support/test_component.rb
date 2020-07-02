@@ -15,8 +15,8 @@ class TestComponent < ViewComponent::Base
     force_rerender
     setup_dynamic_motion
     setup_dynamic_stream
+    setup_dynamic_timer
     raise_error
-    raise_exception
   ].freeze
 
   # used by tests that want to know the initial broadcasts
@@ -28,8 +28,19 @@ class TestComponent < ViewComponent::Base
     force_rerender
     setup_dynamic_motion
     setup_dynamic_stream
+    setup_dynamic_timer
     raise_error
-    raise_exception
+  ].freeze
+
+  # used by tests that want to know the initial timers
+  STATIC_TIMERS = %w[
+    noop
+    change_state
+    force_rerender
+    setup_dynamic_motion
+    setup_dynamic_stream
+    setup_dynamic_timer
+    raise_error
   ].freeze
 
   attr_reader :count
@@ -66,6 +77,7 @@ class TestComponent < ViewComponent::Base
 
   stream_from "noop", :noop
   map_motion :noop
+  every 10_000.years, :noop
 
   def noop(*)
   end
@@ -84,6 +96,7 @@ class TestComponent < ViewComponent::Base
 
   stream_from "change_state", :change_state
   map_motion :change_state
+  every 10_000.years, :change_state
 
   def change_state(*)
     @count += 1
@@ -91,6 +104,7 @@ class TestComponent < ViewComponent::Base
 
   stream_from "force_rerender", :force_rerender
   map_motion :force_rerender
+  every 10_000.years, :force_rerender
 
   def force_rerender(*)
     rerender!
@@ -98,6 +112,7 @@ class TestComponent < ViewComponent::Base
 
   stream_from "setup_dynamic_motion", :setup_dynamic_motion
   map_motion :setup_dynamic_motion
+  every 10_000.years, :setup_dynamic_motion
 
   # used for tests that want to detect this dynamic motion being setup
   DYNAMIC_MOTION = "dynamic_motion"
@@ -108,6 +123,7 @@ class TestComponent < ViewComponent::Base
 
   stream_from "setup_dynamic_stream", :setup_dynamic_stream
   map_motion :setup_dynamic_stream
+  every 10_000.years, :setup_dynamic_stream
 
   # used for tests that want to detect this dynamic broadcast being setup
   DYNAMIC_BROADCAST = "dynamic_broadcast"
@@ -116,18 +132,22 @@ class TestComponent < ViewComponent::Base
     stream_from DYNAMIC_BROADCAST, :noop
   end
 
+  stream_from "setup_dynamic_timer", :setup_dynamic_timer
+  map_motion :setup_dynamic_timer
+  every 10_000.years, :setup_dynamic_timer
+
+  # used for tests that want to detect this dynamic timer being setup
+  DYNAMIC_TIMER = "dynamic_timer"
+
+  def setup_dynamic_timer(*)
+    periodic_timer DYNAMIC_TIMER, :noop, every: 10_000.years
+  end
+
   stream_from "raise_error", :raise_error
   map_motion :raise_error
+  every 10_000.years, :raise_error
 
   def raise_error(*)
     raise "Error from TestComponent"
-  end
-
-  stream_from "raise_exception", :raise_exception
-  map_motion :raise_exception
-
-  def raise_exception(*)
-    raise Exception, # rubocop:disable Lint/RaiseException
-      "Exception from TestComponent"
   end
 end

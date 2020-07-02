@@ -48,10 +48,16 @@ RSpec.configure do |config|
 
   config.before(:each, type: :system) do
     # Ensure that the client JavaScript within the app is synced with the gem
-    TestApplication.sync_motion_client!
+    TestApplication.link_motion_client!
 
     # Use headless Chrome for system tests
     driven_by :headless_chrome_no_sandbox
+  end
+
+  # To avoid running every test twice on subsequent runs because of the
+  # recursive symlink, make sure to unlink the client.
+  config.after(:suite) do
+    TestApplication.unlink_motion_client!
   end
 
   # For most specs, we want Motion to be configured in a predictable way, but

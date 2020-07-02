@@ -25,6 +25,14 @@ RSpec.describe Motion::Channel, type: :channel do
         expect(subscription.streams).to include(*component.broadcasts)
       end
 
+      it "sets up all of the component's periodic timers" do
+        subject
+
+        expect(subscription.declarative_notifications.to_a).to(
+          include(*component.periodic_timers)
+        )
+      end
+
       it "runs the component's `connected` callback" do
         expect_any_instance_of(TestComponent).to receive(:connected)
         subject
@@ -93,6 +101,19 @@ RSpec.describe Motion::Channel, type: :channel do
       end
     end
 
+    context "with a connected callback that sets up a timer" do
+      let(:component) { TestComponent.new(connected: :setup_dynamic_timer) }
+      it_behaves_like "succesfully mounted", render: true
+
+      it "sets up the new timer" do
+        subject
+
+        expect(subscription.declarative_notifications).to(
+          include(TestComponent::DYNAMIC_TIMER)
+        )
+      end
+    end
+
     context "with a connected callback that raises an error" do
       let(:component) { TestComponent.new(connected: :raise_error) }
       it_behaves_like "failed to mount"
@@ -141,6 +162,11 @@ RSpec.describe Motion::Channel, type: :channel do
       it_behaves_like "dismounted"
     end
 
+    context "with a disconnected callback that sets up a timer" do
+      let(:component) { TestComponent.new(disconnected: :setup_dynamic_timer) }
+      it_behaves_like "dismounted"
+    end
+
     context "with a disconnected callback that raises an error" do
       let(:component) { TestComponent.new(disconnected: :raise_error) }
       it_behaves_like "dismounted"
@@ -151,6 +177,14 @@ RSpec.describe Motion::Channel, type: :channel do
     it "streams from all of the component's broadcasts" do
       subject
       expect(subscription.streams).to include(*component.broadcasts)
+    end
+
+    it "sets up all of the component's periodic timers" do
+      subject
+
+      expect(subscription.declarative_notifications.to_a).to(
+        include(*component.periodic_timers)
+      )
     end
 
     if render
@@ -206,6 +240,19 @@ RSpec.describe Motion::Channel, type: :channel do
       end
     end
 
+    context "with a handler that sets up a timer" do
+      let(:motion) { "setup_dynamic_timer" }
+      it_behaves_like "succesfully processed", render: true
+
+      it "sets up the new timer" do
+        subject
+
+        expect(subscription.declarative_notifications).to(
+          include(TestComponent::DYNAMIC_TIMER)
+        )
+      end
+    end
+
     context "with a handler that raises an error" do
       let(:motion) { "raise_error" }
       it_behaves_like "succesfully processed", render: false
@@ -252,8 +299,78 @@ RSpec.describe Motion::Channel, type: :channel do
       end
     end
 
+    context "with a handler that sets up a timer" do
+      let(:stream) { "setup_dynamic_timer" }
+      it_behaves_like "succesfully processed", render: true
+
+      it "sets up the new timer" do
+        subject
+
+        expect(subscription.declarative_notifications).to(
+          include(TestComponent::DYNAMIC_TIMER)
+        )
+      end
+    end
+
     context "with a handler that raises an error" do
       let(:stream) { "raise_error" }
+      it_behaves_like "succesfully processed", render: false
+    end
+  end
+
+  describe "#process_periodic_timer" do
+    subject { subscription.process_periodic_timer(timer) }
+
+    before(:each) { subscribe(state: state, version: version) }
+
+    context "with a handler that does nothing" do
+      let(:timer) { "noop" }
+      it_behaves_like "succesfully processed", render: false
+    end
+
+    context "with a handler that changes state" do
+      let(:timer) { "change_state" }
+      it_behaves_like "succesfully processed", render: true
+    end
+
+    context "with a handler that forces rerender" do
+      let(:timer) { "force_rerender" }
+      it_behaves_like "succesfully processed", render: true
+    end
+
+    context "with a handler that maps a motion" do
+      let(:timer) { "setup_dynamic_motion" }
+      it_behaves_like "succesfully processed", render: true
+    end
+
+    context "with a handler that streams" do
+      let(:timer) { "setup_dynamic_stream" }
+      it_behaves_like "succesfully processed", render: true
+
+      it "sets up the new stream" do
+        subject
+
+        expect(subscription.streams).to(
+          include(TestComponent::DYNAMIC_BROADCAST)
+        )
+      end
+    end
+
+    context "with a handler that sets up a timer" do
+      let(:timer) { "setup_dynamic_timer" }
+      it_behaves_like "succesfully processed", render: true
+
+      it "sets up the new timer" do
+        subject
+
+        expect(subscription.declarative_notifications).to(
+          include(TestComponent::DYNAMIC_TIMER)
+        )
+      end
+    end
+
+    context "with a handler that raises an error" do
+      let(:timer) { "raise_error" }
       it_behaves_like "succesfully processed", render: false
     end
   end

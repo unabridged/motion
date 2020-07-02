@@ -2,6 +2,7 @@
 
 require "active_support/concern"
 require "active_support/core_ext/class/attribute"
+require "active_support/core_ext/hash/except"
 
 require "motion"
 
@@ -9,6 +10,23 @@ module Motion
   module Component
     module Motions
       extend ActiveSupport::Concern
+
+      # Analogous to `module_function` (available on both class and instance)
+      module ModuleFunctions
+        def map_motion(motion, handler = motion)
+          self._motion_handlers =
+            _motion_handlers.merge(motion.to_s => handler.to_sym).freeze
+        end
+
+        def unmap_motion(motion)
+          self._motion_handlers =
+            _motion_handlers.except(motion.to_s).freeze
+        end
+
+        def motions
+          _motion_handlers.keys
+        end
+      end
 
       included do
         class_attribute :_motion_handlers,
@@ -19,15 +37,10 @@ module Motion
       end
 
       class_methods do
-        def map_motion(motion, handler = motion)
-          self._motion_handlers =
-            _motion_handlers.merge(motion.to_s => handler.to_sym).freeze
-        end
+        include ModuleFunctions
       end
 
-      def motions
-        _motion_handlers.keys
-      end
+      include ModuleFunctions
 
       def process_motion(motion, event = nil)
         unless (handler = _motion_handlers[motion])
@@ -39,11 +52,6 @@ module Motion
         else
           send(handler, event)
         end
-      end
-
-      def map_motion(motion, handler = motion)
-        self._motion_handlers =
-          _motion_handlers.merge(motion.to_s => handler.to_sym).freeze
       end
 
       private

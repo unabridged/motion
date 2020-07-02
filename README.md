@@ -112,7 +112,7 @@ class Todo < ApplicationModel
   after_commit :broadcast_created, on: :create
 
   def broadcast_created
-    ActionCable.server.broadcast("todos:created", id)
+    ActionCable.server.broadcast("todos:created", name)
   end
 end
 ```
@@ -120,17 +120,18 @@ end
 2. Configure your Motion component to listen to an ActionCable channel:
 
 ```ruby
-class MyComponent < ViewComponent::Base
+class TopTodosComponent < ViewComponent::Base
   include Motion::Component
 
   stream_from "todos:created", :handle_created
 
-  def initialize
-    @todos = Todo.all.to_a
+  def initialize(count: 5)
+    @count = count
+    @todos = Todo.order(created_at: :desc).limit(count).pluck(:name)
   end
 
-  def handle_created
-    @todos = Todo.all.to_a
+  def handle_created(name)
+    @todos = [name, *@todos.first(@count - 1)]
   end
 end
 ```
@@ -139,6 +140,25 @@ This will cause any user that has a page open with `MyComponent` mounted on it t
 
 All invocations of `stream_from` connected methods will cause the component to re-render everywhere, and unchanged rendered HTML will not perform any changes.
 
+## Periodic Timers
+
+Motion can automatically invoke a method on your component at regular intervals:
+
+```ruby
+class ClockComponent < ViewComponent::Base
+  include Motion::Component
+
+  def initialize
+    @time = Time.now
+  end
+
+  every 1.second, :tick
+
+  def tick
+    @time = Time.now
+  end
+end
+```
 
 ## Motion::Event and Motion::Element
 

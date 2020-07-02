@@ -8,8 +8,8 @@ TestApplication.load_generators
 
 # Add a helper method to sync the JavaScript in the test app with the outer gem.
 class << TestApplication
-  def sync_motion_client!
-    return if @synced_motion_client
+  def link_motion_client!
+    return if @linked_motion_client
 
     yarn! "--cwd", "../../..", "link"
     yarn! "link", "@unabridged/motion"
@@ -17,7 +17,13 @@ class << TestApplication
 
     clear_webpacker_cache!
 
-    @synced_motion_client = true
+    @linked_motion_client = true
+  end
+
+  def unlink_motion_client!
+    return unless @linked_motion_client
+
+    yarn! "unlink", "@unabridged/motion"
   end
 
   private

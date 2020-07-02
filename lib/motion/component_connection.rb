@@ -64,6 +64,18 @@ module Motion
       false
     end
 
+    def process_periodic_timer(timer)
+      timing("Proccessed periodic timer #{timer}") do
+        component.process_periodic_timer timer
+      end
+
+      true
+    rescue => error
+      handle_error(error, "processing periodic timer #{timer}")
+
+      false
+    end
+
     def if_render_required(&block)
       timing("Rendered") do
         next_render_hash = component.render_hash
@@ -81,6 +93,10 @@ module Motion
 
     def broadcasts
       component.broadcasts
+    end
+
+    def periodic_timers
+      component.periodic_timers
     end
 
     private
