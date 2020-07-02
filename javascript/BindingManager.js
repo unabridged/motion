@@ -41,11 +41,10 @@ export default class BindingManager {
 
   parseBindings () {
     const { motionAttribute } = this.client
-    const { tagName } = this.element
     const bindingsString = this.element.getAttribute(motionAttribute)
     const bindings = new Map()
 
-    for (const binding of parseBindings(bindingsString, tagName)) {
+    for (const binding of parseBindings(bindingsString, this.element)) {
       bindings.set(binding.id, binding)
     }
 

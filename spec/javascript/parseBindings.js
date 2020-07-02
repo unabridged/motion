@@ -44,10 +44,10 @@ describe('parseBindings', () => {
     })
 
     context('on a form', () => {
-      const tagName = 'FORM'
+      const element = document.createElement('FORM')
 
       it('gives the correct parsing', () => {
-        expect(parseBindings(input, tagName)).to.eql([
+        expect(parseBindings(input, element)).to.eql([
           {
             id: 'sing',
             event: 'submit',
@@ -71,14 +71,42 @@ describe('parseBindings', () => {
     })
 
     context('on an input', () => {
-      const tagName = 'INPUT'
+      const element = document.createElement('INPUT')
 
       it('gives the correct parsing', () => {
-        expect(parseBindings(input, tagName)).to.eql([
+        expect(parseBindings(input, element)).to.eql([
           {
             id: 'sing',
             event: 'change',
             mode: 'listen',
+            motion: 'sing'
+          },
+          {
+            id: 'song:finished->dance',
+            event: 'song:finished',
+            mode: 'handle',
+            motion: 'dance'
+          },
+          {
+            id: 'click(listen)->backflip',
+            event: 'click',
+            mode: 'listen',
+            motion: 'backflip'
+          }
+        ])
+      })
+    })
+
+    context('on an input[type=submit]', () => {
+      const element = document.createElement('INPUT')
+      element.setAttribute('type', 'submit')
+
+      it('gives the correct parsing', () => {
+        expect(parseBindings(input, element)).to.eql([
+          {
+            id: 'sing',
+            event: 'click',
+            mode: 'handle',
             motion: 'sing'
           },
           {
