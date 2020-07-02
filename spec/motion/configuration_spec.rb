@@ -5,16 +5,12 @@ RSpec.describe Motion::Configuration do
     subject(:default) { described_class.new }
 
     before(:each) do
-      expect_any_instance_of(described_class).to(
-        receive(:warn).with(/Motion is automatically inferring/)
-      )
-
-      expect_any_instance_of(described_class).to(
-        receive(:`).with("git rev-parse HEAD").and_return(revision_from_git)
+      expect_any_instance_of(Motion::RevisionCalculator).to(
+        receive(:perform).and_return(revision_hash)
       )
     end
 
-    let(:revision_from_git) { "revision-hash" }
+    let(:revision_hash) { "revision-hash" }
 
     describe "#secret" do
       subject { default.secret }
@@ -29,7 +25,18 @@ RSpec.describe Motion::Configuration do
     describe "#revision" do
       subject { default.revision }
 
-      it { is_expected.to eq(revision_from_git) }
+      it { is_expected.to eq(revision_hash) }
+    end
+
+    describe "#revision_paths" do
+      subject { default.revision_paths }
+      let(:rails_path_keys) { Rails.application.config.paths.keys }
+      let(:additional_paths) { %w[bin Gemfile.lock] }
+      let(:revision_path_keys) { subject.keys }
+
+      it { is_expected.to be_a_kind_of(Rails::Paths::Root) }
+      it { expect(revision_path_keys).to include(*rails_path_keys) }
+      it { expect(revision_path_keys).to include(*additional_paths) }
     end
 
     describe "#renderer_for_connection_proc" do

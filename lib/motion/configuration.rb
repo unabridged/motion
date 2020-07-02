@@ -66,20 +66,6 @@ module Motion
     end
 
     option :revision do
-      warn <<~MSG
-        Motion is automatically inferring the application's revision by
-        calculating the content of files in motion_config.revision_paths.
-        The defaults revision paths are: Rails paths, bin, and the Gemfile.lock.
-
-        You can add paths to the revision_path using the `revision_paths` option.
-
-        If you prefer to use git for the revision in production,
-        add "config.revision = `git rev-parse HEAD`.chomp" to your
-        Motion initializer.
-
-        Other options might include an environmental variable.
-      MSG
-
       RevisionCalculator.new(revision_paths: @revision_paths).perform
     end
 

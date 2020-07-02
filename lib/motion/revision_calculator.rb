@@ -17,10 +17,6 @@ module Motion
 
     private
 
-    def file_contents
-      files.map { |f| File.read(f) }.join
-    end
-
     def existent_paths
       @existent_paths ||= revision_paths.all_paths.flat_map(&:existent)
     end
@@ -30,7 +26,13 @@ module Motion
     end
 
     def derive_md5_hash
-      Digest::MD5.hexdigest(file_contents)
+      digest = Digest::MD5.new
+
+      files.each do |file|
+        digest << File.read(file)
+      end
+
+      digest.hexdigest
     end
   end
 end
