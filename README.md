@@ -151,7 +151,16 @@ Methods that are mapped using `map_motion` accept an `event` parameter which is 
     event.type # => "change"
     event.name # alias for type
 
-    element = event.element # => Motion::Element instance (the element with the `data-motion` attribute)
+    # Motion::Element instance, the element that received the event.
+    event.target
+
+    # Motion::Element instance, the element with the event handler and the `data-motion` attribute
+    element = event.current_target
+    # Alias for #current_target
+    event.element
+
+
+    # Element API examples
     element.tag_name # => "input"
     element.value # => "5"
     element.attributes # { class: "col-xs-12", ... }
