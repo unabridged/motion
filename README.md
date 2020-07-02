@@ -171,14 +171,25 @@ Methods that are mapped using `map_motion` accept an `event` parameter which is 
     event.type # => "change"
     event.name # alias for type
 
-    element = event.target # => Motion::Element instance
+    # Motion::Element instance, the element that received the event.
+    event.target
+
+    # Motion::Element instance, the element with the event handler and the `data-motion` attribute
+    element = event.current_target
+    # Alias for #current_target
+    event.element
+
+
+    # Element API examples
     element.tag_name # => "input"
     element.value # => "5"
-    element[:value] # hash lookup version, works for all attributes
     element.attributes # { class: "col-xs-12", ... }
 
-    # DOM element with data-field="..."
-    element.data[:field]
+    # DOM element with aria-label="..."
+    element[:aria_label]
+
+    # DOM element with data-extra-info="..."
+    element.data[:extra_info]
 
     # ActionController::Parameters instance with all form params. Also
     # available on Motion::Event objects for convenience.
