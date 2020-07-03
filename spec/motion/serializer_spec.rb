@@ -27,6 +27,40 @@ RSpec.describe Motion::Serializer do
     end
   end
 
+  describe "#weak_digest" do
+    subject(:weak_digest) { serializer.weak_digest(object) }
+
+    context "when the object can be serialized" do
+      let(:object) { [data] }
+      let(:data) { SecureRandom.hex }
+
+      let(:other_object_with_same_state) { [data] }
+
+      let(:other_object_with_different_state) { [other_data] }
+      let(:other_data) { SecureRandom.hex }
+
+      it "gives the same result for an object with the same state" do
+        expect(subject).to(
+          eq(serializer.weak_digest(other_object_with_same_state))
+        )
+      end
+
+      it "gives a different result for an object with different state" do
+        expect(subject).not_to(
+          eq(serializer.weak_digest(other_object_with_different_state))
+        )
+      end
+    end
+
+    context "when the object cannot be serialized" do
+      let(:object) { Class.new.new }
+
+      it "raises Motion::UnrepresentableStateError" do
+        expect { subject }.to raise_error(Motion::UnrepresentableStateError)
+      end
+    end
+  end
+
   describe "#serialize" do
     subject(:output) { serializer.serialize(object) }
 

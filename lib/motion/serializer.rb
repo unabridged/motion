@@ -32,6 +32,10 @@ module Motion
       @revision = revision
     end
 
+    def weak_digest(component)
+      dump(component).hash
+    end
+
     def serialize(component)
       state = dump(component)
       state_with_revision = "#{revision}#{NULL_BYTE}#{state}"
