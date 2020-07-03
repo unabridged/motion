@@ -27,14 +27,15 @@ Motion.configure do |config|
   #     config.renderer_for_connection_proc = ->(websocket_connection) do
   #       ApplicationController.renderer.new(
   #         websocket_connection.env.slice(
-  #           Rack::HTTP_COOKIE,
-  #           Rack::RACK_SESSION,
+  #           Rack::HTTP_COOKIE,  # Cookies
+  #           Rack::RACK_SESSION, # Session
+  #           'warden'            # Warden (needed for `current_user` in Devise)
   #         )
   #       )
   #     end
 
   # The data attributes used by Motion can be customized, but these values must
-  # also be updated in the Ruby initializer:
+  # also be updated in the JavaScript client configuration:
   #
   #     config.key_attribute = "data-motion-key"
   #     config.state_attribute = "data-motion-state"
