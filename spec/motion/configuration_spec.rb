@@ -100,7 +100,7 @@ RSpec.describe Motion::Configuration do
     end
   end
 
-  it "allows options to be set within the initalization block" do
+  it "allows options to be set within the initialization block" do
     config =
       described_class.new { |c|
         c.revision = "value"
@@ -109,7 +109,7 @@ RSpec.describe Motion::Configuration do
     expect(config.revision).to eq("value")
   end
 
-  it "does not allow options to be set after initalization" do
+  it "does not allow options to be set after initialization" do
     config =
       described_class.new { |c|
         c.revision = "value"

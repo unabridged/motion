@@ -12,20 +12,12 @@ module Motion
     end
 
     def perform
-      derive_md5_hash
+      derive_file_hash
     end
 
     private
 
-    def existent_paths
-      @existent_paths ||= revision_paths.all_paths.flat_map(&:existent)
-    end
-
-    def files
-      @files ||= existent_paths.flat_map { |path| Dir["#{path}/**/*", path].reject { |f| File.directory?(f) } }.uniq
-    end
-
-    def derive_md5_hash
+    def derive_file_hash
       digest = Digest::MD5.new
 
       files.each do |file|
@@ -33,6 +25,23 @@ module Motion
       end
 
       digest.hexdigest
+    end
+
+    def existent_paths
+      @existent_paths ||=
+        begin
+          revision_paths.all_paths.flat_map(&:existent)
+        rescue
+          raise BadRevisionPathsError
+        end
+    end
+
+    def existent_files(path)
+      Dir["#{path}/**/*", path].reject { |f| File.directory?(f) }.uniq
+    end
+
+    def files
+      @files ||= existent_paths.flat_map { |path| existent_files(path) }
     end
   end
 end
