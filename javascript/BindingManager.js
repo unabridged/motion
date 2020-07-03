@@ -11,24 +11,10 @@ export default class BindingManager {
   }
 
   update () {
-    const bindings = this.parseBindings()
+    const targetBindings = this.parseBindings()
 
-    for (const [id, [event, callback]] of this._handlers.entries()) {
-      if (!bindings.has(id)) {
-        this.element.removeEventListener(event, callback)
-        this._handlers.delete(id)
-      }
-    }
-
-    for (const [id, binding] of bindings.entries()) {
-      if (!this._handlers.has(id)) {
-        const { event } = binding
-        const handler = this._buildHandlerForBinding(binding)
-
-        this.element.addEventListener(event, handler)
-        this._handlers.set(id, [event, handler])
-      }
-    }
+    this._removeExtraHandlers(targetBindings)
+    this._setupMissingHandlers(targetBindings)
   }
 
   shutdown () {
@@ -61,6 +47,27 @@ export default class BindingManager {
         if (mode === MODE_HANDLE) {
           event.preventDefault()
         }
+      }
+    }
+  }
+
+  _setupMissingHandlers (targetBindings) {
+    for (const [id, binding] of targetBindings.entries()) {
+      if (!this._handlers.has(id)) {
+        const { event } = binding
+        const handler = this._buildHandlerForBinding(binding)
+
+        this.element.addEventListener(event, handler)
+        this._handlers.set(id, [event, handler])
+      }
+    }
+  }
+
+  _removeExtraHandlers (targetBindings) {
+    for (const [id, [event, callback]] of this._handlers.entries()) {
+      if (!targetBindings.has(id)) {
+        this.element.removeEventListener(event, callback)
+        this._handlers.delete(id)
       }
     }
   }
