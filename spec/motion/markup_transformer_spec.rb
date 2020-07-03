@@ -61,5 +61,11 @@ RSpec.describe Motion::MarkupTransformer do
         )
       end
     end
+
+    context "when the component does not generate any markup" do
+      let(:html) { "" }
+
+      it { is_expected.to be_blank }
+    end
   end
 end
