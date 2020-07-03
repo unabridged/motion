@@ -21,6 +21,8 @@ module Motion
     end
 
     def add_state_to_html(component, html)
+      return html if html.blank?
+
       key, state = serializer.serialize(component)
 
       transform_root(component, html) do |root|

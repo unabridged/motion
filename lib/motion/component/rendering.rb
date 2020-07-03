@@ -41,7 +41,6 @@ module Motion
         clear_awaiting_forced_rerender!
 
         html = view_context.capture { without_new_instance_variables { super } }
-        return html if html.blank?
 
         Motion.markup_transformer.add_state_to_html(self, html)
       end
