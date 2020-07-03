@@ -5,6 +5,9 @@ export default (rootElement, newState, keyAttribute) => {
     throw new TypeError('Expected raw HTML for reconcile newState')
   }
 
+  // remove root element when component sends an empty state
+  if (!newState) return rootElement.remove()
+
   const rootKey = rootElement.getAttribute(keyAttribute)
 
   if (!rootKey) {
