@@ -31,11 +31,7 @@ export default class AttributeTracker {
 
     for (const manager of this._managers.values()) {
       if (manager) {
-        try {
-          manager.shutdown()
-        } catch (error) {
-          console.error('An error occurred within Motion', error)
-        }
+        this._errorBoundry(() => manager.shutdown())
       }
     }
 
@@ -49,15 +45,13 @@ export default class AttributeTracker {
   _detect (element) {
     let manager = null
 
-    try {
+    this._errorBoundry(() => {
       if (this._managers.has(element)) {
         throw new Error('Double detect in AttributeTracker')
       }
 
       manager = this.createManager(element)
-    } catch (error) {
-      console.error('An error occurred within Motion', error)
-    }
+    })
 
     this._managers.set(element, manager)
   }
@@ -66,11 +60,10 @@ export default class AttributeTracker {
     const manager = this._managers.get(element)
 
     if (manager && manager.update) {
-      try {
-        manager.update()
-      } catch (error) {
-        console.error('An error occurred within Motion', error)
-      }
+      this._errorBoundry(() => manager.update())
+    } else {
+      this._remove(element)
+      this._detect(element)
     }
   }
 
@@ -78,11 +71,7 @@ export default class AttributeTracker {
     const manager = this._managers.get(element)
 
     if (manager && manager.shutdown) {
-      try {
-        manager.shutdown()
-      } catch (error) {
-        console.error('An error occurred within Motion', error)
-      }
+      this._errorBoundry(() => manager.shutdown())
     }
 
     this._managers.delete(element)
@@ -93,8 +82,6 @@ export default class AttributeTracker {
       this._processChildListMutation(mutation)
     } else if (mutation.type === 'attributes') {
       this._processAttributesMutation(mutation)
-    } else {
-      // noop
     }
   }
 
@@ -104,21 +91,24 @@ export default class AttributeTracker {
   }
 
   _processAttributesMutation ({ target }) {
-    const didHaveAttribute = this._managers.has(target)
-    const hasAttribute = target.hasAttribute(this.attribute)
-
-    if (didHaveAttribute) {
-      if (hasAttribute) {
-        this._update(target)
-      } else {
-        this._remove(target)
-      }
+    if (this._managers.has(target)) {
+      this._processAttributeUpdateToTracked(target)
     } else {
-      if (hasAttribute) {
-        this._detect(target)
-      } else {
-        // noop
-      }
+      this._processAttributeUpdateToUntracked(target)
+    }
+  }
+
+  _processAttributeUpdateToTracked (element) {
+    if (element.hasAttribute(this.attribute)) {
+      this._update(element)
+    } else {
+      this._remove(element)
+    }
+  }
+
+  _processAttributeUpdateToUntracked (element) {
+    if (element.hasAttribute(this.attribute)) {
+      this._detect(element)
     }
   }
 
@@ -137,6 +127,14 @@ export default class AttributeTracker {
       for (const match of node.querySelectorAll(this._attributeSelector)) {
         callback(match)
       }
+    }
+  }
+
+  _errorBoundry (callback) {
+    try {
+      callback()
+    } catch (error) {
+      console.error('[Motion] An internal error occurred:', error)
     }
   }
 }

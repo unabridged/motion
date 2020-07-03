@@ -8,11 +8,12 @@ export default class Client {
   constructor (options = {}) {
     Object.assign(this, Client.defaultOptions, options)
 
-    this._componentSelector = `[${this.stateAttribute}]`
+    this._componentSelector = `[${this.keyAttribute}][${this.stateAttribute}]`
 
     this._componentTracker =
-      new AttributeTracker(this.stateAttribute, (element) => (
-        new Component(this, element)
+      new AttributeTracker(this.keyAttribute, (element) => (
+        element.hasAttribute(this.stateAttribute) // ensure matches selector
+          ? new Component(this, element) : null
       ))
 
     this._motionTracker =
@@ -27,6 +28,12 @@ export default class Client {
 
     if (this.shutdownBeforeUnload) {
       beforeDocumentUnload.then(() => this.shutdown())
+    }
+  }
+
+  log (...args) {
+    if (this.logging) {
+      console.log('[Motion]', ...args)
     }
   }
 
@@ -47,16 +54,14 @@ Client.defaultOptions = {
     return getFallbackConsumer()
   },
 
-  get root () {
-    return document
-  },
-
   getExtraDataForEvent (_event) {
     // noop
   },
 
-  shutdownBeforeUnload: true,
   logging: false,
+
+  root: document,
+  shutdownBeforeUnload: true,
 
   keyAttribute: 'data-motion-key',
   stateAttribute: 'data-motion-state',

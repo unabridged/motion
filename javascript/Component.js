@@ -27,17 +27,12 @@ export default class Component {
   }
 
   processMotion (name, event = null) {
-    if (this.client.logging) {
-      console.log('Processing motion', name, 'on', this.element)
-    }
-
     if (!this._subscription) {
-      if (this.client.logging) {
-        console.log('Dropped motion', name, 'on', this.element)
-      }
-
+      this.client.log('Dropped motion', name, 'on', this.element)
       return
     }
+
+    this.client.log('Processing motion', name, 'on', this.element)
 
     const extraDataForEvent = event && this.client.getExtraDataForEvent(event)
 
@@ -58,33 +53,25 @@ export default class Component {
   }
 
   _beforeConnect () {
-    if (this.client.logging) {
-      console.log('Connecting component', this.element)
-    }
+    this.client.log('Connecting component', this.element)
 
     dispatchEvent(this.element, 'motion:before-connect')
   }
 
   _connect () {
-    if (this.client.logging) {
-      console.log('Component connected', this.element)
-    }
+    this.client.log('Component connected', this.element)
 
     dispatchEvent(this.element, 'motion:connect')
   }
 
   _connectFailed () {
-    if (this.client.logging) {
-      console.log('Failed to connect component', this.element)
-    }
+    this.client.log('Failed to connect component', this.element)
 
     dispatchEvent(this.element, 'motion:connect-failed')
   }
 
   _disconnect () {
-    if (this.client.logging) {
-      console.log('Component disconnected', this.element)
-    }
+    this.client.log('Component disconnected', this.element)
 
     dispatchEvent(this.element, 'motion:disconnect')
   }
@@ -94,9 +81,7 @@ export default class Component {
 
     reconcile(this.element, newState, this.client.keyAttribute)
 
-    if (this.client.logging) {
-      console.log('Component rendered', this.element)
-    }
+    this.client.log('Component rendered', this.element)
 
     dispatchEvent(this.element, 'motion:render')
   }
