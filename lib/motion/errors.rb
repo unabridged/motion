@@ -154,7 +154,7 @@ module Motion
       super(<<~MSG)
         Revision paths must be a Rails::Paths::Root object or an object
         that responds to `all_paths.flat_map(&:existent)` and returns an
-        Array of strings representing paths relative to root.
+        Array of strings representing full paths.
       MSG
     end
   end
