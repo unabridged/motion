@@ -59,16 +59,17 @@ module Motion
       Rails.application.key_generator.generate_key("motion:secret")
     end
 
-    option :revision do
-      warn <<~MSG # TODO: Better message (Focus on "How do I fix this?")
-        Motion is automatically inferring the application's revision from git.
-        Depending on your deployment, this may not work for you in production.
-        If it does, add "config.revision = `git rev-parse HEAD`.chomp" to your
-        Motion initializer. If it does not, do something else (probably read an
-        env var or something).
-      MSG
+    option :revision_paths do
+      require "rails"
 
-      `git rev-parse HEAD`.chomp
+      Rails.application.config.paths.dup.tap do |paths|
+        paths.add "bin", glob: "*"
+        paths.add "Gemfile.lock"
+      end
+    end
+
+    option :revision do
+      RevisionCalculator.new(revision_paths: revision_paths).perform
     end
 
     option :renderer_for_connection_proc do

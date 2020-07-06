@@ -5,13 +5,16 @@ Motion.configure do |config|
   # version of your application. By default, the commit hash from git is used,
   # but depending on your deployment, this may not be available in production.
   #
-  # If you are sure that git is available in your production enviorment, you can
-  # uncomment this line:
+  # Motion automatically calculates your revision by hashing the contents of
+  # files in `revision_paths` The defaults revision paths are:
+  # rails paths, bin, and Gemfile.lock.
   #
-  #     config.revision = `git rev-parse HEAD`.chomp
+  # To change or add to your revision paths, uncomment this line:
   #
-  # If git is not available in your production enviorment, you must identify
-  # your application version some other way:
+  #     config.revision_paths += w(additional_path another_path)
+  #
+  # If you prefer to use git or an environmental variable for the revision
+  # in production, define the revision directly below.
   #
   #     config.revision =
   #       ENV.fetch("MY_DEPLOYMENT_NUMBER") { `git rev-parse HEAD`.chomp }

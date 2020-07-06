@@ -68,13 +68,7 @@ RSpec.configure do |config|
 
     Motion.reset_internal_state_for_testing!
 
-    RSpec::Mocks.with_temporary_scope do
-      # Motion will whine about not being configured. This is expected and does
-      # not need to clutter up the output while running these examples.
-      allow_any_instance_of(Motion::Configuration).to receive(:warn)
-
-      example.run
-    end
+    example.run
 
     Motion.reset_internal_state_for_testing!(testing_configuration)
   end
