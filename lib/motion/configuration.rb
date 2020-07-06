@@ -62,11 +62,14 @@ module Motion
     option :revision_paths do
       require "rails"
 
-      paths
+      Rails.application.config.paths.dup.tap do |paths|
+        paths.add "bin", glob: "*"
+        paths.add "Gemfile.lock"
+      end
     end
 
     option :revision do
-      RevisionCalculator.new(revision_paths: @revision_paths).perform
+      RevisionCalculator.new(revision_paths: revision_paths).perform
     end
 
     option :renderer_for_connection_proc do
@@ -99,17 +102,5 @@ module Motion
     # This is included for completeness. It is not currently used internally by
     # Motion, but it might be required for building view helpers in the future.
     option(:motion_attribute) { "data-motion" }
-
-    def paths
-      @paths ||= begin
-        paths = Rails.application.config.paths.dup
-
-        paths.add "bin", glob: "*"
-
-        paths.add "Gemfile.lock"
-
-        paths
-      end
-    end
   end
 end

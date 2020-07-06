@@ -47,9 +47,6 @@ RSpec.describe Motion::RevisionCalculator do
       let(:first_dir) { all_dirs.first }
       let(:new_file) { "#{first_dir}/foot.txt" }
 
-      before(:each) { File.delete(new_file) if File.exist?(new_file) }
-      after(:each) { File.delete(new_file) if File.exist?(new_file) }
-
       it "hashes contents" do
         expect(subject).not_to eq(empty_hash)
       end
@@ -57,12 +54,25 @@ RSpec.describe Motion::RevisionCalculator do
       it "has files to hash" do
         assert all_dirs.length.positive?
       end
+    end
+    context "for additional directories or files" do
+      let(:new_file) { "#{tempdir}/foot.txt" }
+      let(:tempdir_and_revision_paths) { revision_paths.tap { |p| p.add tempdir } }
+      attr_reader :tempdir
+
+      around(:each) do |example|
+        Dir.mktmpdir do |path|
+          @tempdir = path
+
+          example.run
+        end
+      end
 
       it "changes contents when file contents change" do
         first_result = subject
 
         File.open(new_file, "w+") { |file| file.write("test") }
-        second_calc = Motion::RevisionCalculator.new(revision_paths: revision_paths).perform
+        second_calc = Motion::RevisionCalculator.new(revision_paths: tempdir_and_revision_paths).perform
         expect(second_calc).not_to eq(first_result)
         expect(second_calc).not_to eq(empty_hash)
       end

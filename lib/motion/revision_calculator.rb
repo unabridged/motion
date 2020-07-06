@@ -21,6 +21,7 @@ module Motion
       digest = Digest::MD5.new
 
       files.each do |file|
+        digest << file # include filename as well as contents
         digest << File.read(file)
       end
 
@@ -41,7 +42,7 @@ module Motion
     end
 
     def files
-      @files ||= existent_paths.flat_map { |path| existent_files(path) }
+      @files ||= existent_paths.flat_map { |path| existent_files(path) }.sort
     end
   end
 end

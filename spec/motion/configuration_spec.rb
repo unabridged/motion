@@ -4,14 +4,6 @@ RSpec.describe Motion::Configuration do
   describe "the default configuration" do
     subject(:default) { described_class.new }
 
-    before(:each) do
-      expect_any_instance_of(Motion::RevisionCalculator).to(
-        receive(:perform).and_return(revision_hash)
-      )
-    end
-
-    let(:revision_hash) { "revision-hash" }
-
     describe "#secret" do
       subject { default.secret }
 
@@ -23,6 +15,14 @@ RSpec.describe Motion::Configuration do
     end
 
     describe "#revision" do
+      let(:revision_hash) { "revision-hash" }
+
+      before(:each) do
+        expect_any_instance_of(Motion::RevisionCalculator).to(
+          receive(:perform).and_return(revision_hash)
+        )
+      end
+
       subject { default.revision }
 
       it { is_expected.to eq(revision_hash) }
