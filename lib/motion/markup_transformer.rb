@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "nokogiri"
+require "active_support/core_ext/object/blank"
 
 require "motion"
 
