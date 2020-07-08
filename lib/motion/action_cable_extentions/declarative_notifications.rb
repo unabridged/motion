@@ -62,7 +62,7 @@ module Motion
       #
       # See `ActionCable::Channel::PeriodicTimers` for details.
       def _setup_declarative_notifcation_timer(notification, interval)
-        return if connection.is_a?(ActionCable::Channel::ConnectionStub) ||
+        return if _stubbed_connection? ||
           @_declarative_notifications_timers.include?(notification)
 
         callback = proc do
@@ -75,6 +75,11 @@ module Motion
 
         @_declarative_notifications_timers[notification] = timer
         active_periodic_timers << timer
+      end
+
+      def _stubbed_connection?
+        defined?(ActionCable::Channel::ConnectionStub) &&
+          connection.is_a?(ActionCable::Channel::ConnectionStub)
       end
 
       def _shutdown_declarative_notifcation_timer(notification, *)
