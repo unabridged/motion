@@ -53,7 +53,9 @@ export default class AttributeTracker {
       manager = this.createManager(element)
     })
 
-    this._managers.set(element, manager)
+    if (manager) {
+      this._managers.set(element, manager)
+    }
   }
 
   _update (element) {

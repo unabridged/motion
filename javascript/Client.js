@@ -37,7 +37,7 @@ export default class Client {
     }
   }
 
-  findComponent (element) {
+  getComponent (element) {
     return this._componentTracker.getManager(
       element.closest(this._componentSelector)
     )

@@ -39,14 +39,14 @@ export default class BindingManager {
 
   _buildHandlerForBinding ({ mode, motion }) {
     return (event) => {
-      const component = this.client.findComponent(event.target)
+      const component = this.client.getComponent(event.currentTarget)
 
-      if (component) {
-        component.processMotion(motion, event)
-
-        if (mode === MODE_HANDLE) {
-          event.preventDefault()
-        }
+      if (
+        component &&
+        component.processMotion(motion, event) &&
+        mode === MODE_HANDLE
+      ) {
+        event.preventDefault()
       }
     }
   }

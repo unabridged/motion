@@ -29,7 +29,7 @@ export default class Component {
   processMotion (name, event = null) {
     if (!this._subscription) {
       this.client.log('Dropped motion', name, 'on', this.element)
-      return
+      return false
     }
 
     this.client.log('Processing motion', name, 'on', this.element)
@@ -43,6 +43,8 @@ export default class Component {
         event: event && serializeEvent(event, extraDataForEvent)
       }
     )
+
+    return true
   }
 
   shutdown () {
