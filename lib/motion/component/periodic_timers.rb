@@ -49,7 +49,9 @@ module Motion
       def process_periodic_timer(name)
         return unless (handler, _interval = _periodic_timers[name])
 
-        send(handler)
+        _run_action_callbacks do
+          send(handler)
+        end
       end
 
       private
