@@ -72,6 +72,10 @@ module Motion
       RevisionCalculator.new(revision_paths: revision_paths).perform
     end
 
+    # TODO: Is this always the correct key?
+    WARDEN_ENV = "warden"
+    private_constant :WARDEN_ENV
+
     option :renderer_for_connection_proc do
       ->(websocket_connection) do
         require "rack"
@@ -90,7 +94,8 @@ module Motion
         controller.renderer.new(
           websocket_connection.env.slice(
             Rack::HTTP_COOKIE,
-            Rack::RACK_SESSION
+            Rack::RACK_SESSION,
+            WARDEN_ENV
           )
         )
       end
