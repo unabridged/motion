@@ -53,7 +53,6 @@ Rake::Task["release"].clear
 
 task :release, %i[release] => %i[
   lint
-  test:refresh
   test:all
   build
   release:guard_clean

@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: fce2d6a78bbe1d3b58edd888f2cdbcb2890e6d11
+  revision: 94139c4379592427d76b899ea10339731fa0fc43
   ref: master
   specs:
     actioncable (6.1.0.alpha)
@@ -86,7 +86,7 @@ GIT
 PATH
   remote: ..
   specs:
-    motion (0.2.1)
+    motion (0.2.2)
       nokogiri
       rails (>= 5.2)
 
@@ -137,7 +137,7 @@ GEM
     mini_portile2 (2.4.0)
     minitest (5.14.1)
     nio4r (2.5.2)
-    nokogiri (1.10.9)
+    nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
     parallel (1.19.2)
     parser (2.7.1.4)
@@ -222,7 +222,7 @@ GEM
     tzinfo (2.0.2)
       concurrent-ruby (~> 1.0)
     unicode-display_width (1.7.0)
-    view_component (2.13.0)
+    view_component (2.14.0)
       activesupport (>= 5.0.0, < 7.0)
     webpacker (5.1.1)
       activesupport (>= 5.2)
