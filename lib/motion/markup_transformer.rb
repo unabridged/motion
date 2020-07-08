@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "nokogiri"
+require "active_support/core_ext/object/blank"
 
 require "motion"
 
@@ -21,7 +22,7 @@ module Motion
     end
 
     def add_state_to_html(component, html)
-      return html if html.blank?
+      return if html.blank?
 
       key, state = serializer.serialize(component)
 
