@@ -15,6 +15,9 @@ module Motion
 
       included do
         define_callbacks :action, :connect, :disconnect
+
+        # The built-in triggers defined on the target class will override ours.
+        remove_method(:_run_action_callbacks)
       end
 
       class_methods do
@@ -28,30 +31,55 @@ module Motion
           )
         end
 
-        def before_action(*args, &block)
-          set_callback(:action, :before, *args, &block)
+        def before_action(*methods, **options, &block)
+          set_action_callback(:before, *methods, **options, &block)
         end
 
-        def around_action(*args, &block)
-          set_callback(:action, :around, *args, &block)
+        def around_action(*methods, **options, &block)
+          set_action_callback(:around, *methods, **options, &block)
         end
 
-        def after_action(*args, &block)
-          set_callback(:action, :after, *args, &block)
+        def after_action(*methods, **options, &block)
+          set_action_callback(:after, *methods, **options, &block)
         end
 
-        def after_connect(*args, &block)
-          set_callback(:connect, :after, *args, &block)
+        def after_connect(*methods, **options, &block)
+          set_callback(:connect, :after, *methods, **options, &block)
         end
 
-        def after_disconnect(*args, &block)
-          set_callback(:disconnect, :after, *args, &block)
+        def after_disconnect(*methods, **options, &block)
+          set_callback(:disconnect, :after, *methods, **options, &block)
+        end
+
+        private
+
+        def set_action_callback(kind, *methods, **options, &block)
+          filters = Array(options.delete(:if))
+
+          if (only = Array(options.delete(:only))).any?
+            filters << action_callback_context_include_filter(only)
+          end
+
+          if (except = Array(options.delete(:except))).any?
+            filters << action_callback_context_exclude_filter(except)
+          end
+
+          set_callback(:action, kind, *methods, if: filters, **options, &block)
+        end
+
+        def action_callback_context_include_filter(contexts)
+          proc { contexts.include?(_action_callback_context) }
+        end
+
+        def action_callback_context_exclude_filter(contexts)
+          proc { !contexts.include?(_action_callback_context) }
         end
       end
 
       def process_connect
-        run_callbacks(:connect)
+        _run_connect_callbacks
 
+        # TODO: Remove at next minor release
         if respond_to?(:connected)
           ActiveSupport::Deprecation.warn(
             "The `connected` lifecycle method is being replaced by the " \
@@ -64,8 +92,9 @@ module Motion
       end
 
       def process_disconnect
-        run_callbacks(:disconnect)
+        _run_disconnect_callbacks
 
+        # TODO: Remove at next minor release
         if respond_to?(:disconnected)
           ActiveSupport::Deprecation.warn(
             "The `disconnected` lifecycle method is being replaced by the " \
@@ -79,8 +108,17 @@ module Motion
 
       private
 
-      def _run_action_callbacks(&block)
-        run_callbacks(:action, &block)
+      attr_reader :_action_callback_context
+
+      def _run_action_callbacks(context:, &block)
+        @_action_callback_context = context
+
+        begin
+          run_callbacks(:action, &block)
+        ensure
+          # `@_action_callback_context = nil` would still appear in the state
+          remove_instance_variable(:@_action_callback_context)
+        end
       end
     end
   end

@@ -31,7 +31,7 @@ module Motion
         raise BlockNotAllowedError, self if block_given?
 
         html =
-          _run_action_callbacks {
+          _run_action_callbacks(context: :render) {
             _clear_awaiting_forced_rerender!
 
             view_context.capture { _without_new_instance_variables { super } }

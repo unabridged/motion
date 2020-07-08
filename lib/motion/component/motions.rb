@@ -47,7 +47,7 @@ module Motion
           raise MotionNotMapped.new(self, motion)
         end
 
-        _run_action_callbacks do
+        _run_action_callbacks(context: handler) do
           if method(handler).arity.zero?
             send(handler)
           else
