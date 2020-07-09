@@ -13,8 +13,8 @@ RSpec.describe Motion::Component::Lifecycle do
       let(:revision) { SecureRandom.hex }
       let(:instance) { TestComponent.new }
 
-      it "raises IncorrectRevisionError" do
-        expect { subject }.to raise_error(Motion::IncorrectRevisionError)
+      it "raises UpgradeNotImplementedError" do
+        expect { subject }.to raise_error(Motion::UpgradeNotImplementedError)
       end
     end
   end
