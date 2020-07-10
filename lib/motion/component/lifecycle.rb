@@ -57,22 +57,18 @@ module Motion
           filters = Array(options.delete(:if))
 
           if (only = Array(options.delete(:only))).any?
-            filters << action_callback_context_include_filter(only)
+            filters << action_callback_context_filter(only)
           end
 
           if (except = Array(options.delete(:except))).any?
-            filters << action_callback_context_exclude_filter(except)
+            filters << action_callback_context_filter(except, invert: true)
           end
 
           set_callback(:action, kind, *methods, if: filters, **options, &block)
         end
 
-        def action_callback_context_include_filter(contexts)
-          proc { contexts.include?(_action_callback_context) }
-        end
-
-        def action_callback_context_exclude_filter(contexts)
-          proc { !contexts.include?(_action_callback_context) }
+        def action_callback_context_filter(contexts, invert: false)
+          proc { contexts.include?(@_action_callback_context) ^ invert }
         end
       end
 
@@ -106,19 +102,13 @@ module Motion
         end
       end
 
-      private
-
-      attr_reader :_action_callback_context
-
       def _run_action_callbacks(context:, &block)
         @_action_callback_context = context
 
-        begin
-          run_callbacks(:action, &block)
-        ensure
-          # `@_action_callback_context = nil` would still appear in the state
-          remove_instance_variable(:@_action_callback_context)
-        end
+        run_callbacks(:action, &block)
+      ensure
+        # `@_action_callback_context = nil` would still appear in the state
+        remove_instance_variable(:@_action_callback_context)
       end
     end
   end

@@ -22,8 +22,8 @@ RSpec.describe Motion::ComponentConnection do
     end
   end
 
-  it "calls the component's #connected callback" do
-    expect_any_instance_of(TestComponent).to receive(:connected)
+  it "processes the connection on the underlying component" do
+    expect_any_instance_of(TestComponent).to receive(:process_connect)
 
     subject
   end
@@ -47,8 +47,8 @@ RSpec.describe Motion::ComponentConnection do
 
     before(:each) { component_connection }
 
-    it "calls the component's #disconnected callback" do
-      expect_any_instance_of(TestComponent).to receive(:disconnected)
+    it "processes the disconnection on the underlying component" do
+      expect_any_instance_of(TestComponent).to receive(:process_disconnect)
 
       subject
     end

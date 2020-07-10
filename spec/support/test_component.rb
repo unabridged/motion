@@ -67,13 +67,8 @@ class TestComponent < ViewComponent::Base
     end
   end
 
-  def connected
-    public_send(@connected)
-  end
-
-  def disconnected
-    public_send(@disconnected)
-  end
+  after_connect { public_send(@connected) }
+  after_disconnect { public_send(@disconnected) }
 
   stream_from "noop", :noop
   map_motion :noop

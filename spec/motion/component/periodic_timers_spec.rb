@@ -74,6 +74,14 @@ RSpec.describe Motion::Component::PeriodicTimers do
         expect(component).to receive(:noop)
         subject
       end
+
+      it "runs the action callbacks with the context of the handler" do
+        expect(component).to(
+          receive(:_run_action_callbacks).with(context: :noop)
+        )
+
+        subject
+      end
     end
 
     context "with a timer that is not registered" do
@@ -81,6 +89,11 @@ RSpec.describe Motion::Component::PeriodicTimers do
 
       it "does not invoke the corresponding handler" do
         expect(component).not_to receive(name)
+        subject
+      end
+
+      it "does not run the action callbacks" do
+        expect(component).not_to receive(:_run_action_callbacks)
         subject
       end
     end

@@ -65,6 +65,14 @@ RSpec.describe Motion::Component::Motions do
         expect(component).to receive(:noop_with_arg).with(event)
         subject
       end
+
+      it "runs the action callbacks with the context of the handler" do
+        expect(component).to(
+          receive(:_run_action_callbacks).with(context: :noop_with_arg)
+        )
+
+        subject
+      end
     end
 
     context "for a motion that does not take an event" do
@@ -86,12 +94,22 @@ RSpec.describe Motion::Component::Motions do
 
         expect(called).to be(true)
       end
+
+      it "runs the action callbacks with the context of the handler" do
+        expect(component).to(
+          receive(:_run_action_callbacks).with(context: :noop_without_arg)
+        )
+
+        subject
+      end
     end
 
     context "for a motion which is not mapped" do
       let(:motion) { "invalid_#{SecureRandom.hex}" }
 
-      it "raises MotionNotMapped" do
+      it "raises MotionNotMapped and does not run the action callbacks" do
+        expect(component).not_to receive(:_run_action_callbacks)
+
         expect { subject }.to raise_error(Motion::MotionNotMapped)
       end
     end

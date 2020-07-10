@@ -33,8 +33,8 @@ RSpec.describe Motion::Channel, type: :channel do
         )
       end
 
-      it "runs the component's `connected` callback" do
-        expect_any_instance_of(TestComponent).to receive(:connected)
+      it "runs the component's connection callbacks" do
+        expect_any_instance_of(TestComponent).to receive(:process_connect)
         subject
       end
 
@@ -126,8 +126,8 @@ RSpec.describe Motion::Channel, type: :channel do
     before(:each) { subscribe(state: state, version: version) }
 
     shared_examples "dismounted" do
-      it "runs the component's `disconnected` callback" do
-        expect_any_instance_of(TestComponent).to receive(:disconnected)
+      it "runs the component's disconnection callbacks" do
+        expect_any_instance_of(TestComponent).to receive(:process_disconnect)
         subject
       end
 
