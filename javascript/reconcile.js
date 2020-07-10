@@ -1,6 +1,8 @@
 import morphdom from 'morphdom'
 
-export default (rootElement, newState, keyAttribute) => {
+export default (client, rootElement, newState) => {
+  const { permanentAttribute, keyAttribute } = client
+
   if (typeof (newState) !== 'string') {
     throw new TypeError('Expected raw HTML for reconcile newState')
   }
@@ -39,6 +41,11 @@ export default (rootElement, newState, keyAttribute) => {
       // have been allowed to leave this function since parsing).
       fromElement.isEqualNode(toElement)
     ) {
+      return false
+    }
+
+    // Leave elements that are marked with the `permanentAttribute` alone.
+    if (fromElement.hasAttribute(permanentAttribute)) {
       return false
     }
 

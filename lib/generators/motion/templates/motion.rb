@@ -43,5 +43,5 @@ Motion.configure do |config|
   #     config.key_attribute = "data-motion-key"
   #     config.state_attribute = "data-motion-state"
   #     config.motion_attribute = "data-motion"
-  #
+  #     config.permanent_attribute = "data-motion-permanent"
 end

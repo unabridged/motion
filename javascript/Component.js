@@ -81,7 +81,7 @@ export default class Component {
   _render (newState) {
     dispatchEvent(this.element, 'motion:before-render')
 
-    reconcile(this.element, newState, this.client.keyAttribute)
+    reconcile(this.client, this.element, newState)
 
     this.client.log('Component rendered', this.element)
 

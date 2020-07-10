@@ -65,5 +65,6 @@ Client.defaultOptions = {
 
   keyAttribute: 'data-motion-key',
   stateAttribute: 'data-motion-state',
-  motionAttribute: 'data-motion'
+  motionAttribute: 'data-motion',
+  permanentAttribute: 'data-motion-permanent'
 }
