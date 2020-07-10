@@ -51,6 +51,11 @@ RSpec.describe Motion::LogHelper do
         expect(logger).to receive(:error).with(/#{Regexp.quote(tag)}/)
         subject
       end
+
+      it "notifies about the error" do
+        expect(Motion).to receive(:notify_error).with(error, message)
+        subject
+      end
     end
 
     context "with an error" do
@@ -82,6 +87,11 @@ RSpec.describe Motion::LogHelper do
           receive(:error).with(/#{Regexp.quote(error.backtrace.first)}/)
         )
 
+        subject
+      end
+
+      it "notifies about the error" do
+        expect(Motion).to receive(:notify_error).with(error, message)
         subject
       end
     end

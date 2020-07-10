@@ -101,6 +101,8 @@ module Motion
       end
     end
 
+    option(:error_notification_proc) { nil }
+
     option(:key_attribute) { "data-motion-key" }
     option(:state_attribute) { "data-motion-state" }
 

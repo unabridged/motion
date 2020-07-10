@@ -37,6 +37,20 @@ Motion.configure do |config|
   #       )
   #     end
 
+  # This proc will be invoked by Motion when an unhandled error occurs. By
+  # default, an error is logged to the application's default logger but no
+  # additional action is taken. If you are using an error tracking tool like
+  # Bugsnag, Sentry, Honeybadger, or Rollbar, you can provide a proc which
+  # notifies that as well:
+  #
+  #     config.error_notification_proc = ->(error, message) do
+  #       Bugsnag.notify(error) do |report|
+  #         report.add_tab(:motion, {
+  #           message: message
+  #         })
+  #       end
+  #     end
+
   # The data attributes used by Motion can be customized, but these values must
   # also be updated in the JavaScript client configuration:
   #

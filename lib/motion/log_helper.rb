@@ -29,6 +29,8 @@ module Motion
       error_info = error ? ":\n#{indent(format_exception(error))}" : ""
 
       logger.error("[#{tag}] #{message}#{error_info}")
+
+      Motion.notify_error(error, message)
     end
 
     def info(message)

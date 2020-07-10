@@ -42,6 +42,10 @@ module Motion
     config.renderer_for_connection_proc.call(websocket_connection)
   end
 
+  def self.notify_error(error, message)
+    config.error_notification_proc&.call(error, message)
+  end
+
   # This method only exists for testing. Changing configuration while Motion is
   # in use is not supported. It is only safe to call this method when no
   # components are currently mounted.

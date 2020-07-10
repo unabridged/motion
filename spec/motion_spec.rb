@@ -84,4 +84,22 @@ RSpec.describe Motion do
 
     it { is_expected.to be(renderer) }
   end
+
+  describe ".notify_error", unconfigured: true do
+    subject { described_class.notify_error(error, message) }
+
+    let(:error) { double }
+    let(:message) { double }
+
+    it "forwards the error and message to the `error_notification_proc`" do
+      Motion.configure do |config|
+        config.error_notification_proc = ->(input_error, input_message) do
+          expect(input_error).to be(error)
+          expect(input_message).to be(message)
+        end
+      end
+
+      subject
+    end
+  end
 end
