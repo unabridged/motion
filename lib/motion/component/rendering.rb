@@ -11,6 +11,14 @@ module Motion
       RERENDER_MARKER_IVAR = :@__awaiting_forced_rerender__
       private_constant :RERENDER_MARKER_IVAR
 
+      # Some changes to Motion's state are specifically supported during render.
+      ALLOWED_NEW_IVARS_DURING_RENDER = %i[
+        @_broadcast_handlers
+        @_motion_handlers
+        @_periodic_timers
+      ].freeze
+      private_constant :ALLOWED_NEW_IVARS_DURING_RENDER
+
       def rerender!
         instance_variable_set(RERENDER_MARKER_IVAR, true)
       end
@@ -49,8 +57,11 @@ module Motion
 
         yield
       ensure
-        (instance_variables - existing_instance_variables)
-          .each(&method(:remove_instance_variable))
+        (
+          instance_variables -
+          existing_instance_variables -
+          ALLOWED_NEW_IVARS_DURING_RENDER
+        ).each(&method(:remove_instance_variable))
       end
     end
   end
