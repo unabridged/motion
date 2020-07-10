@@ -47,10 +47,12 @@ module Motion
           raise MotionNotMapped.new(self, motion)
         end
 
-        if method(handler).arity.zero?
-          send(handler)
-        else
-          send(handler, event)
+        _run_action_callbacks(context: handler) do
+          if method(handler).arity.zero?
+            send(handler)
+          else
+            send(handler, event)
+          end
         end
       end
 

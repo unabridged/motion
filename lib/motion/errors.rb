@@ -57,6 +57,14 @@ module Motion
     end
   end
 
+  class RenderAborted < ComponentRenderingError
+    def initialize(component)
+      super(component, <<~MSG)
+        Rendering #{component.class} was aborted by a callback.
+      MSG
+    end
+  end
+
   class InvalidComponentStateError < ComponentError; end
 
   class UnrepresentableStateError < InvalidComponentStateError

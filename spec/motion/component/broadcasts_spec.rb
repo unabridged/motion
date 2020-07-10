@@ -120,9 +120,18 @@ RSpec.describe Motion::Component::Broadcasts do
 
     context "for a broadcast the component is streaming from" do
       let(:broadcast) { TestComponent::STATIC_BROADCASTS.sample }
+      let(:handler) { broadcast.to_sym }
 
       it "invokes the corresponding handler" do
-        expect(component).to receive(broadcast).with(message)
+        expect(component).to receive(handler).with(message)
+        subject
+      end
+
+      it "runs the action callbacks with the context of the handler" do
+        expect(component).to(
+          receive(:_run_action_callbacks).with(context: handler)
+        )
+
         subject
       end
     end
@@ -133,6 +142,10 @@ RSpec.describe Motion::Component::Broadcasts do
       it "does not invoke the corresponding handler" do
         expect(component).not_to receive(broadcast)
         subject
+      end
+
+      it "does not run the action callbacks" do
+        expect(component).not_to receive(:_run_action_callbacks)
       end
     end
 

@@ -24,13 +24,13 @@ module Motion
       timing("Connected") do
         @render_hash = component.render_hash
 
-        component.connected
+        component.process_connect
       end
     end
 
     def close
       timing("Disconnected") do
-        component.disconnected
+        component.process_disconnect
       end
 
       true

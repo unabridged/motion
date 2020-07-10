@@ -75,10 +75,12 @@ module Motion
       def process_broadcast(broadcast, message)
         return unless (handler = _broadcast_handlers[broadcast])
 
-        if method(handler).arity.zero?
-          send(handler)
-        else
-          send(handler, message)
+        _run_action_callbacks(context: handler) do
+          if method(handler).arity.zero?
+            send(handler)
+          else
+            send(handler, message)
+          end
         end
       end
 

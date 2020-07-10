@@ -29,22 +29,28 @@ module Motion
 
       def render_in(view_context)
         raise BlockNotAllowedError, self if block_given?
-        clear_awaiting_forced_rerender!
 
-        html = view_context.capture { without_new_instance_variables { super } }
+        html =
+          _run_action_callbacks(context: :render) {
+            _clear_awaiting_forced_rerender!
+
+            view_context.capture { _without_new_instance_variables { super } }
+          }
+
+        raise RenderAborted, self if html == false
 
         Motion.markup_transformer.add_state_to_html(self, html)
       end
 
       private
 
-      def clear_awaiting_forced_rerender!
+      def _clear_awaiting_forced_rerender!
         return unless awaiting_forced_rerender?
 
         remove_instance_variable(RERENDER_MARKER_IVAR)
       end
 
-      def without_new_instance_variables
+      def _without_new_instance_variables
         existing_instance_variables = instance_variables
 
         yield

@@ -39,6 +39,14 @@ RSpec.describe Motion::Component::Rendering do
       )
     end
 
+    it "runs the action callbacks with the context of `:render`" do
+      expect(component).to(
+        receive(:_run_action_callbacks).with(context: :render)
+      )
+
+      subject
+    end
+
     context "when the component is awaiting a forced re-render" do
       before(:each) { component.rerender! }
 
@@ -65,6 +73,23 @@ RSpec.describe Motion::Component::Rendering do
         expect { subject }.to(
           raise_error(/Motion does not support rendering with a block/)
         )
+      end
+    end
+
+    context "when the action callbacks abort" do
+      let(:component) do
+        stub_const("ActionAbortingComponent", Class.new(ViewComponent::Base) {
+          include Motion::Component
+
+          before_action { throw :abort }
+        })
+
+        ActionAbortingComponent.new
+      end
+
+      it "raises RenderAborted" do
+        # ActionView will wrap our error, so we check the message.
+        expect { subject }.to raise_error(/aborted by a callback/)
       end
     end
   end
