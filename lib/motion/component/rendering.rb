@@ -14,6 +14,7 @@ module Motion
       # Some changes to Motion's state are specifically supported during render.
       ALLOWED_NEW_IVARS_DURING_RENDER = %i[
         @_broadcast_handlers
+        @_stable_instance_identifier_for_callbacks
         @_motion_handlers
         @_periodic_timers
       ].freeze

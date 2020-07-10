@@ -5,6 +5,7 @@ require "active_support/concern"
 require "motion"
 
 require "motion/component/broadcasts"
+require "motion/component/callbacks"
 require "motion/component/lifecycle"
 require "motion/component/motions"
 require "motion/component/periodic_timers"
@@ -15,6 +16,7 @@ module Motion
     extend ActiveSupport::Concern
 
     include Broadcasts
+    include Callbacks
     include Lifecycle
     include Motions
     include PeriodicTimers
