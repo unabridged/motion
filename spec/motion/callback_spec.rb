@@ -24,7 +24,7 @@ RSpec.describe Motion::Callback do
   describe "#==" do
     subject { callback == other }
 
-    context "with another callback for the same compoent and method" do
+    context "with another callback for the same component and method" do
       let(:other) { described_class.new(component, method) }
 
       it { is_expected.to be_truthy }
