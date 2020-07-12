@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    motion (0.2.2)
+    motion (0.3.0)
       nokogiri
       rails (>= 5.2)
 
@@ -96,7 +96,7 @@ GEM
     mini_portile2 (2.4.0)
     minitest (5.14.1)
     nio4r (2.5.2)
-    nokogiri (1.10.9)
+    nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
     parallel (1.19.2)
     parser (2.7.1.4)
@@ -201,7 +201,7 @@ GEM
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
     unicode-display_width (1.7.0)
-    view_component (2.13.0)
+    view_component (2.14.0)
       activesupport (>= 5.0.0, < 7.0)
     webpacker (5.1.1)
       activesupport (>= 5.2)
