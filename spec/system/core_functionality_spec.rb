@@ -66,4 +66,13 @@ RSpec.describe "Core Functionality", type: :system do
     sleep 1
     expect(page).to have_text("0")
   end
+
+  scenario "Callbacks can be passed to children and trigger on parents" do
+    visit(callback_component_path)
+
+    expect(page).to have_text("The count is 0")
+    click_button "+"
+    click_button "+"
+    expect(page).to have_text("The count is 2")
+  end
 end

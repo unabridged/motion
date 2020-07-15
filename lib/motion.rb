@@ -5,6 +5,7 @@ require "motion/errors"
 
 module Motion
   autoload :ActionCableExtentions, "motion/action_cable_extentions"
+  autoload :Callback, "motion/callback"
   autoload :Channel, "motion/channel"
   autoload :Component, "motion/component"
   autoload :ComponentConnection, "motion/component_connection"

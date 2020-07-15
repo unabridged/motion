@@ -65,15 +65,15 @@ module Motion
     private
 
     def synchronize
+      component_connection.if_render_required do |component|
+        transmit(renderer.render(component))
+      end
+
       streaming_from component_connection.broadcasts,
         to: :process_broadcast
 
       periodically_notify component_connection.periodic_timers,
         via: :process_periodic_timer
-
-      component_connection.if_render_required do |component|
-        transmit(renderer.render(component))
-      end
     end
 
     def handle_error(error, context)
