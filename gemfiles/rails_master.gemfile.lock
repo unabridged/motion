@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: badba9d2fa90ae96a5d8428b0a739e18b1581607
+  revision: dbff2df7c28e6b35b29c0946c115de8801f8b110
   ref: master
   specs:
     actioncable (6.1.0.alpha)
@@ -86,7 +86,7 @@ GIT
 PATH
   remote: ..
   specs:
-    motion (0.3.0)
+    motion (0.4.0)
       nokogiri
       rails (>= 5.2)
 
@@ -222,7 +222,7 @@ GEM
     tzinfo (2.0.2)
       concurrent-ruby (~> 1.0)
     unicode-display_width (1.7.0)
-    view_component (2.14.1)
+    view_component (2.16.0)
       activesupport (>= 5.0.0, < 7.0)
     webpacker (5.1.1)
       activesupport (>= 5.2)
@@ -234,7 +234,7 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.3.1)
+    zeitwerk (2.4.0)
 
 PLATFORMS
   ruby
