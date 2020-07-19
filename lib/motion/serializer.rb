@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "digest"
+require "lz4-ruby"
 require "active_support/message_encryptor"
 
 require "motion"
@@ -37,7 +38,7 @@ module Motion
     end
 
     def serialize(component)
-      state = dump(component)
+      state = deflate(dump(component))
       state_with_revision = "#{revision}#{NULL_BYTE}#{state}"
 
       [
@@ -49,7 +50,7 @@ module Motion
     def deserialize(serialized_component)
       state_with_revision = decrypt_and_verify(serialized_component)
       serialized_revision, state = state_with_revision.split(NULL_BYTE, 2)
-      component = load(state)
+      component = load(inflate(state))
 
       if revision == serialized_revision
         component
@@ -68,6 +69,14 @@ module Motion
 
     def load(state)
       Marshal.load(state)
+    end
+
+    def deflate(dumped_component)
+      LZ4.compress(dumped_component)
+    end
+
+    def inflate(deflated_state)
+      LZ4.uncompress(deflated_state)
     end
 
     def encrypt_and_sign(cleartext)
