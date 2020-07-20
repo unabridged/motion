@@ -20,6 +20,8 @@ Motion allows you to build reactive, real-time frontend UI components in your Ra
 
 ## Installation
 
+1. Install Motion gem and JS package
+
 Motion has Ruby and JavaScript parts, execute both of these commands:
 
 ```sh
@@ -27,12 +29,20 @@ bundle add motion
 yarn add @unabridged/motion
 ```
 
-You will also need a view component library. Any view component library that
-implements the new [`render_in` interface that landed in Rails 6.1](https://github.com/rails/rails/pull/36388)
+2. Install ViewComponent
+
+You need a view component library to use Motion. Technically, any view component library that
+implements the [`render_in` interface that landed in Rails 6.1](https://github.com/rails/rails/pull/36388)
 should be compatible, but Motion is actively developed and tested against
 Github's [ViewComponent](https://github.com/github/view_component).
 
+Installation instructions for [ViewComponent are here](https://github.com/github/view_component#installation).
+
+3. Install ActionCable
+
 Motion communicates over and therefore requires [ActionCable](https://guides.rubyonrails.org/action_cable_overview.html).
+
+4. Run install script
 
 After installing all libraries, run the install script:
 
