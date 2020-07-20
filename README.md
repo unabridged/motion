@@ -212,7 +212,7 @@ See the code for full API for [Event](https://github.com/unabridged/motion/blob/
 
 ## Limitations
 
-* Due to the way that your components are replaced on the page, Motion ViewComponents templates are limited to a single top-level DOM element. If you have multiple DOM elements in your template at the top level, you must wrap them in a single element. This is a similar limitation that React enforced until `React.Fragment` appeared and is for a very similar reason.
+* Due to the way that Motion components are replaced on the page, component HTML templates are limited to a single top-level DOM element. If you have multiple DOM elements in your template at the top level, you must wrap them in a single element. This is a similar limitation that React enforced until `React.Fragment` appeared and is for a very similar reason.
 
 
 ## Roadmap
@@ -221,8 +221,9 @@ Broadly speaking, these initiatives are on our roadmap:
 
 - Enhanced documentation and usage examples
 - Support more ViewComponent-like libraries
+- Support for AnyCable
+- Support for server-side state to reduce over-the-wire HTML size
 - Support communication via AJAX instead of (or in addition to) websockets
-
 
 ## Contributing
 
