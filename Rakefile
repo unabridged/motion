@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
+require "bundler/setup"
 require "bundler/gem_tasks"
 
-task default: %i[lint test]
+task default: %i[lint doc test]
 
 namespace :test do
   task :refresh do
@@ -29,6 +30,26 @@ task :lint do
     sh "bin/standardrb --fix"
     sh "bin/yarn lint --fix"
   end
+end
+
+namespace :doc do
+  task :generate do
+    sh "bin/yard doc --quiet"
+  end
+
+  task :verify do
+    require "yardstick"
+
+    next if (measurements = Yardstick.measure).coverage == 1
+
+    measurements.puts
+    raise "Some documentation is missing! Please add it."
+  end
+end
+
+task :doc do
+  Rake::Task["doc:generate"].invoke unless ENV["TRAVIS"]
+  Rake::Task["doc:verify"].invoke
 end
 
 namespace :release do

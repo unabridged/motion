@@ -4,8 +4,10 @@ require "motion"
 
 module Motion
   module ActionCableExtentions
-    # By default ActionCable logs a lot. This module suppresses the debugging
-    # information on a _per channel_ basis.
+    # This module suppresses all non-error logging from ActionCable (for the
+    # channel into which it is mixed).
+    #
+    # @api private
     module LogSuppression
       class Suppressor < SimpleDelegator
         def info(*)
@@ -17,16 +19,21 @@ module Motion
 
       private_constant :Suppressor
 
-      def initialize(*)
-        super
-
-        @_logger = Suppressor.new(logger)
-      end
-
+      # This method is called by ActionCable to get the logger for the channel.
+      #
+      # @private
       def logger
         return super unless defined?(@_logger)
 
         @_logger
+      end
+
+      private
+
+      def initialize(*)
+        super
+
+        @_logger = Suppressor.new(logger)
       end
     end
   end

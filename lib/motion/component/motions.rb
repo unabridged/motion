@@ -36,15 +36,16 @@ module Motion
           default: {}.freeze
       end
 
-      class_methods do
+      module ClassMethods
         include ModuleFunctions
       end
 
       include ModuleFunctions
 
+      # @api private
       def process_motion(motion, event = nil)
         unless (handler = _motion_handlers[motion])
-          raise MotionNotMapped.new(self, motion)
+          raise Errors::MotionNotMappedError.new(self, motion)
         end
 
         _run_action_callbacks(context: handler) do

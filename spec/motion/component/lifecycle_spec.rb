@@ -23,7 +23,9 @@ RSpec.describe Motion::Component::Lifecycle do
       let(:instance) { TestComponent.new }
 
       it "raises UpgradeNotImplementedError" do
-        expect { subject }.to raise_error(Motion::UpgradeNotImplementedError)
+        expect { subject }.to(
+          raise_error(Motion::Errors::UpgradeNotImplementedError)
+        )
       end
     end
 

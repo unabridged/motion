@@ -3,7 +3,7 @@
 require "motion"
 
 module Motion
-  class MyRailtie < Rails::Railtie
+  class Railtie < Rails::Railtie
     generators do
       require "generators/motion/install_generator"
       require "generators/motion/component_generator"

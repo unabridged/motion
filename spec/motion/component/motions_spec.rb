@@ -107,10 +107,10 @@ RSpec.describe Motion::Component::Motions do
     context "for a motion which is not mapped" do
       let(:motion) { "invalid_#{SecureRandom.hex}" }
 
-      it "raises MotionNotMapped and does not run the action callbacks" do
+      it "raises MotionNotMappedError and does not run the action callbacks" do
         expect(component).not_to receive(:_run_action_callbacks)
 
-        expect { subject }.to raise_error(Motion::MotionNotMapped)
+        expect { subject }.to raise_error(Motion::Errors::MotionNotMappedError)
       end
     end
   end

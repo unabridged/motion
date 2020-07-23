@@ -6,25 +6,50 @@ require "active_support/core_ext/string/indent"
 require "motion"
 
 module Motion
+  # This class wraps a +Logger+ and provides some additional helpers for
+  # formatting and tagging messages.
+  #
+  # @api private
   class LogHelper
     BACKTRACE_FRAMES = 5
-    DEFAULT_TAG = "Motion"
+    private_constant :BACKTRACE_FRAMES
 
+    DEFAULT_TAG = "Motion"
+    private_constant :DEFAULT_TAG
+
+    # Creates a {Motion::LogHelper} for a {Motion::Channel}
+    #
+    # @param channel [Motion::Channel]
+    # @param logger [optional, Logger]
     def self.for_channel(channel, logger: channel.connection.logger)
       new(logger: logger, tag: DEFAULT_TAG)
     end
 
+    # Creates a {Motion::LogHelper} for a {Motion::Component}
+    #
+    # @param component [Motion::Component]
+    # @param logger [optional, Logger]
     def self.for_component(component, logger: nil)
       new(logger: logger, tag: "#{component.class}:#{component.object_id}")
     end
 
-    attr_reader :logger, :tag
+    # @return [Logger] the underlying logger to which messages will be sent
+    attr_reader :logger
 
+    # @return [String] the tag that will prefix all messages
+    attr_reader :tag
+
+    # @param logger [optional, Logger]
+    # @param tag [optional, String]
     def initialize(logger: nil, tag: nil)
       @logger = logger || Rails.logger
       @tag = tag || DEFAULT_TAG
     end
 
+    # Logs an error
+    #
+    # @param message [String] a message for the error
+    # @param error [optional, Exception] an exception with a backtrace to log
     def error(message, error: nil)
       error_info = error ? ":\n#{indent(format_exception(error))}" : ""
 
@@ -33,10 +58,17 @@ module Motion
       Motion.notify_error(error, message)
     end
 
+    # Logs some information
+    #
+    # @param message [String] a message
     def info(message)
       logger.info("[#{tag}] #{message}")
     end
 
+    # Logs the timing of the provided block with a message
+    #
+    # @param message [String] a message
+    # @yield []
     def timing(message)
       start_time = Time.now
       result = yield
@@ -47,6 +79,9 @@ module Motion
       result
     end
 
+    # Produces a new {Motion::LogHelper} for a component
+    #
+    # @param component [Motion::Component]
     def for_component(component)
       self.class.for_component(component, logger: logger)
     end

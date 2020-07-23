@@ -12,6 +12,7 @@ module Motion
     private_constant :HASH_PEPPER
 
     NULL_BYTE = "\0"
+    private_constant :NULL_BYTE
 
     attr_reader :secret, :revision
 
@@ -24,10 +25,10 @@ module Motion
       revision: Motion.config.revision
     )
       unless secret.each_byte.count >= self.class.minimum_secret_byte_length
-        raise BadSecretError.new(self.class.minimum_secret_byte_length)
+        raise Errors::BadSecretError.new(self.class.minimum_secret_byte_length)
       end
 
-      raise BadRevisionError if revision.include?(NULL_BYTE)
+      raise Errors::BadRevisionError if revision.include?(NULL_BYTE)
 
       @secret = secret
       @revision = revision
@@ -64,7 +65,7 @@ module Motion
     def dump(component)
       Marshal.dump(component)
     rescue TypeError => e
-      raise UnrepresentableStateError.new(component, e.message)
+      raise Errors::UnrepresentableStateError.new(component, e.message)
     end
 
     def load(state)
@@ -87,7 +88,7 @@ module Motion
       encryptor.decrypt_and_verify(cypertext)
     rescue ActiveSupport::MessageEncryptor::InvalidMessage,
       ActiveSupport::MessageVerifier::InvalidSignature
-      raise InvalidSerializedStateError
+      raise Errors::InvalidSerializedStateError
     end
 
     def salted_digest(input)

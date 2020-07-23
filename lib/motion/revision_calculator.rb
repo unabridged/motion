@@ -33,7 +33,7 @@ module Motion
         begin
           revision_paths.all_paths.flat_map(&:existent)
         rescue
-          raise BadRevisionPathsError
+          raise Errors::BadRevisionPathsError
         end
     end
 

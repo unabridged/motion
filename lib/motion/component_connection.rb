@@ -3,7 +3,18 @@
 require "motion"
 
 module Motion
+  # This class represents is to a component what a file handle is to a file. It
+  # ties the lifecycle of the component to its own creation and destruction
+  # firing the callbacks at the correct times and managing when rendering needs
+  # to occur. It also acts as an error boundary for user code.
+  #
+  # @api private
   class ComponentConnection
+    # Creates a component connection from the serialized state of a component
+    #
+    # @param state [String] the serialized state
+    # @param serializer [optional, Motion::Serializer] the serializer to use
+    # @param log_helper [optional, Motion::LogHelper] the log helper to use
     def self.from_state(
       state,
       serializer: Motion.serializer,
@@ -15,8 +26,15 @@ module Motion
       new(component, log_helper: log_helper.for_component(component), **kargs)
     end
 
+    # @return [Motion::Component] the component that is currently connected
     attr_reader :component
 
+    # @param component [Motion::Component] the component to connect
+    # @param log_helper [optional, Motion::LogHelper] the log helper to use
+    #
+    # @note
+    #   To connect a component from its serialized state, use
+    #   {Motion::ComponentConnection.from_state}.
     def initialize(component, log_helper: LogHelper.for_component(component))
       @component = component
       @log_helper = log_helper
@@ -28,6 +46,9 @@ module Motion
       end
     end
 
+    # Close the current connection to a component.
+    #
+    # @note Once the connection is closed it should not be used anymore.
     def close
       timing("Disconnected") do
         component.process_disconnect
@@ -40,6 +61,10 @@ module Motion
       false
     end
 
+    # Handle an incoming motion for the component.
+    #
+    # @param motion [String] the motion to process
+    # @param event [optional, Motion::Event] an event associated with the motion
     def process_motion(motion, event = nil)
       timing("Proccessed #{motion}") do
         component.process_motion(motion, event)
@@ -52,6 +77,10 @@ module Motion
       false
     end
 
+    # Handle an incoming broadcast for the component.
+    #
+    # @param broadcast [String] the broadcast
+    # @param message [optional] the message
     def process_broadcast(broadcast, message)
       timing("Proccessed broadcast to #{broadcast}") do
         component.process_broadcast broadcast, message
@@ -64,18 +93,30 @@ module Motion
       false
     end
 
-    def process_periodic_timer(timer)
-      timing("Proccessed periodic timer #{timer}") do
-        component.process_periodic_timer timer
+    # Handle a periodic timer firing for the component.
+    #
+    # @param periodic_timer [String] the periodic timer that is firing
+    def process_periodic_timer(periodic_timer)
+      timing("Proccessed periodic timer #{periodic_timer}") do
+        component.process_periodic_timer periodic_timer
       end
 
       true
     rescue => error
-      handle_error(error, "processing periodic timer #{timer}")
+      handle_error(error, "processing periodic timer #{periodic_timer}")
 
       false
     end
 
+    # Checks if the component needs to be rendered, and if it does, yields the
+    # component to the provided block for rendering.
+    #
+    # @yield [component]
+    # @yieldparam component [Motion::Component] the component to render
+    #
+    # @note
+    #   This method assumes that the provided block actually renders the
+    #   component. If it does not, the connection will go into a bad state.
     def if_render_required(&block)
       timing("Rendered") do
         next_render_hash = component.render_hash
@@ -91,10 +132,14 @@ module Motion
       handle_error(error, "rendering the component")
     end
 
+    # @return [Array<String>]
+    #   the broadcasts the component is interested in
     def broadcasts
       component.broadcasts
     end
 
+    # @return [Hash<String, Integer>]
+    #   the timers the component would like to recevie
     def periodic_timers
       component.periodic_timers
     end

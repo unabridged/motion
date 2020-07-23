@@ -4,28 +4,27 @@ require "motion"
 
 module Motion
   module ActionCableExtentions
-    # Provides a `periodically_notify(broadcasts, to:)` API that can be used to
-    # declaratively specify when a handler should be called.
+    # This module provides an API to setup a method on a channel to be called at
+    # regular intervals. It differs from ActionCable's built-in +PeriodicTimers+
+    # in that timers are managed at the instance level and only a single method
+    # is called with a String (the "notification"). This scheme avoids the need
+    # for any dynamic blocks which could not be +Marshal.dump+'d.
+    #
+    # @api private
     module DeclarativeNotifications
       include Synchronization
 
-      def initialize(*)
-        super
-
-        # The current set of declarative notifications
-        @_declarative_notifications = {}
-
-        # The active timers for the declarative notifications
-        @_declarative_notifications_timers = {}
-
-        # The method we are routing declarative notifications to
-        @_declarative_notifications_target = nil
-      end
-
-      def declarative_notifications
-        @_declarative_notifications
-      end
-
+      # Configures a method to be called a regular intervals with particular
+      # notification strings. As the module name suggests, this method is
+      # "declarative" in that it will replace all existing notifications with
+      # the notifications provided.
+      #
+      # @param notifications [Hash<String, Integer>]
+      #   the notification strings mapped to the intervals at which they should
+      #   be delivered
+      #
+      # @param via [Symbol]
+      #   the method to which the notifications should be delivered
       def periodically_notify(notifications, via:)
         (@_declarative_notifications.to_a - notifications.to_a)
           .each do |notification, _interval|
@@ -41,7 +40,41 @@ module Motion
         @_declarative_notifications_target = via
       end
 
+      # @return [Hash<String, Integer>]
+      #   the current notification strings mapped to the intervals at which they
+      #   are set to be delivered.
+      #
+      # @note
+      #   This matches the +notifications+ argument of the last call to
+      #   {#periodically_notify}.
+      def declarative_notifications
+        @_declarative_notifications
+      end
+
+      # @return [Symbol]
+      #   the current method to which notifications are being delivered
+      #
+      # @note
+      #   This matches the +via+ argument of the last call to
+      #   {#periodically_notify}.
+      def declarative_notifications_target
+        @_declarative_notifications_target
+      end
+
       private
+
+      def initialize(*)
+        super
+
+        # The current set of declarative notifications
+        @_declarative_notifications = {}
+
+        # The active timers for the declarative notifications
+        @_declarative_notifications_timers = {}
+
+        # The method we are routing declarative notifications to
+        @_declarative_notifications_target = nil
+      end
 
       def stop_periodic_timers
         super

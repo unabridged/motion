@@ -45,13 +45,14 @@ module Motion
           default: {}.freeze
       end
 
-      class_methods do
+      module ClassMethods
         include ModuleFunctions
 
         def broadcast_to(model, message)
           ActionCable.server.broadcast(broadcasting_for(model), message)
         end
 
+        # @private
         def broadcasting_for(model)
           serialize_broadcasting([name, model])
         end
@@ -72,6 +73,7 @@ module Motion
 
       include ModuleFunctions
 
+      # @api private
       def process_broadcast(broadcast, message)
         return unless (handler = _broadcast_handlers[broadcast])
 

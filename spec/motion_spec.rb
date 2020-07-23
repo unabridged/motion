@@ -25,7 +25,10 @@ RSpec.describe Motion do
       before(:each) { Motion.configure {} }
 
       it "raises an error and does not call the block" do
-        expect { subject }.to raise_error(Motion::AlreadyConfiguredError)
+        expect { subject }.to(
+          raise_error(Motion::Errors::AlreadyConfiguredError)
+        )
+
         expect(@configure_block_called).to be false
       end
     end
@@ -100,6 +103,28 @@ RSpec.describe Motion do
       end
 
       subject
+    end
+  end
+
+  describe ".compatible_client_version?" do
+    subject { described_class.compatible_client_version?(client_version) }
+
+    context "when the client version matches the server version" do
+      let(:client_version) { Motion::VERSION }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when the client version is too old for the server" do
+      let(:client_version) { "0.0.1" }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context "when the client version is too new for the server" do
+      let(:client_version) { "100.10.1" }
+
+      it { is_expected.to be_falsey }
     end
   end
 end

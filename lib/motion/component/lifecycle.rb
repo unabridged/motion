@@ -20,9 +20,9 @@ module Motion
         remove_method(:_run_action_callbacks)
       end
 
-      class_methods do
+      module ClassMethods
         def upgrade_from(previous_revision, instance)
-          raise UpgradeNotImplementedError.new(
+          raise Errors::UpgradeNotImplementedError.new(
             instance,
             previous_revision,
             Motion.config.revision
@@ -70,6 +70,7 @@ module Motion
         end
       end
 
+      # @api private
       def process_connect
         _run_connect_callbacks
 
@@ -85,6 +86,7 @@ module Motion
         end
       end
 
+      # @api private
       def process_disconnect
         _run_disconnect_callbacks
 
@@ -100,12 +102,22 @@ module Motion
         end
       end
 
-      def _run_action_callbacks(context:, &block)
+      # @private
+      def _run_action_callbacks(context:)
         @_action_callback_context = context
 
-        run_callbacks(:action, &block)
+        run_callbacks(:action) do
+          next unless block_given?
+
+          begin
+            remove_instance_variable(:@_action_callback_context)
+
+            yield
+          ensure
+            @_action_callback_context = context
+          end
+        end
       ensure
-        # `@_action_callback_context = nil` would still appear in the state
         remove_instance_variable(:@_action_callback_context)
       end
     end

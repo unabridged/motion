@@ -228,6 +228,9 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
+    yard (0.9.25)
+    yardstick (0.9.9)
+      yard (~> 0.8, >= 0.8.7.2)
     zeitwerk (2.3.0)
 
 PLATFORMS
@@ -249,6 +252,8 @@ DEPENDENCIES
   standard
   view_component
   webpacker
+  yard
+  yardstick
 
 BUNDLED WITH
    2.1.4

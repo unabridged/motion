@@ -15,7 +15,7 @@ RSpec.describe Motion::Serializer do
     let(:secret) { SecureRandom.random_bytes(1) }
 
     it "raises BadSecretError" do
-      expect { subject }.to raise_error(Motion::BadSecretError)
+      expect { subject }.to raise_error(Motion::Errors::BadSecretError)
     end
   end
 
@@ -23,7 +23,7 @@ RSpec.describe Motion::Serializer do
     let(:revision) { "hello\0world" }
 
     it "raises BadRevisionError" do
-      expect { subject }.to raise_error(Motion::BadRevisionError)
+      expect { subject }.to raise_error(Motion::Errors::BadRevisionError)
     end
   end
 
@@ -56,7 +56,9 @@ RSpec.describe Motion::Serializer do
       let(:object) { Class.new.new }
 
       it "raises Motion::UnrepresentableStateError" do
-        expect { subject }.to raise_error(Motion::UnrepresentableStateError)
+        expect { subject }.to(
+          raise_error(Motion::Errors::UnrepresentableStateError)
+        )
       end
     end
   end
@@ -84,7 +86,9 @@ RSpec.describe Motion::Serializer do
       let(:object) { Class.new.new }
 
       it "raises Motion::UnrepresentableStateError" do
-        expect { subject }.to raise_error(Motion::UnrepresentableStateError)
+        expect { subject }.to(
+          raise_error(Motion::Errors::UnrepresentableStateError)
+        )
       end
     end
   end
@@ -96,7 +100,9 @@ RSpec.describe Motion::Serializer do
       let(:state) { SecureRandom.hex }
 
       it "raises InvalidSerializedStateError" do
-        expect { subject }.to raise_error(Motion::InvalidSerializedStateError)
+        expect { subject }.to(
+          raise_error(Motion::Errors::InvalidSerializedStateError)
+        )
       end
     end
 

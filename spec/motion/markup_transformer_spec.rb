@@ -41,7 +41,7 @@ RSpec.describe Motion::MarkupTransformer do
       let(:html) { "<div></div><div></div>" }
 
       it "raises MultipleRootsError" do
-        expect { subject }.to raise_error(Motion::MultipleRootsError)
+        expect { subject }.to raise_error(Motion::Errors::MultipleRootsError)
       end
     end
 

@@ -21,6 +21,10 @@ RSpec.describe Motion::ActionCableExtentions::DeclarativeStreams do
         expect(subscription.streams).to include(*streams)
       end
 
+      it "sets the declarative streams" do
+        expect(subscription.declarative_streams).to contain_exactly(*streams)
+      end
+
       it "sets the handler to the provided target" do
         expect(subscription.declarative_stream_target).to eq(target)
       end

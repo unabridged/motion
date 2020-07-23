@@ -40,12 +40,13 @@ module Motion
           default: {}.freeze
       end
 
-      class_methods do
+      module ClassMethods
         include ModuleFunctions
       end
 
       include ModuleFunctions
 
+      # @api private
       def process_periodic_timer(name)
         return unless (handler, _interval = _periodic_timers[name])
 

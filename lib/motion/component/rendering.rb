@@ -24,6 +24,7 @@ module Motion
         instance_variable_set(RERENDER_MARKER_IVAR, true)
       end
 
+      # @api private
       def awaiting_forced_rerender?
         instance_variable_defined?(RERENDER_MARKER_IVAR)
       end
@@ -36,8 +37,9 @@ module Motion
         Motion.serializer.weak_digest(self)
       end
 
+      # @api private
       def render_in(view_context)
-        raise BlockNotAllowedError, self if block_given?
+        raise Errors::BlockNotAllowedError, self if block_given?
 
         html =
           _run_action_callbacks(context: :render) {
@@ -46,7 +48,7 @@ module Motion
             view_context.capture { _without_new_instance_variables { super } }
           }
 
-        raise RenderAborted, self if html == false
+        raise Errors::RenderAborted, self if html == false
 
         Motion.markup_transformer.add_state_to_html(self, html)
       end

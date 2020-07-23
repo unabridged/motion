@@ -39,7 +39,7 @@ module Motion
       root, *unexpected_others = fragment.children
 
       if !root || unexpected_others.any?(&:present?)
-        raise MultipleRootsError, component
+        raise Errors::MultipleRootsError, component
       end
 
       yield root

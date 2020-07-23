@@ -116,7 +116,7 @@ RSpec.describe Motion::Configuration do
       }
 
     expect { config.revision = "new value" }.to(
-      raise_error(Motion::AlreadyConfiguredError)
+      raise_error(Motion::Errors::AlreadyConfiguredError)
     )
   end
 end

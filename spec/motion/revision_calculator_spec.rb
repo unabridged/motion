@@ -17,7 +17,7 @@ RSpec.describe Motion::RevisionCalculator do
       let(:revision_paths) { [] }
 
       it "raises BadRevisionPathsError" do
-        expect { subject }.to raise_error(Motion::BadRevisionPathsError)
+        expect { subject }.to raise_error(Motion::Errors::BadRevisionPathsError)
       end
     end
 

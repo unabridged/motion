@@ -34,7 +34,7 @@ module Motion
 
       def define_option_writer(option)
         define_method(:"#{option}=") do |value|
-          raise AlreadyConfiguredError if @finalized
+          raise Errors::AlreadyConfiguredError if @finalized
 
           instance_variable_set(:"@#{option}", value)
         end
