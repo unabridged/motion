@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "nokogiri"
   spec.add_dependency "rails", ">= 5.2"
+  spec.add_dependency "lz4-ruby", ">= 0.3.3"
 
   spec.post_install_message = <<~MSG
     Friendly reminder: When updating the motion gem, don't forget to update the
