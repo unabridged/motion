@@ -11,7 +11,7 @@ export default class BindingManager {
   }
 
   update () {
-    const targetBindings = this.parseBindings()
+    const targetBindings = this._parseBindings()
 
     this._removeExtraHandlers(targetBindings)
     this._setupMissingHandlers(targetBindings)
@@ -25,7 +25,7 @@ export default class BindingManager {
     this._handlers.clear()
   }
 
-  parseBindings () {
+  _parseBindings () {
     const { motionAttribute } = this.client
     const bindingsString = this.element.getAttribute(motionAttribute)
     const bindings = new Map()
@@ -39,7 +39,7 @@ export default class BindingManager {
 
   _buildHandlerForBinding ({ mode, motion }) {
     return (event) => {
-      const component = this.client.getComponent(event.currentTarget)
+      const component = this._getComponent()
 
       if (
         component &&
@@ -49,6 +49,10 @@ export default class BindingManager {
         event.preventDefault()
       }
     }
+  }
+
+  _getComponent () {
+    return this.client.getComponent(this.element)
   }
 
   _setupMissingHandlers (targetBindings) {
