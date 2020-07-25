@@ -2,12 +2,9 @@
 
 Motion.configure do |config|
   # Motion needs to be able to uniquely identify the version of the running
-  # version of your application. By default, the commit hash from git is used,
-  # but depending on your deployment, this may not be available in production.
-  #
-  # Motion automatically calculates your revision by hashing the contents of
-  # files in `revision_paths` The defaults revision paths are:
-  # rails paths, bin, and Gemfile.lock.
+  # version of your application. By default, it automatically calculates your
+  # the revision by hashing the contents of files in `revision_paths` The
+  # defaults revision paths are: rails paths, bin, and Gemfile.lock.
   #
   # To change or add to your revision paths, uncomment this line:
   #
