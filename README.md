@@ -209,6 +209,45 @@ Methods that are mapped using `map_motion` accept an `event` parameter which is 
 
 See the code for full API for [Event](https://github.com/unabridged/motion/blob/master/lib/motion/event.rb) and [Element](https://github.com/unabridged/motion/blob/master/lib/motion/element.rb).
 
+## Callbacks
+
+Motion has callbacks which will let you pass data from a child component back up to the parent. `bind` is how Motion figures out what method to call. `on_click` is a method passed into the child component and can be named whatever you'd like. When the component's motion is called, the motion calls the method in the parent component.
+
+**parent_component.rb**
+```ruby
+  map_motion :do_something
+
+  # this will be called from the child component
+  def do_something(arguments)
+    puts "Colonel Sandurz says: "
+    puts arguments
+  end
+```
+
+**parent_component.html.erb**
+```erb
+  <%= render ChildComponent.new(on_click: bind(:do_something)) %>
+```
+
+**child_component.rb**
+```ruby
+  attr_reader :on_click
+
+  map_motion :click
+
+  def initialize(on_click:)
+    @on_click = on_click
+  end
+
+  def click
+    on_click.call("Do something!") # arguments can be passed into `call`
+  end
+```
+
+**child_component.html.erb**
+```erb
+  <%= button_tag "You gotta help me, I can't make decisions!", data: { motion: "click" } %>
+```
 
 ## Limitations
 
