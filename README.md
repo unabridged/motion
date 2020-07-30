@@ -211,16 +211,14 @@ See the code for full API for [Event](https://github.com/unabridged/motion/blob/
 
 ## Callbacks
 
-Motion has callbacks which will let you pass data from a child component back up to the parent. `bind` is how Motion figures out what method to call. `on_click` is a method passed into the child component and can be named whatever you'd like. When the component's motion is called, the motion calls the method in the parent component.
+Motion has callbacks which will let you pass data from a child component back up to the parent. Callbacks are created by calling `bind` with the name of a method on the parent component which will act as a handler. It returns a new callback which can be passed to child components like any other state. To invoke the handler from the callback, use `call`. If the handler accepts an argument, it will receive anything that is passed to `call`.
 
 **parent_component.rb**
 ```ruby
-  map_motion :do_something
-
   # this will be called from the child component
-  def do_something(arguments)
+  def do_something(message)
     puts "Colonel Sandurz says: "
-    puts arguments
+    puts message
   end
 ```
 
@@ -240,7 +238,7 @@ Motion has callbacks which will let you pass data from a child component back up
   end
 
   def click
-    on_click.call("Do something!") # arguments can be passed into `call`
+    on_click.call("Do something!") # an argument can be passed into `call`
   end
 ```
 
