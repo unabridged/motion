@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    motion (0.4.0)
+    motion (0.4.1)
       lz4-ruby (>= 0.3.3)
       nokogiri
       rails (>= 5.2)
@@ -172,8 +172,8 @@ GEM
       rubocop-ast (>= 0.0.3)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-ast (0.1.0)
-      parser (>= 2.7.0.1)
+    rubocop-ast (0.3.0)
+      parser (>= 2.7.1.4)
     rubocop-performance (1.6.1)
       rubocop (>= 0.71.0)
     ruby-progressbar (1.10.1)
@@ -203,7 +203,7 @@ GEM
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
     unicode-display_width (1.7.0)
-    view_component (2.16.0)
+    view_component (2.18.1)
       activesupport (>= 5.0.0, < 7.0)
     webpacker (5.2.1)
       activesupport (>= 5.2)
