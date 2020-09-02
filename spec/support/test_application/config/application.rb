@@ -28,7 +28,7 @@ class TestApplication < Rails::Application
   config.action_dispatch.show_exceptions = false
 
   # Enable stdout logger
-  config.logger = Logger.new(STDOUT)
+  config.logger = Logger.new($stdout)
 
   # Keep the logger quiet by default
   config.log_level = ENV.fetch("LOG_LEVEL", "ERROR")
