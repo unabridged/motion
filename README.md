@@ -61,9 +61,6 @@ Motion allows you to mount special DOM elements (henceforth "Motion components")
 - **No Full Page Reload** - The current page for a user is updated in place.
 - **Fast DOM Diffing** - DOM diffing is performed when replacing existing content with new content.
 - **Server Triggered Events** - Server-side events can trigger updates to arbitrarily many components via WebSocket channels.
-
-However Motion has a fundamentally different architecture than Stimulus Reflex and is much more like [Phoenix LiveView](https://github.com/phoenixframework/phoenix_live_view) (and even React!) in some key ways:
-
 - **Partial Page Replacement** - Motion does not use full page replacement, but rather replaces only the component on the page with new HTML, DOM diffed for performance.
 - **Encapsulated, consistent stateful components** - Components have continuous internal state that persists and updates. This means each time a component changes, new rendered HTML is generated and can replace what was there before.
 - **Blazing Fast** - Communication does not have to go through the full Rails router and controller stack. No changes to your routing or controller are required to get the full functionality of Motion.
