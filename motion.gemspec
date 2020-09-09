@@ -25,8 +25,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir["lib/**/*"]
   spec.require_paths = ["lib"]
 
-  # Required for the squiggly HEREDOC
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
+  spec.required_ruby_version = Gem::Requirement.new(">= 2.4.10")
 
   spec.add_dependency "nokogiri"
   spec.add_dependency "rails", ">= 5.2"
