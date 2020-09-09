@@ -45,14 +45,14 @@ RSpec.describe "Live Validating Form Demo", type: :system do
 
     click_button "Add Toy"
 
-    fill_in "dog_toys_attributes_0_name", with: "Ball"
+    find('[data-identifier-for-test-suite="toy-name[0]"]').fill_in(with: "Ball")
 
     expect(page).not_to have_text("can't be blank")
 
     click_button "Add Toy"
 
-    fill_in "dog_toys_attributes_0_name", with: ""
-    fill_in "dog_toys_attributes_1_name", with: "Ball"
+    find('[data-identifier-for-test-suite="toy-name[0]"]').fill_in(with: "")
+    find('[data-identifier-for-test-suite="toy-name[1]"]').fill_in(with: "Ball")
     blur
 
     expect(page).to have_text("can't be blank")
