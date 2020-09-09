@@ -44,7 +44,7 @@ RSpec.describe Motion::Event do
           },
           "formData" => "sign_up%5Bname%5D=test"
         },
-        "currentTarget" => {
+        "element" => {
           "tagName" => "INPUT",
           "value" => "test",
           "attributes" => {
@@ -93,13 +93,13 @@ RSpec.describe Motion::Event do
       end
     end
 
-    describe "#current_target" do
-      subject { event.current_target }
+    describe "#element" do
+      subject { event.element }
 
       it { is_expected.to be_a(Motion::Element) }
 
       it "has raw data from the underlying event" do
-        expect(subject.raw).to eq(raw["currentTarget"])
+        expect(subject.raw).to eq(raw["element"])
       end
     end
 

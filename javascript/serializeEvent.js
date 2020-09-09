@@ -1,15 +1,14 @@
-export default function serializeEvent (event, extraData = null) {
+export default function serializeEvent (event, extraData = null, element = null) {
   const { type } = event
   const details = serializeEventDetails(event)
   const target = serializeElement(event.target)
-  const currentTarget = serializeElement(event.currentTarget)
 
   return {
     type,
     details,
     extraData,
     target,
-    currentTarget
+    element: element && serializeElement(element)
   }
 };
 
