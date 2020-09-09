@@ -26,11 +26,7 @@ export default class Component {
     )
   }
 
-  processMotion (name, event = null, motionElement = null) {
-    if (!motionElement) {
-      motionElement = event.currentTarget || event.target.closest(`[data-motion=${name}]`)
-    }
-
+  processMotion (name, event = null, element = event && event.currentTarget) {
     if (!this._subscription) {
       this.client.log('Dropped motion', name, 'on', this.element)
       return false
@@ -44,7 +40,7 @@ export default class Component {
       'process_motion',
       {
         name,
-        event: event && serializeEvent(event, extraDataForEvent, motionElement)
+        event: event && serializeEvent(event, extraDataForEvent, element)
       }
     )
 

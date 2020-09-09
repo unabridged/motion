@@ -34,12 +34,6 @@ module Motion
       @target = Motion::Element.from_raw(raw["target"])
     end
 
-    def current_target
-      return @current_target if defined?(@current_target)
-
-      @current_target = Motion::Element.from_raw(raw["currentTarget"])
-    end
-
     def element
       return @element if defined?(@element)
 
