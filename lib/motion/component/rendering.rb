@@ -5,27 +5,34 @@ require "motion"
 module Motion
   module Component
     module Rendering
-      # Use the presence/absence of the ivar instead of true/false to avoid
-      # extra serialized state (Note that in this scheme, the presence of
-      # the ivar will never be serialized).
-      RERENDER_MARKER_IVAR = :@__awaiting_forced_rerender__
-      private_constant :RERENDER_MARKER_IVAR
+      STATE_EXCLUDED_IVARS = %i[
+        @_action_callback_context
+        @_awaiting_forced_rerender
+        @_routes
 
-      # Some changes to Motion's state are specifically supported during render.
-      ALLOWED_NEW_IVARS_DURING_RENDER = %i[
-        @_broadcast_handlers
-        @_stable_instance_identifier_for_callbacks
-        @_motion_handlers
-        @_periodic_timers
+        @view_context
+        @lookup_context
+        @view_renderer
+        @view_flow
+        @virtual_path
+        @variant
+        @current_template
+        @output_buffer
+
+        @helpers
+        @controller
+        @request
+        @tag_builder
       ].freeze
-      private_constant :ALLOWED_NEW_IVARS_DURING_RENDER
+
+      private_constant :STATE_EXCLUDED_IVARS
 
       def rerender!
-        instance_variable_set(RERENDER_MARKER_IVAR, true)
+        @_awaiting_forced_rerender = true
       end
 
       def awaiting_forced_rerender?
-        instance_variable_defined?(RERENDER_MARKER_IVAR)
+        @_awaiting_forced_rerender
       end
 
       # * This can be overwritten.
@@ -43,7 +50,7 @@ module Motion
           _run_action_callbacks(context: :render) {
             _clear_awaiting_forced_rerender!
 
-            view_context.capture { _without_new_instance_variables { super } }
+            view_context.capture { super }
           }
 
         raise RenderAborted, self if html == false
@@ -54,21 +61,19 @@ module Motion
       private
 
       def _clear_awaiting_forced_rerender!
-        return unless awaiting_forced_rerender?
-
-        remove_instance_variable(RERENDER_MARKER_IVAR)
+        @_awaiting_forced_rerender = false
       end
 
-      def _without_new_instance_variables
-        existing_instance_variables = instance_variables
+      def marshal_dump
+        (instance_variables - STATE_EXCLUDED_IVARS)
+          .map { |ivar| [ivar, instance_variable_get(ivar)] }
+          .to_h
+      end
 
-        yield
-      ensure
-        (
-          instance_variables -
-          existing_instance_variables -
-          ALLOWED_NEW_IVARS_DURING_RENDER
-        ).each(&method(:remove_instance_variable))
+      def marshal_load(instance_variables)
+        instance_variables.each do |ivar, value|
+          instance_variable_set(ivar, value)
+        end
       end
     end
   end

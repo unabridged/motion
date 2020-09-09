@@ -149,6 +149,21 @@ RSpec.describe Motion::ComponentConnection do
         expect(yielded?).to be(true)
       end
     end
+
+    context "with a component that errors while rendering" do
+      before(:each) { component.rerender! }
+
+      subject do
+        component_connection.if_render_required do
+          raise "error from rendering"
+        end
+      end
+
+      it "logs the error" do
+        expect(Rails.logger).to receive(:error).with(/error from rendering/)
+        subject
+      end
+    end
   end
 
   describe "#broadcasts" do

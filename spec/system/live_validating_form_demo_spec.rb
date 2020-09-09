@@ -39,4 +39,22 @@ RSpec.describe "Live Validating Form Demo", type: :system do
 
     expect(page).to have_text("taken")
   end
+
+  it "works with nested attributes" do
+    fill_in "dog_name", with: "Fido"
+
+    click_button "Add Toy"
+
+    fill_in "dog_toys_attributes_0_name", with: "Ball"
+
+    expect(page).not_to have_text("can't be blank")
+
+    click_button "Add Toy"
+
+    fill_in "dog_toys_attributes_0_name", with: ""
+    fill_in "dog_toys_attributes_1_name", with: "Ball"
+    blur
+
+    expect(page).to have_text("can't be blank")
+  end
 end
