@@ -30,7 +30,7 @@ module Motion
       @config ||= Configuration.default
     end
 
-    alias configuration config
+    alias_method :configuration, :config
 
     def serializer
       @serializer ||= Serializer.new

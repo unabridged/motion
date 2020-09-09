@@ -18,7 +18,7 @@ module Motion
       raw["type"]
     end
 
-    alias name type
+    alias_method :name, :type
 
     def details
       raw.fetch("details", {})
@@ -40,7 +40,7 @@ module Motion
       @current_target = Motion::Element.from_raw(raw["currentTarget"])
     end
 
-    alias element current_target
+    alias_method :element, :current_target
 
     def form_data
       element&.form_data
