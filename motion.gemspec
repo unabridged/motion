@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
 
   # The lowest version of Ruby against which Motion is tested. See `.travis.yml`
   # for the full matrix.
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.5.8")
+  spec.required_ruby_version = Gem::Requirement.new(">= 2.5.0")
 
   spec.add_dependency "nokogiri"
   spec.add_dependency "rails", ">= 5.2"
