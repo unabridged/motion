@@ -9,7 +9,6 @@ RSpec.describe Motion::Component::Rendering do
     it "sets the component to be rerendered" do
       expect { subject }.to(
         change { component.awaiting_forced_rerender? }
-        .from(false)
         .to(true)
       )
     end
@@ -53,7 +52,6 @@ RSpec.describe Motion::Component::Rendering do
       it "clears #awaiting_forced_rerender?" do
         expect { subject }.to(
           change { component.awaiting_forced_rerender? }
-          .from(true)
           .to(false)
         )
       end

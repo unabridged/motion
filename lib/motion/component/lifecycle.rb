@@ -105,8 +105,7 @@ module Motion
 
         run_callbacks(:action, &block)
       ensure
-        # `@_action_callback_context = nil` would still appear in the state
-        remove_instance_variable(:@_action_callback_context)
+        @_action_callback_context = nil
       end
     end
   end

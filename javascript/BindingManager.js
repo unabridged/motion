@@ -43,7 +43,7 @@ export default class BindingManager {
 
       if (
         component &&
-        component.processMotion(motion, event) &&
+        component.processMotion(motion, event, this.element) &&
         mode === MODE_HANDLE
       ) {
         event.preventDefault()
