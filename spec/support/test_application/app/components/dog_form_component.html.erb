@@ -5,5 +5,13 @@
         <%= f.object.errors[:name].to_sentence %>
     </div>
 
+    <div>
+        <%= f.fields_for :toys do |f| %>
+            <%= render ToyFieldsComponent.new(f: f) %>
+        <% end %>
+
+        <button data-motion="add_toy">Add Toy</button>
+    </div>
+
     <%= f.submit %>
 <% end %>

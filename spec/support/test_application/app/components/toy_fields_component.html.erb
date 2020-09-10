@@ -1,0 +1,6 @@
+<div>
+    <%= f.label :name, 'Toy' %>
+    <%= f.text_field :name,
+        data: { identifier_for_test_suite: "toy-name[#{f.index}]" } %>
+    <%= f.object.errors[:name].to_sentence %>
+</div>
