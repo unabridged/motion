@@ -3,9 +3,6 @@ appraise "rails-5-2" do
 
   # Rails 5 does not have built-in support for ActionCable tests.
   gem "action-cable-testing"
-
-  # Support for Ruby 2.4 was removed in 3.33
-  gem "capybara", "< 3.33"
 end
 
 appraise "rails-6-0" do

@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 10df6931dec5314b3c687d9bb842d1e974843bc8
+  revision: 1b58c536ab22dd0b4c4957316bcd31262b824deb
   ref: master
   specs:
     actioncable (6.1.0.alpha)
@@ -224,7 +224,7 @@ GEM
     tzinfo (2.0.2)
       concurrent-ruby (~> 1.0)
     unicode-display_width (1.7.0)
-    view_component (2.18.1)
+    view_component (2.18.2)
       activesupport (>= 5.0.0, < 7.0)
     webpacker (5.2.1)
       activesupport (>= 5.2)

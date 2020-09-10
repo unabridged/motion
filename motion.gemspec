@@ -25,7 +25,9 @@ Gem::Specification.new do |spec|
   spec.files = Dir["lib/**/*"]
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.4.10")
+  # The lowest version of Ruby against which Motion is tested. See `.travis.yml`
+  # for the full matrix.
+  spec.required_ruby_version = Gem::Requirement.new(">= 2.5.8")
 
   spec.add_dependency "nokogiri"
   spec.add_dependency "rails", ">= 5.2"
