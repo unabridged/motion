@@ -18,7 +18,7 @@ module Motion
       raw["type"]
     end
 
-    alias name type
+    alias_method :name, :type
 
     def details
       raw.fetch("details", {})
