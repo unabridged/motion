@@ -28,7 +28,9 @@ function serializeEventDetails (event) {
   const details = {}
 
   for (const property of detailProperties) {
-    details[property] = event[property]
+    if (event[property] !== undefined) {
+      details[property] = event[property]
+    }
   }
 
   return details
