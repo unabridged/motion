@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe "Live Validating Form Demo", type: :system do
-  before(:each) { visit(new_dog_path) }
+  before(:each) do
+    visit(new_dog_path)
+    sleep 5 # TODO: RACE: Is the component mounted?
+  end
 
   # https://bloggie.io/@kinopyo/capybara-trigger-blur-event
   def blur
