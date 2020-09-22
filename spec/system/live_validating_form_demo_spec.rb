@@ -3,12 +3,7 @@
 RSpec.describe "Live Validating Form Demo", type: :system do
   before(:each) do
     visit(new_dog_path)
-    sleep 5 # TODO: RACE: Is the component mounted?
-  end
-
-  # https://bloggie.io/@kinopyo/capybara-trigger-blur-event
-  def blur
-    find("body").click
+    wait_until_component_connected!
   end
 
   it "works like a normal form" do
@@ -20,6 +15,7 @@ RSpec.describe "Live Validating Form Demo", type: :system do
 
   it "automatically validates after user input" do
     Dog.create!(name: "Taken")
+    wait_until_component_rendered!
 
     fill_in "dog_name", with: "Taken"
     blur
@@ -39,6 +35,7 @@ RSpec.describe "Live Validating Form Demo", type: :system do
     expect(page).not_to have_text("taken")
 
     Dog.create!(name: "Tibbles")
+    wait_until_component_rendered!
 
     expect(page).to have_text("taken")
   end

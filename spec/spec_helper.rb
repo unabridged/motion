@@ -19,6 +19,7 @@ require "rspec/rails"
 require "capybara/rspec"
 require "generator_spec"
 
+require_relative "support/system_test_helpers"
 require_relative "support/test_component"
 require_relative "support/webdriver"
 
@@ -72,4 +73,6 @@ RSpec.configure do |config|
 
     Motion.reset_internal_state_for_testing!(testing_configuration)
   end
+
+  config.include(SystemTestHelpers, type: :system)
 end
