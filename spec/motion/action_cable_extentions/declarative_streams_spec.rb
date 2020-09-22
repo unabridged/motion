@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
+class TestChannel < ApplicationCable::Channel
+  include Motion::ActionCableExtentions::DeclarativeStreams
+end
+
 # TODO: These unit tests are very lacking because of the stubbing done by the
 # ActionCable test helpers. There currently does not seem to be any way to setup
 # and handle a real broadcast.
 RSpec.describe Motion::ActionCableExtentions::DeclarativeStreams do
-  class TestChannel < ApplicationCable::Channel
-    include Motion::ActionCableExtentions::DeclarativeStreams
-  end
-
   describe TestChannel, type: :channel do
     before(:each) { subscribe }
 
