@@ -89,7 +89,7 @@ PATH
     motion (0.4.2)
       lz4-ruby (>= 0.3.3)
       nokogiri
-      rails (>= 5.2)
+      rails (>= 5.1)
 
 GEM
   remote: https://rubygems.org/
