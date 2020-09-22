@@ -182,8 +182,6 @@ Methods that are mapped using `map_motion` accept an `event` parameter which is 
     event.target
 
     # Motion::Element instance, the element with the event handler and the `data-motion` attribute
-    element = event.current_target
-    # Alias for #current_target
     event.element
 
 
