@@ -29,11 +29,7 @@ module Motion
       end
 
       included do
-        class_attribute :_motion_handlers,
-          instance_reader: false,
-          instance_writer: false,
-          instance_predicate: false,
-          default: {}.freeze
+        cattr_accessor(:_motion_handlers) { {}.freeze }
       end
 
       class_methods do
