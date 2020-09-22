@@ -6,19 +6,29 @@ import { version } from '../package.json'
 
 export default class Component {
   constructor (client, element) {
+    this._isShutdown = false
+
     this.client = client
     this.element = element
 
     this._beforeConnect()
 
-    this._subscription = this.client.consumer.subscriptions.create(
+    const subscription = this.client.consumer.subscriptions.create(
       {
         channel: 'Motion::Channel',
         version,
         state: this.element.getAttribute(this.client.stateAttribute)
       },
       {
-        connected: () => this._connect(),
+        connected: () => {
+          if (this._isShutdown) {
+            subscription.unsubscribe()
+            return
+          }
+
+          this._subscription = subscription
+          this._connect()
+        },
         rejected: () => this._connectFailed(),
         disconnected: () => this._disconnect(),
         received: newState => this._render(newState)
@@ -48,8 +58,12 @@ export default class Component {
   }
 
   shutdown () {
-    this._subscription.unsubscribe()
-    delete this._subscription
+    this._isShutdown = true
+
+    if (this._subscription) {
+      this._subscription.unsubscribe()
+      delete this._subscription
+    }
 
     this._disconnect()
   }
