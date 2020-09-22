@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-RSpec.describe Motion::ActionCableExtentions::LogSuppression do
-  class TestChannel < ApplicationCable::Channel
-    include Motion::ActionCableExtentions::LogSuppression
-  end
+class TestChannel < ApplicationCable::Channel
+  include Motion::ActionCableExtentions::LogSuppression
+end
 
+RSpec.describe Motion::ActionCableExtentions::LogSuppression do
   describe TestChannel, type: :channel do
     before(:each) { subscribe }
 
