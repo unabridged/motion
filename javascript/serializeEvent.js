@@ -28,9 +28,7 @@ function serializeEventDetails (event) {
   const details = {}
 
   for (const property of detailProperties) {
-    if (Object.prototype.hasOwnProperty.call(event, property)) {
-      details[property] = event[property]
-    }
+    details[property] = event[property]
   }
 
   return details
