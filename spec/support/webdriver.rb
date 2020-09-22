@@ -19,3 +19,6 @@ Capybara.register_driver :headless_chrome_no_sandbox do |app|
 end
 
 Capybara.javascript_driver = :headless_chrome_no_sandbox
+
+# This is not a good solution, but I do not know a better one.
+Capybara.default_max_wait_time = 5

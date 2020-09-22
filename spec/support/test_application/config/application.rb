@@ -20,7 +20,7 @@ class TestApplication < Rails::Application
   config.eager_load = true
 
   # Silence irrelevant deprecation warning in Rails 5.2
-  if Rails::VERSION::MAJOR == 5
+  if Rails::VERSION::MAJOR == 5 && Rails::VERSION::MINOR == 2
     config.active_record.sqlite3.represent_boolean_as_integer = true
   end
 

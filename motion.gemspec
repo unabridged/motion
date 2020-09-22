@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = Gem::Requirement.new(">= 2.5.0")
 
   spec.add_dependency "nokogiri"
-  spec.add_dependency "rails", ">= 5.2"
+  spec.add_dependency "rails", ">= 5.1"
   spec.add_dependency "lz4-ruby", ">= 0.3.3"
 
   spec.post_install_message = <<~MSG

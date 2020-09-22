@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "active_support/concern"
-require "active_support/core_ext/class/attribute"
 require "active_support/core_ext/hash/except"
 
 require "motion"
@@ -10,6 +9,9 @@ module Motion
   module Component
     module Motions
       extend ActiveSupport::Concern
+
+      DEFAULT = {}.freeze
+      private_constant :DEFAULT
 
       # Analogous to `module_function` (available on both class and instance)
       module ModuleFunctions
@@ -28,16 +30,17 @@ module Motion
         end
       end
 
-      included do
-        class_attribute :_motion_handlers,
-          instance_reader: false,
-          instance_writer: false,
-          instance_predicate: false,
-          default: {}.freeze
-      end
-
       class_methods do
         include ModuleFunctions
+
+        attr_writer :_motion_handlers
+
+        def _motion_handlers
+          return @_motion_handlers if defined?(@_motion_handlers)
+          return superclass._motion_handlers if superclass.respond_to?(:_motion_handlers)
+
+          DEFAULT
+        end
       end
 
       include ModuleFunctions

@@ -28,7 +28,7 @@ function serializeEventDetails (event) {
   const details = {}
 
   for (const property of detailProperties) {
-    if (Object.prototype.hasOwnProperty.call(event, property)) {
+    if (event[property] !== undefined) {
       details[property] = event[property]
     }
   }
@@ -37,6 +37,8 @@ function serializeEventDetails (event) {
 }
 
 function serializeElement (element) {
+  if (!element) return {}
+
   const { tagName, value } = element
   const attributes = serializeElementAttributes(element)
   const formData = serializeElementFormData(element)

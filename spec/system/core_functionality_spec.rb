@@ -3,6 +3,7 @@
 RSpec.describe "Core Functionality", type: :system do
   scenario "Triggering a state change with user input causes a render" do
     visit(test_component_path)
+    wait_until_component_connected!
 
     expect(page).to have_text("The state has been changed 0 times.")
 
@@ -13,16 +14,19 @@ RSpec.describe "Core Functionality", type: :system do
 
   scenario "Triggering a state change with broadcasts causes a render" do
     visit(test_component_path)
+    wait_until_component_connected!
 
     expect(page).to have_text("The state has been changed 0 times.")
 
     ActionCable.server.broadcast "change_state", "message"
+    wait_until_component_rendered!
 
     expect(page).to have_text("The state has been changed 1 times.")
   end
 
   scenario "Nested state is preserved when an outer component renders" do
     visit(counter_component_path)
+    wait_until_component_connected!
 
     click_button "+"
     click_button "+"
@@ -59,6 +63,7 @@ RSpec.describe "Core Functionality", type: :system do
 
   scenario "Periodic timers run and can be removed dynamically" do
     visit(timer_component_path)
+    # wait_until_component_connected!
 
     expect(page).to have_text("1")
     sleep 1
@@ -69,6 +74,7 @@ RSpec.describe "Core Functionality", type: :system do
 
   scenario "Callbacks can be passed to children and trigger on parents" do
     visit(callback_component_path)
+    wait_until_component_connected!
 
     expect(page).to have_text("The count is 0")
     click_button "+"

@@ -1,5 +1,5 @@
 appraise "rails-5-1" do
-  gem "rails", "~> 5.1"
+  gem "rails", "~> 5.1.7"
 
   # Rails 5 does not have built-in support for ActionCable tests.
   gem "action-cable-testing"
