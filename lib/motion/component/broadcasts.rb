@@ -37,10 +37,6 @@ module Motion
         end
       end
 
-      included do
-        cattr_accessor(:_broadcast_handlers) { {}.freeze }
-      end
-
       class_methods do
         include ModuleFunctions
 
@@ -50,6 +46,15 @@ module Motion
 
         def broadcasting_for(model)
           serialize_broadcasting([name, model])
+        end
+
+        def _broadcast_handlers
+          return @_broadcast_handlers if defined?(@_broadcast_handlers)
+          @_broadcast_handlers = {}.freeze
+        end
+
+        def _broadcast_handlers=(value)
+          @_broadcast_handlers = value
         end
 
         private

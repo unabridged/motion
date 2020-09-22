@@ -32,12 +32,17 @@ module Motion
         end
       end
 
-      included do
-        cattr_accessor(:_periodic_timers) { {}.freeze }
-      end
-
       class_methods do
         include ModuleFunctions
+
+        def _periodic_timers
+          return @_periodic_timers if defined?(@_periodic_timers)
+          @_periodic_timers = {}.freeze
+        end
+
+        def _periodic_timers=(value)
+          @_periodic_timers = value
+        end
       end
 
       include ModuleFunctions

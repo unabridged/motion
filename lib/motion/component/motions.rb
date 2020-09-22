@@ -28,12 +28,17 @@ module Motion
         end
       end
 
-      included do
-        cattr_accessor(:_motion_handlers) { {}.freeze }
-      end
-
       class_methods do
         include ModuleFunctions
+
+        def _motion_handlers
+          return @_motion_handlers if defined?(@_motion_handlers)
+          @_motion_handlers = {}.freeze
+        end
+
+        def _motion_handlers=(value)
+          @_motion_handlers = value
+        end
       end
 
       include ModuleFunctions
