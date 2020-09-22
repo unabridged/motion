@@ -32,17 +32,15 @@ module Motion
         end
       end
 
+      included do
+        class_attribute(:_periodic_timers,
+          instance_reader: false,
+          instance_writer: false,
+          instance_predicate: false) { {}.freeze }
+      end
+
       class_methods do
         include ModuleFunctions
-
-        def _periodic_timers
-          return @_periodic_timers if defined?(@_periodic_timers)
-          @_periodic_timers = {}.freeze
-        end
-
-        def _periodic_timers=(value)
-          @_periodic_timers = value
-        end
       end
 
       include ModuleFunctions

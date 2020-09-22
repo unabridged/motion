@@ -28,17 +28,15 @@ module Motion
         end
       end
 
+      included do
+        class_attribute(:_motion_handlers,
+          instance_reader: false,
+          instance_writer: false,
+          instance_predicate: false) { {}.freeze }
+      end
+
       class_methods do
         include ModuleFunctions
-
-        def _motion_handlers
-          return @_motion_handlers if defined?(@_motion_handlers)
-          @_motion_handlers = {}.freeze
-        end
-
-        def _motion_handlers=(value)
-          @_motion_handlers = value
-        end
       end
 
       include ModuleFunctions
