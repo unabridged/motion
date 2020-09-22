@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "active_support/concern"
-require "active_support/core_ext/class/attribute"
 require "active_support/core_ext/object/to_param"
 require "active_support/core_ext/hash/except"
 
@@ -11,6 +10,9 @@ module Motion
   module Component
     module Broadcasts
       extend ActiveSupport::Concern
+
+      DEFAULT = {}.freeze
+      private_constant :DEFAULT
 
       # Analogous to `module_function` (available on both class and instance)
       module ModuleFunctions
@@ -37,13 +39,6 @@ module Motion
         end
       end
 
-      included do
-        class_attribute(:_broadcast_handlers,
-          instance_reader: false,
-          instance_writer: false,
-          instance_predicate: false) { {}.freeze }
-      end
-
       class_methods do
         include ModuleFunctions
 
@@ -53,6 +48,15 @@ module Motion
 
         def broadcasting_for(model)
           serialize_broadcasting([name, model])
+        end
+
+        attr_writer :_broadcast_handlers
+
+        def _broadcast_handlers
+          return @_broadcast_handlers if defined?(@_broadcast_handlers)
+          return superclass._broadcast_handlers if superclass.respond_to?(:_broadcast_handlers)
+
+          DEFAULT
         end
 
         private

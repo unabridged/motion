@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "active_support/concern"
-require "active_support/core_ext/class/attribute"
 require "active_support/core_ext/hash/except"
 
 require "motion"
@@ -10,6 +9,9 @@ module Motion
   module Component
     module PeriodicTimers
       extend ActiveSupport::Concern
+
+      DEFAULT = {}.freeze
+      private_constant :DEFAULT
 
       # Analogous to `module_function` (available on both class and instance)
       module ModuleFunctions
@@ -32,15 +34,17 @@ module Motion
         end
       end
 
-      included do
-        class_attribute(:_periodic_timers,
-          instance_reader: false,
-          instance_writer: false,
-          instance_predicate: false) { {}.freeze }
-      end
-
       class_methods do
         include ModuleFunctions
+
+        attr_writer :_periodic_timers
+
+        def _periodic_timers
+          return @_periodic_timers if defined?(@_periodic_timers)
+          return superclass._periodic_timers if superclass.respond_to?(:_periodic_timers)
+
+          DEFAULT
+        end
       end
 
       include ModuleFunctions
