@@ -16,14 +16,18 @@ module Motion
       component.motions.include?(motion_name.to_s)
     end
 
-    def run_motion(component, motion_name)
+    def run_motion(component, motion_name, event = motion_event)
       if block_given?
         c = component.dup
-        c.process_motion(motion_name.to_s)
+        c.process_motion(motion_name.to_s, event)
         yield c
       else
-        component.process_motion(motion_name.to_s)
+        component.process_motion(motion_name.to_s, event)
       end
+    end
+
+    def motion_event(attributes = {})
+      Motion::Event.new(ActiveSupport::JSON.decode(attributes.to_json))
     end
   end
 end
