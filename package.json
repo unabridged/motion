@@ -38,7 +38,6 @@
     "karma-coverage": "^2.0.2",
     "karma-mocha": "^2.0.1",
     "mocha": "^8.0.1",
-    "puppeteer": "^4.0.1",
     "standard": "^14.3.4"
   },
   "standard": {
