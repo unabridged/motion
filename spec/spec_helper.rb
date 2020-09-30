@@ -48,16 +48,22 @@ RSpec.configure do |config|
     end
   end
 
-  config.around(:each, type: :system) do |example|
+  config.before(:each, type: :system) do
     # Ensure that the client JavaScript within the app is synced with the gem
     TestApplication.link_motion_client!
 
     # Use headless Chrome for system tests
     driven_by :headless_chrome_no_sandbox
-
-    # Automatically retry system tests up to 3 times
-    example.run_with_retry retry: 3
   end
+
+  # Automatically retry system tests up to 3 times
+  config.around(:each, type: :system) do |example|
+      example.run_with_retry retry: 3
+  end
+
+  # Display information about tests being automatically retried
+  config.verbose_retry = true
+  config.display_try_failure_messages = true
 
   # To avoid running every test twice on subsequent runs because of the
   # recursive symlink, make sure to unlink the client.
