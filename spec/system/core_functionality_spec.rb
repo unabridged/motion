@@ -63,7 +63,7 @@ RSpec.describe "Core Functionality", type: :system do
 
   scenario "Periodic timers run and can be removed dynamically" do
     visit(timer_component_path)
-    # wait_until_component_connected!
+    wait_until_component_connected!
 
     expect(page).to have_text("1")
     sleep 1
