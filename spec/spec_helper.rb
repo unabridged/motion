@@ -58,7 +58,7 @@ RSpec.configure do |config|
 
   # Automatically retry system tests up to 3 times
   config.around(:each, type: :system) do |example|
-      example.run_with_retry retry: 3
+    example.run_with_retry retry: 3
   end
 
   # Display information about tests being automatically retried

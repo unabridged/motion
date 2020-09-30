@@ -9,11 +9,11 @@ module SystemTestHelpers
   end
 
   def wait_until_component_connected!(&block)
-    wait_until_count!('window.connectedComponentCount', &block)
+    wait_until_count!("window.connectedComponentCount", &block)
   end
 
   def wait_until_component_rendered!(&block)
-    wait_until_count!('window.renderCount', &block)
+    wait_until_count!("window.renderCount", &block)
   end
 
   private
