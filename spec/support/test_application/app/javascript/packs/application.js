@@ -9,15 +9,11 @@ createClient({
 })
 
 // Expose client state in globals for `spec/support/system_test_helpers.rb`:
-window.connectedComponentCount = 0;
+window.connectCount = 0;
 window.renderCount = 0;
 
 document.addEventListener('motion:connect', () => {
-    window.connectedComponentCount += 1;
-})
-
-document.addEventListener('motion:disconnect', () => {
-    window.connectedComponentCount -= 1;
+    window.connectCount += 1;
 })
 
 document.addEventListener('motion:render', () => {

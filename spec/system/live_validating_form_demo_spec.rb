@@ -3,7 +3,7 @@
 RSpec.describe "Live Validating Form Demo", type: :system do
   before(:each) do
     visit(new_dog_path)
-    wait_until_component_connected!
+    wait_for_connect
   end
 
   it "works like a normal form" do
@@ -15,10 +15,10 @@ RSpec.describe "Live Validating Form Demo", type: :system do
 
   it "automatically validates after user input" do
     Dog.create!(name: "Taken")
-    wait_until_component_rendered!
 
     fill_in "dog_name", with: "Taken"
     blur
+    wait_for_render
 
     expect(page).to have_text("taken")
 
@@ -31,11 +31,12 @@ RSpec.describe "Live Validating Form Demo", type: :system do
   it "automatically validates when a new record is created elsewhere" do
     fill_in "dog_name", with: "Tibbles"
     blur
+    wait_for_render
 
     expect(page).not_to have_text("taken")
 
     Dog.create!(name: "Tibbles")
-    wait_until_component_rendered!
+    wait_for_render
 
     expect(page).to have_text("taken")
   end
@@ -44,16 +45,19 @@ RSpec.describe "Live Validating Form Demo", type: :system do
     fill_in "dog_name", with: "Fido"
 
     click_button "Add Toy"
+    wait_for_render
 
     find('[data-identifier-for-test-suite="toy-name[0]"]').fill_in(with: "Ball")
 
     expect(page).not_to have_text("can't be blank")
 
     click_button "Add Toy"
+    wait_for_render
 
     find('[data-identifier-for-test-suite="toy-name[0]"]').fill_in(with: "")
     find('[data-identifier-for-test-suite="toy-name[1]"]').fill_in(with: "Ball")
     blur
+    wait_for_render
 
     expect(page).to have_text("can't be blank")
   end
