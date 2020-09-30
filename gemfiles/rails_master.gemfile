@@ -16,6 +16,7 @@ gem "puma"
 gem "webpacker"
 gem "sqlite3"
 gem "appraisal"
+gem "rspec-retry"
 gem "rails", git: "https://github.com/rails/rails.git", ref: "master"
 
 gemspec path: "../"

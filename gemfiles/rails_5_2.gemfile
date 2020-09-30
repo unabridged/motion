@@ -16,6 +16,7 @@ gem "puma"
 gem "webpacker"
 gem "sqlite3"
 gem "appraisal"
+gem "rspec-retry"
 gem "rails", "~> 5.2"
 gem "action-cable-testing"
 
