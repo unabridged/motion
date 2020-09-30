@@ -16,7 +16,6 @@ require_relative "support/test_application"
 require_relative "support/action_cable_testing_workaround"
 
 require "rspec/rails"
-require "rspec/retry"
 require "capybara/rspec"
 require "generator_spec"
 
@@ -55,15 +54,6 @@ RSpec.configure do |config|
     # Use headless Chrome for system tests
     driven_by :headless_chrome_no_sandbox
   end
-
-  # Automatically retry system tests up to 3 times
-  config.around(:each, type: :system) do |example|
-    example.run_with_retry retry: 3
-  end
-
-  # Display information about tests being automatically retried
-  config.verbose_retry = true
-  config.display_try_failure_messages = true
 
   # To avoid running every test twice on subsequent runs because of the
   # recursive symlink, make sure to unlink the client.
