@@ -1,7 +1,13 @@
 // Karma configuration
 
-// TODO: Use the same Chrome bin as the Ruby specs
-process.env.CHROME_BIN = require('puppeteer').executablePath()
+if (!process.env.CHROME_BIN) {
+  const which = command => require("which").sync(command, { nothrow: true })
+
+  process.env.CHROME_BIN =
+    which('google-chrome') ||
+    which('google-chrome-stable') ||
+    which('chromium-browser')
+}
 
 module.exports = function (config) {
   config.set({
