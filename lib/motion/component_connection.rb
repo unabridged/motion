@@ -41,7 +41,7 @@ module Motion
     end
 
     def process_motion(motion, event = nil)
-      timing("Proccessed #{motion}") do
+      timing("Processed #{motion}") do
         component.process_motion(motion, event)
       end
 
@@ -53,7 +53,7 @@ module Motion
     end
 
     def process_broadcast(broadcast, message)
-      timing("Proccessed broadcast to #{broadcast}") do
+      timing("Processed broadcast to #{broadcast}") do
         component.process_broadcast broadcast, message
       end
 
@@ -65,7 +65,7 @@ module Motion
     end
 
     def process_periodic_timer(timer)
-      timing("Proccessed periodic timer #{timer}") do
+      timing("Processed periodic timer #{timer}") do
         component.process_periodic_timer timer
       end
 
