@@ -143,7 +143,7 @@ class TopTodosComponent < ViewComponent::Base
 end
 ```
 
-This will cause any user that has a page open with `MyComponent` mounted on it to re-render that component's portion of the page.
+This will cause any user that has a page open with `TopTodosComponent` mounted on it to re-render that component's portion of the page.
 
 All invocations of `stream_from` connected methods will cause the component to re-render everywhere, and unchanged rendered HTML will not perform any changes.
 
