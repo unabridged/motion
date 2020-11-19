@@ -87,7 +87,7 @@ GIT
 PATH
   remote: ..
   specs:
-    motion (0.4.3)
+    motion (0.4.4)
       lz4-ruby (>= 0.3.3)
       nokogiri
       rails (>= 5.1)
