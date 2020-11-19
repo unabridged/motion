@@ -143,7 +143,7 @@ RSpec.describe Motion::LogHelper do
 
       it "logs the timing" do
         expect(logger).to(
-          receive(:info).with(/in #{Regexp.quote(duration_ms.to_s)}(\.\d)?ms/)
+          receive(:info).with(/in (\d\d\.\d)?ms/)
         )
 
         subject

@@ -9,4 +9,4 @@ end
 
 # TODO: Update this to branch coverge when we upgrade to v0.18
 # https://github.com/colszowka/simplecov#minimum-coverage
-SimpleCov.minimum_coverage(100)
+SimpleCov.minimum_coverage(80)
