@@ -1,13 +1,6 @@
 // Karma configuration
 
-if (!process.env.CHROME_BIN) {
-  const which = command => require("which").sync(command, { nothrow: true })
-
-  process.env.CHROME_BIN =
-    which('google-chrome') ||
-    which('google-chrome-stable') ||
-    which('chromium-browser')
-}
+process.env.CHROME_BIN = require('puppeteer').executablePath()
 
 module.exports = function (config) {
   config.set({
