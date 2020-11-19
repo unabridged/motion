@@ -23,6 +23,9 @@ module Motion
         @controller
         @request
         @tag_builder
+
+        @asset_resolver_strategies
+        @assets_environment
       ].freeze
 
       private_constant :STATE_EXCLUDED_IVARS
