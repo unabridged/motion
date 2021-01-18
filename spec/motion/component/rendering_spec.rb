@@ -27,7 +27,13 @@ RSpec.describe Motion::Component::Rendering do
   end
 
   describe ".render_in" do
-    subject { ApplicationController.render(component) }
+    let(:controller) do
+      Class.new(ApplicationController) do
+        layout false
+      end
+    end
+
+    subject { controller.render(component) }
 
     it "transforms the rendered markup" do
       expect(subject).to(

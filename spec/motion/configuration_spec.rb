@@ -57,7 +57,7 @@ RSpec.describe Motion::Configuration do
       let(:cookies) { {"bar" => "baz"} }
 
       it "builds a renderer from the ApplicationController" do
-        expect(subject.controller).to eq(ApplicationController)
+        expect(subject.controller.superclass).to eq(ApplicationController)
       end
 
       it "builds a render which has access to the session" do
@@ -76,7 +76,7 @@ RSpec.describe Motion::Configuration do
         before(:each) { hide_const("ApplicationController") }
 
         it "builds a renderer from ActionController::Base" do
-          expect(subject.controller).to eq(ActionController::Base)
+          expect(subject.controller.superclass).to eq(ActionController::Base)
         end
       end
     end

@@ -81,16 +81,6 @@ module Motion
         require "rack"
         require "action_controller"
 
-        # Make a special effort to use the host application's base controller
-        # in case the CSRF protection has been customized, but don't couple to
-        # a particular constant from the outer application.
-        controller =
-          if defined?(ApplicationController)
-            ApplicationController
-          else
-            ActionController::Base
-          end
-
         controller.renderer.new(
           websocket_connection.env.slice(
             Rack::HTTP_COOKIE,
@@ -98,6 +88,23 @@ module Motion
             WARDEN_ENV
           )
         )
+      end
+    end
+
+    def controller
+      Class.new(controller_superclass) do
+        layout false
+      end
+    end
+
+    # Make a special effort to use the host application's base controller
+    # in case the CSRF protection has been customized, but don't couple to
+    # a particular constant from the outer application.
+    def controller_superclass
+      if defined?(ApplicationController)
+        ApplicationController
+      else
+        ActionController::Base
       end
     end
 
