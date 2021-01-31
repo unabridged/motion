@@ -16,6 +16,6 @@ gem "puma"
 gem "webpacker"
 gem "sqlite3"
 gem "appraisal"
-gem "rails", "~> 6.1.0.rc1"
+gem "rails", "~> 6.1.0"
 
 gemspec path: "../"

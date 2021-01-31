@@ -2,7 +2,7 @@
 
 [![Gem Version](https://badge.fury.io/rb/motion.svg)](https://badge.fury.io/rb/motion)
 [![npm version](https://badge.fury.io/js/%40unabridged%2Fmotion.svg)](https://badge.fury.io/js/%40unabridged%2Fmotion)
-[![Build Status](https://travis-ci.com/unabridged/motion.svg?branch=master)](https://travis-ci.com/unabridged/motion)
+[![Build Status](https://travis-ci.com/unabridged/motion.svg?branch=main)](https://travis-ci.com/unabridged/motion)
 [![Maintainability](https://api.codeclimate.com/v1/badges/3167364a38b1392a5478/maintainability)](https://codeclimate.com/github/unabridged/motion/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/3167364a38b1392a5478/test_coverage)](https://codeclimate.com/github/unabridged/motion/test_coverage)
 [![Ruby Code Style](https://img.shields.io/badge/Ruby_Code_Style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
@@ -202,7 +202,7 @@ Methods that are mapped using `map_motion` accept an `event` parameter which is 
   end
 ```
 
-See the code for full API for [Event](https://github.com/unabridged/motion/blob/master/lib/motion/event.rb) and [Element](https://github.com/unabridged/motion/blob/master/lib/motion/element.rb).
+See the code for full API for [Event](https://github.com/unabridged/motion/blob/main/lib/motion/event.rb) and [Element](https://github.com/unabridged/motion/blob/main/lib/motion/element.rb).
 
 ## Callbacks
 
