@@ -16,6 +16,6 @@ gem "puma"
 gem "webpacker"
 gem "sqlite3"
 gem "appraisal"
-gem "rails", git: "https://github.com/rails/rails.git", ref: "master"
+gem "rails", git: "https://github.com/rails/rails.git", ref: "main"
 
 gemspec path: "../"
