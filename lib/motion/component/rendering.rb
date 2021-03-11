@@ -56,7 +56,7 @@ module Motion
             view_context.capture { super }
           }
 
-        raise RenderAborted, self if html == false
+        raise RenderAborted, self unless html
 
         Motion.markup_transformer.add_state_to_html(self, html)
       end

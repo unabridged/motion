@@ -41,7 +41,7 @@ RSpec.describe Motion::Component::Rendering do
     it "runs the action callbacks with the context of `:render`" do
       expect(component).to(
         receive(:_run_action_callbacks).with(context: :render)
-      )
+      ).and_call_original
 
       subject
     end
