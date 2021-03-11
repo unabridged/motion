@@ -66,7 +66,7 @@ module Motion
 
     def synchronize
       component_connection.if_render_required do |component|
-        transmit(renderer.render(component))
+        transmit(renderer.render(component, layout: nil))
       end
 
       streaming_from component_connection.broadcasts,

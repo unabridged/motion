@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Motion::Component::Rendering do
+RSpec.describe Motion::Component::Rendering, type: :system do
   subject(:component) { TestComponent.new }
 
   describe "#rerender!" do
@@ -41,7 +41,7 @@ RSpec.describe Motion::Component::Rendering do
     it "runs the action callbacks with the context of `:render`" do
       expect(component).to(
         receive(:_run_action_callbacks).with(context: :render)
-      )
+      ).and_call_original
 
       subject
     end
