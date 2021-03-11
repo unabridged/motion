@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Motion::Component::Rendering do
+RSpec.describe Motion::Component::Rendering, type: :system do
   subject(:component) { TestComponent.new }
 
   describe "#rerender!" do
