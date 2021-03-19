@@ -16,6 +16,7 @@ RSpec.describe "Live Validating Form Demo", type: :system do
   it "automatically validates after user input" do
     Dog.create!(name: "Taken")
 
+    find("#dog_name").click
     fill_in "dog_name", with: "Taken"
     blur
     wait_for_render
@@ -54,8 +55,13 @@ RSpec.describe "Live Validating Form Demo", type: :system do
     click_button "Add Toy"
     wait_for_render
 
-    find('[data-identifier-for-test-suite="toy-name[0]"]').fill_in(with: "")
-    find('[data-identifier-for-test-suite="toy-name[1]"]').fill_in(with: "Ball")
+    find('[data-identifier-for-test-suite="toy-name[1]"]').click
+    fill_in '[data-identifier-for-test-suite="toy-name[1]"]', with: "Ball"
+    blur
+    wait_for_render
+
+    find('[data-identifier-for-test-suite="toy-name[0]"]').click
+    fill_in '[data-identifier-for-test-suite="toy-name[0]"]', with: ""
     blur
     wait_for_render
 
