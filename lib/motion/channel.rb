@@ -13,7 +13,7 @@ module Motion
     ACTION_METHODS = Set.new(["process_motion"]).freeze
     private_constant :ACTION_METHODS
 
-    # Don't use the ActionCable huertistic for deciding what actions can be
+    # Don't use the ActionCable heuristic for deciding what actions can be
     # called from JavaScript. Instead, hard-code the list so we can make other
     # methods public without worrying about them being called from JavaScript.
     def self.action_methods
@@ -84,7 +84,7 @@ module Motion
       @log_helper ||= LogHelper.for_channel(self)
     end
 
-    # Memoize the renderer on the connection so that it can be shared accross
+    # Memoize the renderer on the connection so that it can be shared across
     # all components. `ActionController::Renderer` is already thread-safe and
     # designed to be reused.
     def renderer
