@@ -261,6 +261,10 @@ Broadly speaking, these initiatives are on our roadmap:
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/unabridged/motion.
 
+### Setup
+To develop Motion locally, be sure to use one of the Ruby versions listed under the `rvm` key in `.travis.yml`. 
+
+To run tests, run `bin/rake test`. 
 
 ## License
 

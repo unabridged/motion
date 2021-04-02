@@ -95,4 +95,12 @@ RSpec.describe "Core Functionality", type: :system do
 
     expect(page).to have_text("The count is 2")
   end
+
+  scenario "Domain in links are preserved after re-renders" do
+    visit(current_domain_component_path)
+    wait_for_connect
+    expect(page).to have_text("127.0.0.1")
+    sleep 2
+    expect(page).to have_text("127.0.0.1")
+  end
 end
