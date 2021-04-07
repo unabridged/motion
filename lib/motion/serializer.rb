@@ -61,10 +61,22 @@ module Motion
 
     private
 
-    def dump(component)
+    def dump!(component)
       Marshal.dump(component)
+    end
+
+    def dump(component)
+      dump!(component)
     rescue TypeError => e
-      raise UnrepresentableStateError.new(component, e.message)
+      failing_ivars = []
+
+      component.marshal_dump.each do |ivar_name, ivar_value|
+        dump!(ivar_value)
+      rescue TypeError
+        failing_ivars << ivar_name
+      end
+
+      raise UnrepresentableStateError.new(component, e.message, failing_ivars)
     end
 
     def load(state)

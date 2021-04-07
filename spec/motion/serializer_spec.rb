@@ -10,6 +10,7 @@ RSpec.describe Motion::Serializer do
 
   let(:secret) { SecureRandom.random_bytes(64) }
   let(:revision) { "revision-string" }
+  let(:component) { double "Component", marshal_dump: marshal_dump }
 
   context "when the secret is too short" do
     let(:secret) { SecureRandom.random_bytes(1) }
@@ -28,32 +29,32 @@ RSpec.describe Motion::Serializer do
   end
 
   describe "#weak_digest" do
-    subject(:weak_digest) { serializer.weak_digest(object) }
+    subject(:weak_digest) { serializer.weak_digest(component) }
 
     context "when the object can be serialized" do
-      let(:object) { [data] }
+      let(:marshal_dump) { {data: data} }
       let(:data) { SecureRandom.hex }
 
-      let(:other_object_with_same_state) { [data] }
+      let(:other_component_with_same_state) { double "Component", marshal_dump: marshal_dump.dup }
 
-      let(:other_object_with_different_state) { [other_data] }
+      let(:other_component_with_different_state) { double "Component", marshal_dump: {data: other_data} }
       let(:other_data) { SecureRandom.hex }
 
       it "gives the same result for an object with the same state" do
         expect(subject).to(
-          eq(serializer.weak_digest(other_object_with_same_state))
+          eq(serializer.weak_digest(other_component_with_same_state))
         )
       end
 
       it "gives a different result for an object with different state" do
         expect(subject).not_to(
-          eq(serializer.weak_digest(other_object_with_different_state))
+          eq(serializer.weak_digest(other_component_with_different_state))
         )
       end
     end
 
     context "when the object cannot be serialized" do
-      let(:object) { Class.new.new }
+      let(:marshal_dump) { {data: Class.new.new} }
 
       it "raises Motion::UnrepresentableStateError" do
         expect { subject }.to raise_error(Motion::UnrepresentableStateError)
@@ -62,13 +63,13 @@ RSpec.describe Motion::Serializer do
   end
 
   describe "#serialize" do
-    subject(:output) { serializer.serialize(object) }
+    subject(:output) { serializer.serialize(component) }
 
     let(:key) { output[0] }
     let(:state) { output[1] }
 
     context "when the object can be serialized" do
-      let(:object) { [secret_data] }
+      let(:marshal_dump) { {data: secret_data} }
       let(:secret_data) { SecureRandom.hex }
 
       it "does not give a key which reveals any internal information" do
@@ -81,10 +82,20 @@ RSpec.describe Motion::Serializer do
     end
 
     context "when the object cannot be serialized" do
-      let(:object) { Class.new.new }
+      let(:marshal_dump) { {unserializable: Class.new.new} }
+      let(:object) { double("Component", marshal_dump: marshal_dump) }
 
       it "raises Motion::UnrepresentableStateError" do
         expect { subject }.to raise_error(Motion::UnrepresentableStateError)
+      end
+
+      it "gives clues about the unserializable object" do
+        begin
+          subject
+        rescue Motion::UnrepresentableStateError => e
+          message = e.message
+        end
+        expect(message).to include("unserializable ivars: unserializable")
       end
     end
   end
