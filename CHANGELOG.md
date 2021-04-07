@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 0.5 - 2021-03-11
+
+* Fixes
+  * Support Rails 6.1 ([#79](https://github.com/unabridged/motion/pull/79))
+
 ## 0.4.4 - 2020-11-19
 
 * Features

@@ -17,9 +17,9 @@ module SystemTestHelpers
   end
 
   # Blocks until a component renders (since the last call)
-  def wait_for_render
+  def wait_for_render(&block)
     wait_for_action_cable_idle
-    wait_for_expression_to_increase(JS_RENDER_COUNT)
+    wait_for_expression_to_increase(JS_RENDER_COUNT, &block)
   end
 
   private
@@ -34,11 +34,13 @@ module SystemTestHelpers
     end
   end
 
-  def wait_for_expression_to_increase(expression)
+  def wait_for_expression_to_increase(expression, &block)
     last_values = (@_wait_for_expression_to_increase_state ||= Hash.new(0))
 
     last_value = last_values[expression]
     new_value = nil
+
+    block&.call
 
     block_until { (new_value = page.evaluate_script(expression)) > last_value }
 

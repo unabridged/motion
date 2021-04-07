@@ -14,13 +14,23 @@ rvm:
   - 2.5.8
   - 2.6.6
   - 2.7.2
+  - 3.0.0
 
 gemfile:
   - gemfiles/rails_5_1.gemfile
   - gemfiles/rails_5_2.gemfile
   - gemfiles/rails_6_0.gemfile
   - gemfiles/rails_6_1.gemfile
-  - gemfiles/rails_master.gemfile
+  - gemfiles/rails_main.gemfile
+
+matrix:
+  exclude:
+    - rbenv: 3.0.0
+      gemfile: gemfiles/rails_5_1.gemfile
+    - rbenv: 3.0.0
+      gemfile: gemfiles/rails_5_2.gemfile
+    - rbenv: 3.0.0
+      gemfil: gemfiles/rails_6_0.gemfile
 
 addons:
   chrome: stable

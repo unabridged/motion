@@ -16,7 +16,7 @@ gem "puma"
 gem "webpacker"
 gem "sqlite3"
 gem "appraisal"
-gem "rails", "~> 5.2"
+gem "rails", "~> 5.2.0"
 gem "action-cable-testing"
 
 gemspec path: "../"

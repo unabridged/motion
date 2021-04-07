@@ -16,14 +16,19 @@ RSpec.describe "Live Validating Form Demo", type: :system do
   it "automatically validates after user input" do
     Dog.create!(name: "Taken")
 
-    fill_in "dog_name", with: "Taken"
-    blur
-    wait_for_render
+    wait_for_render do
+      find("#dog_name").click
+
+      fill_in "dog_name", with: "Taken"
+      blur
+    end
 
     expect(page).to have_text("taken")
 
-    fill_in "dog_name", with: "Available"
-    blur
+    wait_for_render do
+      fill_in "dog_name", with: "Available"
+      blur
+    end
 
     expect(page).not_to have_text("taken")
   end
@@ -42,22 +47,29 @@ RSpec.describe "Live Validating Form Demo", type: :system do
   end
 
   it "works with nested attributes" do
-    fill_in "dog_name", with: "Fido"
+    wait_for_render do
+      fill_in "dog_name", with: "Fido"
+      blur
+    end
 
-    click_button "Add Toy"
-    wait_for_render
+    wait_for_render do
+      click_button "Add Toy"
+    end
 
-    find('[data-identifier-for-test-suite="toy-name[0]"]').fill_in(with: "Ball")
+    wait_for_render do
+      find('[data-identifier-for-test-suite="toy-name[0]"]').fill_in(with: "Ball")
+      click_button "Add Toy"
+    end
 
     expect(page).not_to have_text("can't be blank")
 
-    click_button "Add Toy"
-    wait_for_render
-
-    find('[data-identifier-for-test-suite="toy-name[0]"]').fill_in(with: "")
-    find('[data-identifier-for-test-suite="toy-name[1]"]').fill_in(with: "Ball")
-    blur
-    wait_for_render
+    wait_for_render do
+      find('[data-identifier-for-test-suite="toy-name[0]"]').click
+      find('[data-identifier-for-test-suite="toy-name[0]"]').fill_in(with: "")
+      find('[data-identifier-for-test-suite="toy-name[1]"]').click
+      find('[data-identifier-for-test-suite="toy-name[1]"]').fill_in(with: "Ball")
+      blur
+    end
 
     expect(page).to have_text("can't be blank")
   end

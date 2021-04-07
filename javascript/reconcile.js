@@ -15,7 +15,7 @@ export default (rootElement, newState, keyAttribute) => {
   }
 
   const onBeforeElUpdated = (fromElement, toElement) => {
-    // When we are doing an inner update, propgrate the key and replace.
+    // When we are doing an inner update, propagate the key and replace.
     if (rootElement === fromElement) {
       toElement.setAttribute(keyAttribute, rootKey)
       return true
@@ -28,13 +28,13 @@ export default (rootElement, newState, keyAttribute) => {
     }
 
     if (
-      // For some reason, it it seems like all TEXTAREAs are equal to eachother
-      // regardless of their content which is super werid because the same thing
+      // For some reason, it it seems like all TEXTAREAs are equal to each other
+      // regardless of their content which is super weird because the same thing
       // does not seem to be true for INPUTs or SELECTs whose value has changed.
       fromElement.tagName !== 'TEXTAREA' &&
 
       // When two nodes have (deep) DOM equality, don't replace. This is correct
-      // because we checked above that we are reconsiling against an HTML string
+      // because we checked above that we are reconciling against an HTML string
       // (which cannot possibly have state outside of the DOM because no handles
       // have been allowed to leave this function since parsing).
       fromElement.isEqualNode(toElement)
