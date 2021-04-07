@@ -68,7 +68,6 @@ module Motion
   class InvalidComponentStateError < ComponentError; end
 
   class UnrepresentableStateError < InvalidComponentStateError
-
     def initialize(component, cause, failing_ivars)
       super(
         component,
@@ -80,7 +79,7 @@ module Motion
         "\n" \
         "The specific error from `Marshal.dump` was: #{cause}\n" \
         "\n" \
-        "unserializable ivars: #{failing_ivars.join(', ')}\n"\
+        "unserializable ivars: #{failing_ivars.join(", ")}\n"\
         "\n" \
         "\n" \
         "Hint: Ensure that any exotic state variables in " \

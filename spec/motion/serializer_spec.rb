@@ -10,7 +10,7 @@ RSpec.describe Motion::Serializer do
 
   let(:secret) { SecureRandom.random_bytes(64) }
   let(:revision) { "revision-string" }
-  let(:component) { double 'Component', marshal_dump: marshal_dump }
+  let(:component) { double "Component", marshal_dump: marshal_dump }
 
   context "when the secret is too short" do
     let(:secret) { SecureRandom.random_bytes(1) }
@@ -32,12 +32,12 @@ RSpec.describe Motion::Serializer do
     subject(:weak_digest) { serializer.weak_digest(component) }
 
     context "when the object can be serialized" do
-      let(:marshal_dump) { { data: data } }
+      let(:marshal_dump) { {data: data} }
       let(:data) { SecureRandom.hex }
 
-      let(:other_component_with_same_state) { double 'Component', marshal_dump: marshal_dump.dup }
+      let(:other_component_with_same_state) { double "Component", marshal_dump: marshal_dump.dup }
 
-      let(:other_component_with_different_state) { double 'Component', marshal_dump: { data: other_data } }
+      let(:other_component_with_different_state) { double "Component", marshal_dump: {data: other_data} }
       let(:other_data) { SecureRandom.hex }
 
       it "gives the same result for an object with the same state" do
@@ -54,7 +54,7 @@ RSpec.describe Motion::Serializer do
     end
 
     context "when the object cannot be serialized" do
-      let(:marshal_dump) { { data: Class.new.new } }
+      let(:marshal_dump) { {data: Class.new.new} }
 
       it "raises Motion::UnrepresentableStateError" do
         expect { subject }.to raise_error(Motion::UnrepresentableStateError)
@@ -69,7 +69,7 @@ RSpec.describe Motion::Serializer do
     let(:state) { output[1] }
 
     context "when the object can be serialized" do
-      let(:marshal_dump) { { data: secret_data } }
+      let(:marshal_dump) { {data: secret_data} }
       let(:secret_data) { SecureRandom.hex }
 
       it "does not give a key which reveals any internal information" do
@@ -82,8 +82,8 @@ RSpec.describe Motion::Serializer do
     end
 
     context "when the object cannot be serialized" do
-      let(:marshal_dump) { { unserializable: Class.new.new } }
-      let(:object) { double('Component', marshal_dump: marshal_dump) }
+      let(:marshal_dump) { {unserializable: Class.new.new} }
+      let(:object) { double("Component", marshal_dump: marshal_dump) }
 
       it "raises Motion::UnrepresentableStateError" do
         expect { subject }.to raise_error(Motion::UnrepresentableStateError)
@@ -95,7 +95,7 @@ RSpec.describe Motion::Serializer do
         rescue Motion::UnrepresentableStateError => e
           message = e.message
         end
-        expect(message).to include('unserializable ivars: unserializable')
+        expect(message).to include("unserializable ivars: unserializable")
       end
     end
   end
