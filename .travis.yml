@@ -30,7 +30,7 @@ matrix:
     - rbenv: 3.0.0
       gemfile: gemfiles/rails_5_2.gemfile
     - rbenv: 3.0.0
-      gemfil: gemfiles/rails_6_0.gemfile
+      gemfile: gemfiles/rails_6_0.gemfile
 
 addons:
   chrome: stable
