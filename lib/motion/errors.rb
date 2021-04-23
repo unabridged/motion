@@ -114,7 +114,7 @@ module Motion
         "of the application to be mounted because new code with old state " \
         "can lead to unpredictable and unsafe behavior.\n" \
         "\n" \
-        "Hint: If you would like to allow this component to surive " \
+        "Hint: If you would like to allow this component to survive " \
         "deployments, consider providing an alternative implimentation for " \
         "`#{component.class}.upgrade_from`."
       )
