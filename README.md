@@ -8,7 +8,7 @@
 [![Ruby Code Style](https://img.shields.io/badge/Ruby_Code_Style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
 [![JavaScript Code Style](https://img.shields.io/badge/JavaScript_Code_Style-standard-brightgreen.svg)](https://standardjs.com)
 
-Motion allows you to build reactive, real-time frontend UI components in your Rails application using pure Ruby.
+Motion allows you to build reactive, real-time frontend UI components in your Rails application using pure Ruby. Check out some [live examples](https://motion-demos.herokuapp.com) and [the code for the examples](https://github.com/unabridged/motion-demos).
 
 * Plays nicely with the Rails monolith you have.
 * Peacefully coexists with your existing tech: Strong Parameters, Turbolinks, Trix, React, Vue, etc.
