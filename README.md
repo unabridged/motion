@@ -246,6 +246,7 @@ Motion has callbacks which will let you pass data from a child component back up
 
 * Due to the way that Motion components are replaced on the page, component HTML templates are limited to a single top-level DOM element. If you have multiple DOM elements in your template at the top level, you must wrap them in a single element. This is a similar limitation that React enforced until `React.Fragment` appeared and is for a very similar reason.
 
+* Information about the request to the server is lost after the first re-render. This may cause things like `_url` helpers to fail to find the correct domain automatically. A workaround is to provide the domain to the helpers, and cache as a local variable any information from the `request` object that you need. 
 
 ## Roadmap
 
