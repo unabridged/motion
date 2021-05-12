@@ -2,7 +2,8 @@ import dispatchEvent from './dispatchEvent'
 import serializeEvent from './serializeEvent'
 import reconcile from './reconcile'
 
-import { version } from '../package.json'
+import packageInfo from '../package.json'
+const { version } = packageInfo
 
 export default class Component {
   constructor (client, element) {
