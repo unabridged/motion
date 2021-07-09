@@ -60,17 +60,17 @@ module Motion
 
         Motion.markup_transformer.add_state_to_html(self, html)
       end
+      
+      def marshal_dump
+        (instance_variables - STATE_EXCLUDED_IVARS)
+          .map { |ivar| [ivar, instance_variable_get(ivar)] }
+          .to_h
+      end
 
       private
 
       def _clear_awaiting_forced_rerender!
         @_awaiting_forced_rerender = false
-      end
-
-      def marshal_dump
-        (instance_variables - STATE_EXCLUDED_IVARS)
-          .map { |ivar| [ivar, instance_variable_get(ivar)] }
-          .to_h
       end
 
       def marshal_load(instance_variables)
