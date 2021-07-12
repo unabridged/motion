@@ -16,11 +16,14 @@ module Motion
         @view_flow
         @virtual_path
         @variant
+        @__vc_variant
         @current_template
         @output_buffer
 
         @helpers
+        @__vc_helpers
         @controller
+        @__vc_controller
         @request
         @tag_builder
 
