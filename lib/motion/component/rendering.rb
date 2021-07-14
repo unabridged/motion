@@ -16,14 +16,11 @@ module Motion
         @view_flow
         @virtual_path
         @variant
-        @__vc_variant
         @current_template
         @output_buffer
 
         @helpers
-        @__vc_helpers
         @controller
-        @__vc_controller
         @request
         @tag_builder
 
@@ -31,7 +28,9 @@ module Motion
         @assets_environment
       ].freeze
 
-      private_constant :STATE_EXCLUDED_IVARS
+      STATE_IVAR_OBFUSCATION_PREFIX = "@__vc_"
+
+      private_constant :STATE_EXCLUDED_IVARS, :STATE_IVAR_OBFUSCATION_PREFIX
 
       def rerender!
         @_awaiting_forced_rerender = true
@@ -72,6 +71,7 @@ module Motion
 
       def marshal_dump
         (instance_variables - STATE_EXCLUDED_IVARS)
+          .reject { |ivar| ivar.starts_with? STATE_IVAR_OBFUSCATION_PREFIX }
           .map { |ivar| [ivar, instance_variable_get(ivar)] }
           .to_h
       end
