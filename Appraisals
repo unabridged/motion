@@ -3,6 +3,10 @@ appraise "rails-5-1" do
 
   # Rails 5 does not have built-in support for ActionCable tests.
   gem "action-cable-testing"
+
+  # mimemagic releases < 0.3.8 have been yanked from rubygems.org
+  # because of a license violation problem
+  gem "mimemagic", "~> 0.3.10"
 end
 
 appraise "rails-5-2" do
@@ -10,14 +14,26 @@ appraise "rails-5-2" do
 
   # Rails 5 does not have built-in support for ActionCable tests.
   gem "action-cable-testing"
+
+  # mimemagic releases < 0.3.8 have been yanked from rubygems.org
+  # because of a license violation problem
+  gem "mimemagic", "~> 0.3.10"
 end
 
 appraise "rails-6-0" do
   gem "rails", "~> 6.0.0"
+
+  # mimemagic releases < 0.3.8 have been yanked from rubygems.org
+  # because of a license violation problem
+  gem "mimemagic", "~> 0.3.10"
 end
 
 appraise "rails-6-1" do
   gem "rails", "~> 6.1.0"
+
+  # mimemagic releases < 0.3.8 have been yanked from rubygems.org
+  # because of a license violation problem
+  gem "mimemagic", "~> 0.3.10"
 end
 
 appraise "rails-main" do

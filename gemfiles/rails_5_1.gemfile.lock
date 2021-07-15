@@ -87,6 +87,9 @@ GEM
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     method_source (1.0.0)
+    mimemagic (0.3.10)
+      nokogiri (~> 1)
+      rake
     mini_mime (1.0.2)
     minitest (5.14.3)
     nio4r (2.5.4)
@@ -219,6 +222,7 @@ DEPENDENCIES
   appraisal
   capybara (>= 2.15, < 4.0)
   generator_spec
+  mimemagic (~> 0.3.10)
   motion!
   pry
   puma

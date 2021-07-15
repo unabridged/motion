@@ -17,5 +17,6 @@ gem "webpacker"
 gem "sqlite3"
 gem "appraisal"
 gem "rails", "~> 6.1.0"
+gem "mimemagic", "~> 0.3.10"
 
 gemspec path: "../"
