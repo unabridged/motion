@@ -6,6 +6,13 @@ require "motion"
 class TestComponent < ViewComponent::Base
   include Motion::Component
 
+  # used by tests that want to know the initial ivars
+  STATIC_IVARS = %i[
+    @connected
+    @disconnected
+    @count
+  ]
+
   # used by tests that want to know the initial motions
   STATIC_MOTIONS = %w[
     noop
@@ -13,6 +20,7 @@ class TestComponent < ViewComponent::Base
     noop_without_arg
     change_state
     force_rerender
+    setup_dynamic_ivar
     setup_dynamic_motion
     setup_dynamic_stream
     setup_dynamic_timer
@@ -26,6 +34,7 @@ class TestComponent < ViewComponent::Base
     noop_without_arg
     change_state
     force_rerender
+    setup_dynamic_ivar
     setup_dynamic_motion
     setup_dynamic_stream
     setup_dynamic_timer
@@ -37,6 +46,7 @@ class TestComponent < ViewComponent::Base
     noop
     change_state
     force_rerender
+    setup_dynamic_ivar
     setup_dynamic_motion
     setup_dynamic_stream
     setup_dynamic_timer
@@ -44,6 +54,8 @@ class TestComponent < ViewComponent::Base
   ].freeze
 
   attr_reader :count
+
+  serializes :connected, :disconnected, :count
 
   def initialize(connected: :noop, disconnected: :noop, count: 0)
     @connected = connected
@@ -103,6 +115,18 @@ class TestComponent < ViewComponent::Base
 
   def force_rerender(*)
     rerender!
+  end
+
+  stream_from "setup_dynamic_ivar", :setup_dynamic_ivar
+  map_motion :setup_dynamic_ivar
+  every 10_000.years, :setup_dynamic_ivar
+
+  # used for tests that want to detect this dynamic ivar being setup
+  DYNAMIC_IVAR = :@dynamic_ivar
+
+  def setup_dynamic_ivar(*)
+    instance_variable_set(DYNAMIC_IVAR, true)
+    serializes DYNAMIC_IVAR
   end
 
   stream_from "setup_dynamic_motion", :setup_dynamic_motion

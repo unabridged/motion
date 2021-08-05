@@ -5,6 +5,8 @@ class DogFormComponent < ViewComponent::Base
 
   attr_reader :dog
 
+  serializes :dog
+
   def initialize(dog: Dog.new)
     @dog = dog
   end

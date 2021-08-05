@@ -70,7 +70,7 @@ module Motion
     rescue TypeError => e
       failing_ivars = []
 
-      component.marshal_dump.each do |ivar_name, ivar_value|
+      component.send(:marshal_dump).each do |ivar_name, ivar_value|
         dump!(ivar_value)
       rescue TypeError
         failing_ivars << ivar_name

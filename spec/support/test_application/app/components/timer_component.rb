@@ -3,6 +3,8 @@
 class TimerComponent < ViewComponent::Base
   include Motion::Component
 
+  serializes :seconds
+
   def initialize(seconds: 1)
     @seconds = seconds
   end

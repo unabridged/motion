@@ -1,7 +1,52 @@
 # frozen_string_literal: true
 
 RSpec.describe Motion::Component::Rendering, type: :system do
+  describe described_class::ClassMethods do
+    subject(:component_class) do # We need a fresh class for every spec
+      stub_const("TemporaryComponent", Class.new(ViewComponent::Base) {
+        include Motion::Component
+
+        def noop
+        end
+      })
+    end
+
+    let(:component) { component_class.new }
+
+    describe "#serializes" do
+      subject! { component_class.serializes(ivar) }
+
+      context 'without @' do
+        let(:ivar) { SecureRandom.hex }
+
+        it "causes instances of the component to serialize an instance variable" do
+          expect(component.serialized_ivars).to include("@#{ivar}".to_sym)
+        end
+      end
+
+      context 'with @' do
+        let(:ivar) { "@#{SecureRandom.hex}".to_sym }
+
+        it "causes instances of the component to serialize an instance variable" do
+          expect(component.serialized_ivars).to include(ivar)
+        end
+      end
+    end
+  end
+
   subject(:component) { TestComponent.new }
+
+  describe "#serialized_ivars" do
+    subject { component.serialized_ivars }
+
+    it { is_expected.to contain_exactly(*Motion::Component::Rendering::DEFAULT_IVARS, *TestComponent::STATIC_IVARS) }
+
+    context "when a dynamic ivar is added" do
+      before(:each) { component.setup_dynamic_ivar }
+
+      it { is_expected.to include(TestComponent::DYNAMIC_IVAR) }
+    end
+  end
 
   describe "#rerender!" do
     subject { component.rerender! }

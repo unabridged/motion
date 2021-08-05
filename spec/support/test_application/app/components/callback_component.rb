@@ -5,6 +5,8 @@ class CallbackComponent < ViewComponent::Base
 
   attr_reader :count
 
+  serializes :count
+
   def initialize(count: 0)
     @count = count
   end

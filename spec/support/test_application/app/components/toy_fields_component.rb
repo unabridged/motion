@@ -5,6 +5,8 @@ class ToyFieldsComponent < ViewComponent::Base
 
   attr_reader :f
 
+  serializes :f
+
   def initialize(f:)
     @f = f
   end

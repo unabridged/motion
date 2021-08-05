@@ -5,6 +5,8 @@ class ButtonComponent < ViewComponent::Base
 
   attr_reader :text, :on_click
 
+  serializes :text, :on_click
+
   def initialize(text:, on_click:)
     @text = text
     @on_click = on_click

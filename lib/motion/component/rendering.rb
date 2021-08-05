@@ -1,34 +1,44 @@
 # frozen_string_literal: true
 
+require "active_support/concern"
 require "motion"
 
 module Motion
   module Component
     module Rendering
-      STATE_EXCLUDED_IVARS = %i[
-        @_action_callback_context
-        @_awaiting_forced_rerender
-        @_routes
+      extend ActiveSupport::Concern
 
-        @view_context
-        @lookup_context
-        @view_renderer
-        @view_flow
-        @virtual_path
-        @variant
-        @current_template
-        @output_buffer
-
-        @helpers
-        @controller
-        @request
-        @tag_builder
-
-        @asset_resolver_strategies
-        @assets_environment
+      DEFAULT_IVARS = %i[
+        @_stable_instance_identifier_for_callbacks
       ].freeze
 
-      private_constant :STATE_EXCLUDED_IVARS
+      # Analogous to `module_function` (available on both class and instance)
+      module ModuleFunctions
+        def serializes(*ivars)
+          self._serialized_ivars = _serialized_ivars + ivars.map do |ivar|
+            ivar.to_s.starts_with?('@') ? ivar.to_sym : "@#{ivar}".to_sym
+          end
+        end
+
+        def serialized_ivars
+          _serialized_ivars
+        end
+      end
+
+      class_methods do
+        include ModuleFunctions
+
+        attr_writer :_serialized_ivars
+
+        def _serialized_ivars
+          return @_serialized_ivars if defined?(@_serialized_ivars)
+          return superclass._serialized_ivars if superclass.respond_to?(:_serialized_ivars)
+
+          DEFAULT_IVARS
+        end
+      end
+
+      include ModuleFunctions
 
       def rerender!
         @_awaiting_forced_rerender = true
@@ -63,12 +73,20 @@ module Motion
 
       private
 
+      attr_writer :_serialized_ivars
+
+      def _serialized_ivars
+        return @_serialized_ivars if defined?(@_serialized_ivars)
+
+        self.class._serialized_ivars
+      end
+
       def _clear_awaiting_forced_rerender!
         @_awaiting_forced_rerender = false
       end
 
       def marshal_dump
-        (instance_variables - STATE_EXCLUDED_IVARS)
+        _serialized_ivars
           .map { |ivar| [ivar, instance_variable_get(ivar)] }
           .to_h
       end

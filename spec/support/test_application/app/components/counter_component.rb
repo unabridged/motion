@@ -5,6 +5,8 @@ class CounterComponent < ViewComponent::Base
 
   attr_reader :count, :child
 
+  serializes :count, :child
+
   def initialize(count: 0)
     @count = count
     @child = nil
