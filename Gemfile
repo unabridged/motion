@@ -9,7 +9,7 @@ gem "rake", "~> 12.0"
 gem "rspec", "~> 3.0"
 gem "rspec-rails"
 gem "standard"
-gem "view_component"
+gem "view_component", ">= 2.44"
 
 # https://github.com/codeclimate/test-reporter/issues/413
 gem "simplecov", "< 0.18", require: false

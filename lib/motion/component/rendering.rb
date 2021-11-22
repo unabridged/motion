@@ -11,7 +11,6 @@ module Motion
         @_routes
 
         @view_context
-        @original_view_context
         @lookup_context
         @view_renderer
         @view_flow
