@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 0.6 - 2022-03-16
+
+* Fixes
+  * Support ViewComponent > 2.35.0 ([#](https://github.com/unabridged/motion/pull/79))
+
 ## 0.5 - 2021-03-11
 
 * Fixes
