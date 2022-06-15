@@ -235,9 +235,9 @@ DEPENDENCIES
   simplecov (< 0.18)
   sqlite3
   standard
-  view_component
+  view_component (>= 2.44)
   webdrivers (~> 4.0)
   webpacker
 
 BUNDLED WITH
-   2.2.7
+   2.3.13

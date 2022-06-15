@@ -4,7 +4,7 @@ PATH
     motion (0.5.0)
       lz4-ruby (>= 0.3.3)
       nokogiri
-      rails (>= 5.1)
+      rails (>= 5.2)
 
 GEM
   remote: https://rubygems.org/
@@ -256,9 +256,9 @@ DEPENDENCIES
   simplecov (< 0.18)
   sqlite3
   standard
-  view_component
+  view_component (>= 2.44)
   webdrivers (~> 4.0)
   webpacker
 
 BUNDLED WITH
-   2.2.7
+   2.3.13
