@@ -1,0 +1,74 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7'
+          bundler-cache: true
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'yarn'
+      - run: bin/yarn install
+      - run: bin/rake lint
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - '2.7'
+          - '3.0'
+          - '3.1'
+        rails:
+          - '5.2'
+          - '6.0'
+          - '6.1'
+          - '7.0'
+          - 'main'
+        exclude:
+          # Rails 5.2 will not receive support for Ruby 3 (https://github.com/rails/rails/issues/40938):
+          - { ruby: '3.0', rails: '5.2' }
+          - { ruby: '3.1', rails: '5.2' }
+
+          # Rails 7.1 will not support Ruby 2.7 (https://edgeguides.rubyonrails.org/7_1_release_notes.html):
+          - { ruby: '2.7', rails: 'main' }
+    name: Test (Ruby ${{ matrix.ruby }} / Rails ${{ matrix.rails }})
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/rails_${{ matrix.rails }}.gemfile
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'yarn'
+      - run: bin/yarn install
+      - uses: nanasess/setup-chromedriver@v1
+      - uses: aktions/codeclimate-test-reporter@v1
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        with:
+          codeclimate-test-reporter-id: ${{ secrets.CC_TEST_REPORTER_ID }}
+          command: before-build
+      - run: bin/rake test
+      - uses: aktions/codeclimate-test-reporter@v1
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        with:
+          codeclimate-test-reporter-id: ${{ secrets.CC_TEST_REPORTER_ID }}
+          command: after-build
