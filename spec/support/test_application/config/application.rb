@@ -10,7 +10,7 @@ require "action_view/railtie"
 require "sprockets/railtie"
 require "webpacker"
 
-require "view_component/engine"
+require "view_component"
 require "motion"
 
 class TestApplication < Rails::Application

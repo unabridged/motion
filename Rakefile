@@ -22,13 +22,8 @@ task :test do
 end
 
 task :lint do
-  if ENV["TRAVIS"]
-    sh "bin/standardrb"
-    sh "bin/yarn lint"
-  else
-    sh "bin/standardrb --fix"
-    sh "bin/yarn lint --fix"
-  end
+  sh "bin/standardrb"
+  sh "bin/yarn lint"
 end
 
 namespace :release do

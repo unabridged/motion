@@ -3,7 +3,7 @@
   "private": true,
   "dependencies": {
     "@rails/actioncable": "^6.0.0",
-    "@rails/webpacker": "5.2.1",
+    "@rails/webpacker": ">= 5.4.3",
     "@unabridged/motion": ">= 0.0.0"
   },
   "version": "0.1.0"
