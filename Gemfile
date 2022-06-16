@@ -19,5 +19,6 @@ gem "capybara", ">= 2.15", "< 4.0"
 gem "webdrivers", "~> 4.0", require: false
 gem "puma"
 gem "webpacker"
+gem "sprockets-rails"
 gem "sqlite3"
 gem "appraisal"

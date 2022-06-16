@@ -64,7 +64,7 @@ module Motion
 
       form_data = attrs.dig(:element, :formData) || {}
       params = ActionController::Parameters.new(form_data)
-      event.element.instance_variable_set("@form_data", params)
+      event.element.instance_variable_set(:@form_data, params)
     end
   end
 end
