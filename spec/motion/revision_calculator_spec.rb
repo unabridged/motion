@@ -71,7 +71,7 @@ RSpec.describe Motion::RevisionCalculator do
       it "changes contents when file contents change" do
         first_result = subject
 
-        File.open(new_file, "w+") { |file| file.write("test") }
+        File.write(new_file, "test")
         second_calc = Motion::RevisionCalculator.new(revision_paths: tempdir_and_revision_paths).perform
         expect(second_calc).not_to eq(first_result)
         expect(second_calc).not_to eq(empty_hash)

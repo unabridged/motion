@@ -24,6 +24,12 @@ class TestApplication < Rails::Application
     config.active_record.sqlite3.represent_boolean_as_integer = true
   end
 
+  # Silence irrelevant deprecation warning in Rails 6.1+
+  if (Rails::VERSION::MAJOR == 6 && Rails::VERSION::MINOR >= 1) ||
+      (Rails::VERSION::MAJOR == 7 && Rails::VERSION::MINOR == 0)
+    config.active_record.legacy_connection_handling = false
+  end
+
   # Raise exceptions instead of rendering exception templates
   config.action_dispatch.show_exceptions = false
 

@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   # be used (when rendering directly, this does not happen for some reason).
   def render_component_in_layout(component)
     render inline: "<%= render component %>",
-           locals: {component: component},
-           layout: true
+      locals: {component: component},
+      layout: true
   end
 end
