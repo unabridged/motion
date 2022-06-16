@@ -47,6 +47,7 @@ jobs:
           # Rails 7.1 will not support Ruby 2.7 (https://edgeguides.rubyonrails.org/7_1_release_notes.html):
           - { ruby: '2.7', rails: 'main' }
     name: Test (Ruby ${{ matrix.ruby }} / Rails ${{ matrix.rails }})
+    environment: ci
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/rails_${{ matrix.rails }}.gemfile
     steps:
