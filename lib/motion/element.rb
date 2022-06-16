@@ -22,6 +22,10 @@ module Motion
       raw["value"]
     end
 
+    def checked?
+      raw["checked"]
+    end
+
     def attributes
       raw.fetch("attributes", {})
     end

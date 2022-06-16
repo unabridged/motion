@@ -1,0 +1,18 @@
+<div>
+  <h1>
+    <% if checked? %>
+      The checkbox is checked.
+    <% else %>
+      The checkbox is <strong>not</strong> checked.
+    <% end %>
+  </h1>
+
+  <%=
+    check_box_tag(
+      'checkbox',
+      '1',
+      checked,
+      data: { motion: 'change->update_checked' }
+    )
+  %>
+</div>

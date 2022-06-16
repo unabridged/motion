@@ -28,6 +28,7 @@ RSpec.describe Motion::Element do
       {
         "tagName" => "INPUT",
         "value" => "test",
+        "checked" => false,
         "attributes" => {
           "class" => "form-control",
           "data-field" => "name",
@@ -50,6 +51,12 @@ RSpec.describe Motion::Element do
       subject { element.value }
 
       it { is_expected.to eq("test") }
+    end
+
+    describe "#checked?" do
+      subject { element.checked? }
+
+      it { is_expected.to eq(false) }
     end
 
     describe "#attributes" do

@@ -95,4 +95,21 @@ RSpec.describe "Core Functionality", type: :system do
 
     expect(page).to have_text("The count is 2")
   end
+
+  scenario "Reading the checked state of checkboxes from events" do
+    visit(checkbox_component_path)
+    wait_for_connect
+
+    expect(page).to have_text("The checkbox is not checked")
+
+    find("#checkbox").click
+    wait_for_render
+
+    expect(page).to have_text("The checkbox is checked")
+
+    find("#checkbox").click
+    wait_for_render
+
+    expect(page).to have_text("The checkbox is not checked")
+  end
 end

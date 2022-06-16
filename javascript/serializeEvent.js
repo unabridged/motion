@@ -39,13 +39,14 @@ function serializeEventDetails (event) {
 function serializeElement (element) {
   if (!element) return {}
 
-  const { tagName, value } = element
+  const { tagName, value, checked } = element
   const attributes = serializeElementAttributes(element)
   const formData = serializeElementFormData(element)
 
   return {
     tagName,
     value,
+    checked,
     attributes,
     formData
   }
