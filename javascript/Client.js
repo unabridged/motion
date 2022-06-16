@@ -13,7 +13,8 @@ export default class Client {
     this._componentTracker =
       new AttributeTracker(this.keyAttribute, (element) => (
         element.hasAttribute(this.stateAttribute) // ensure matches selector
-          ? new Component(this, element) : null
+          ? new Component(this, element)
+          : null
       ))
 
     this._motionTracker =
