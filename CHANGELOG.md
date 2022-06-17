@@ -1,9 +1,14 @@
 ## Unreleased
 
+## 0.7 - 2022-06-16
+
+* Features
+  * Allow accessing the checked state of form controls via `Motion::Element#checked?` ([#152](https://github.com/unabridged/motion/pull/152))
+
 ## 0.6 - 2022-03-16
 
 * Fixes
-  * Support ViewComponent > 2.35.0 ([#](https://github.com/unabridged/motion/pull/79))
+  * Support ViewComponent > 2.35.0 ([#79](https://github.com/unabridged/motion/pull/79))
 
 ## 0.5 - 2021-03-11
 
