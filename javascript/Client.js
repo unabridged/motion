@@ -8,6 +8,8 @@ export default class Client {
   constructor (options = {}) {
     Object.assign(this, Client.defaultOptions, options)
 
+    this.consumer = this.consumer || getFallbackConsumer()
+
     this._componentSelector = `[${this.keyAttribute}][${this.stateAttribute}]`
 
     this._componentTracker =
@@ -51,10 +53,6 @@ export default class Client {
 }
 
 Client.defaultOptions = {
-  get consumer () {
-    return getFallbackConsumer()
-  },
-
   getExtraDataForEvent (_event) {
     // noop
   },
